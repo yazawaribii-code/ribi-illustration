@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>莉比Ribi | Illustration & Vtuber Art Portfolio</title>
+    
+    <!-- 新增網站本身的 Favicon.png -->
+    <link rel="icon" type="image/png" href="Favicon.png">
+    
+    <!-- 更新為最穩定的 Font Awesome 6.6.0 向量圖示庫，確保 X-Twitter 圖示正常顯示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #fff9fb;       
+            --card-bg: #ffffff;        
+            --primary-pink: #ff8fae;   
+            --light-pink: #ffe3ec;     
+            --accent-purple: #f3ebff;  
+            --text-main: #4a3b3d;      
+            --text-muted: #9c8689;     
+            --tag-no: #ff8080;         
+            --tag-yes: #70c784;        
+            --gold-color: #e6a93b;     /* V皮專用金黃色 */
+            --gold-light: #fff9eb;    /* 金黃色輕背景 */
+            --font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--light-pink) 1px, transparent 0);
+            background-size: 24px 24px;
+            color: var(--text-main);
+            font-family: var(--font-family);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* --- 導覽列優化 --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(255, 249, 251, 0.95);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--light-pink);
+        }
+
+        .nav-container {
+            max-width: 1050px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            height: 85px; /* 微調導覽列高度以容納更大的LOGO */
+        }
+
+        /* LOGO 尺寸放大修正 */
+        .logo {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .logo img {
+            max-height: 75px; /* 從 50px 放大至 75px */
+            width: auto;
+            object-fit: contain;
+            display: block;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            list-style: none;
+            height: 100%;
+            gap: 8px;
+        }
+
+        .nav-links li {
+            display: flex;
+            align-items: center;
+            height: 35px;
+            cursor: pointer;
+        }
+
+        .nav-links .nav-item {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-main);
+            padding: 0 1.2rem;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+            border-radius: 6px;
+        }
+
+        .nav-links .nav-item:hover,
+        .nav-links li.active .nav-item {
+            background-color: var(--light-pink);
+            font-weight: bold;
+        }
+
+        /* 手機版漢堡排按鈕 */
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--primary-pink);
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0.5rem;
+        }
+
+        /* --- 多分頁顯示控制 --- */
+        .page-content {
+            display: none; 
+            padding: 9.5rem 2rem 4rem 2rem; 
+            max-width: 1050px;
+            margin: 0 auto;
+            min-height: 85vh;
+        }
+
+        .page-content.active {
+            display: block; 
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 首頁編排優化 --- */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4rem;
+            padding-top: 4.5rem; 
+            padding-bottom: 4.5rem;
+        }
+
+        .hero-content { 
+            flex: 1.2; 
+            padding-top: 1rem; 
+        }
+        .hero-title { font-size: 2.8rem; line-height: 1.4; margin-bottom: 1.5rem; font-weight: bold; }
+        .hero-title span { color: var(--primary-pink); }
+        .hero-subtitle { font-size: 1.05rem; color: var(--text-muted); margin-bottom: 1.5rem; text-align: justify; }
+        
+        /* 可愛粉色系社群按鈕區塊 */
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .social-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background-color: var(--light-pink);
+            color: var(--primary-pink);
+            border-radius: 50%;
+            font-size: 1.3rem;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 10px rgba(255, 143, 174, 0.1);
+        }
+        .social-icon:hover {
+            transform: translateY(-3px) scale(1.05);
+            background-color: var(--primary-pink);
+            color: #ffffff;
+            box-shadow: 0 6px 14px rgba(255, 143, 174, 0.3);
+        }
+
+        /* 首頁個人圖片：已放棄雲朵花邊，改成乾淨質感的簡約粉邊框 */
+        .hero-avatar {
+            flex: 0.8;
+            display: flex;
+            justify-content: center;
+        }
+        .hero-avatar img {
+            width: 320px;          
+            height: 380px;         
+            object-fit: cover;     
+            border-radius: 16px;   
+            border: 4px solid var(--light-pink);
+            margin: 10px;
+        }
+
+        .btn-group { display: flex; gap: 1.2rem; }
+        .cta-btn {
+            background-color: var(--primary-pink);
+            color: #fff;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(255, 143, 174, 0.25);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(255, 143, 174, 0.4); }
+
+        .sec-btn {
+            border: 2px solid var(--primary-pink);
+            color: var(--primary-pink);
+            padding: 0.7rem 2rem;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            background-color: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sec-btn:hover { background-color: var(--light-pink); transform: translateY(-2px); }
+
+        /* --- 標題樣式 --- */
+        .section-title {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 3.5rem;
+            color: var(--text-main);
+            position: relative;
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 3px;
+            background-color: var(--primary-pink);
+            margin: 0.8rem auto 0 auto;
+            border-radius: 2px;
+        }
+
+        /* --- 排程區塊 --- */
+        .schedule-box {
+            background-color: var(--card-bg);
+            border: 2px dashed var(--primary-pink);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .schedule-box h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .schedule-link {
+            display: inline-block;
+            margin-top: 0.5rem;
+            color: var(--primary-pink);
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        /* --- 價目表卡片 --- */
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .price-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid var(--light-pink);
+            box-shadow: 0 6px 18px rgba(255, 143, 174, 0.03);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .price-card:hover { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(255, 143, 174, 0.08); }
+        .price-header { background-color: var(--light-pink); padding: 1.2rem; text-align: center; }
+        .price-header h3 { font-size: 1.2rem; letter-spacing: 0.5px; }
+        .price-body { padding: 1.8rem; flex-grow: 1; }
+        
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px dashed var(--light-pink);
+        }
+        .price-name { font-weight: bold; font-size: 1rem; }
+        .price-val { color: var(--primary-pink); font-weight: bold; font-size: 1.1rem; }
+        .price-note { font-size: 0.88rem; color: var(--text-muted); margin-top: 1rem; line-height: 1.6; }
+
+        /* V皮卡片優化 */
+        .price-card.v-skin { 
+            border: 2.5px solid var(--gold-color); 
+            box-shadow: 0 6px 20px rgba(230, 169, 59, 0.1);
+        }
+        .price-card.v-skin .price-header { 
+            background: linear-gradient(135deg, #fff2cc, #ffe7a3); 
+            border-bottom: 1px solid var(--gold-color);
+        }
+        .price-card.v-skin .price-header h3 {
+            color: #8f6000;
+            font-weight: bold;
+        }
+        .price-card.v-skin .price-val {
+            color: var(--gold-color);
+        }
+        .price-card.v-skin .price-item {
+            border-bottom: 1px dashed #ffe7a3;
+        }
+
+        /* --- 合作建模師區塊 --- */
+        .modeler-section {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px dashed var(--gold-color);
+        }
+        .modeler-title { font-weight: bold; color: var(--text-main); margin-bottom: 1rem; font-size: 0.95rem; text-align: center; }
+        
+        .modeler-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); 
+            gap: 1rem; 
+        }
+        
+        .modeler-box { 
+            background-color: var(--gold-light); 
+            border: 1px solid #f7e2b7; 
+            border-radius: 12px; 
+            padding: 1rem;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .modeler-box:hover { transform: translateY(-3px); }
+        .modeler-box h4 { font-size: 0.85rem; margin-top: 0.5rem; color: #734d00; }
+        
+        /* 圓形頭像樣式 */
+        .modeler-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--gold-color);
+            margin-bottom: 0.3rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- 流程與須知 --- */
+        .process-section { background-color: var(--card-bg); border-radius: 20px; padding: 2rem; margin-bottom: 2rem; border: 1px solid var(--light-pink); }
+        .process-title { text-align: center; color: var(--primary-pink); font-size: 1.2rem; margin-bottom: 1.8rem; font-weight: bold; }
+        
+        .flow-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.2rem; }
+        .flow-node { background-color: #fffbfd; border: 1px solid var(--light-pink); border-radius: 12px; padding: 1.2rem; text-align: center; }
+        .flow-num { width: 26px; height: 26px; background-color: var(--primary-pink); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.6rem auto; font-weight: bold; font-size: 0.85rem; }
+        .flow-node h4 { font-size: 1rem; margin-bottom: 0.4rem; }
+        .flow-node p { font-size: 0.85rem; color: var(--text-muted); }
+
+        .rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2.5rem; }
+        .rules-card { background-color: var(--card-bg); border-radius: 20px; padding: 2rem; border: 1px solid var(--light-pink); }
+        .rules-card h3 { font-size: 1.2rem; margin-bottom: 1.2rem; border-bottom: 2px solid var(--light-pink); padding-bottom: 0.4rem; }
+        .rules-card .rules-list { list-style: none; }
+        .rules-card .rules-list li { margin-bottom: 0.8rem; font-size: 0.92rem; padding-left: 1rem; position: relative; }
+        .rules-card .rules-list li::before { content: '•'; color: var(--primary-pink); position: absolute; left: 0; font-weight: bold; }
+        
+        .tag { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold; color: #fff; margin-right: 0.4rem; }
+        .tag.no { background-color: var(--tag-no); }
+        .tag.yes { background-color: var(--tag-yes); }
+
+        .form-box { text-align: center; background-color: var(--card-bg); border: 1px solid var(--light-pink); padding: 2.5rem; border-radius: 20px; }
+
+        /* --- 作品集分類標籤與網格樣式 --- */
+        .portfolio-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--light-pink);
+            padding: 0.6rem 1.5rem;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .tab-btn:hover, .tab-btn.active {
+            background-color: var(--primary-pink);
+            color: #ffffff;
+            border-color: var(--primary-pink);
+            box-shadow: 0 4px 12px rgba(255, 143, 174, 0.25);
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .portfolio-grid.view-chibi { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+        .portfolio-grid.view-vtuber { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+        .portfolio-grid.view-illustration { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+        .portfolio-grid.view-stickers { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+
+        .portfolio-item { 
+            background-color: var(--card-bg); 
+            border-radius: 16px; 
+            overflow: hidden; 
+            border: 1px solid var(--light-pink); 
+            box-shadow: 0 4px 12px rgba(255, 143, 174, 0.02); 
+            transition: transform 0.2s; 
+            cursor: pointer; 
+        }
+        .portfolio-item:hover { transform: translateY(-5px); }
+        
+        .portfolio-img { width: 100%; height: 240px; object-fit: cover; background-color: var(--light-pink); transition: height 0.2s ease; }
+        
+        .portfolio-grid.view-vtuber .portfolio-img { height: 460px; }
+        .portfolio-grid.view-stickers .portfolio-img { height: 200px; }
+        .portfolio-grid.view-chibi .portfolio-img { height: 250px; }
+
+        .portfolio-info { padding: 1.2rem; }
+        .portfolio-info h3 { font-size: 1.1rem; margin-bottom: 0.2rem; }
+        .portfolio-info p { font-size: 0.88rem; color: var(--text-muted); }
+
+        /* --- 燈箱放大效果 --- */
+        .lightbox-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(74, 59, 61, 0.65);
+            backdrop-filter: blur(3px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        .lightbox-overlay.active { opacity: 1; pointer-events: auto; }
+        .lightbox-content { max-width: 80%; max-height: 80vh; position: relative; transform: scale(0.95); transition: transform 0.25s ease; }
+        .lightbox-overlay.active .lightbox-content { transform: scale(1); }
+        .lightbox-img { max-width: 100%; max-height: 75vh; display: block; border-radius: 16px; border: 5px solid #fff; box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
+        .lightbox-caption { color: #fff; text-align: center; margin-top: 0.8rem; font-size: 1rem; font-weight: bold; }
+
+        /* 頁尾 */
+        footer { text-align: center; padding: 2.5rem; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--light-pink); margin-top: 4rem; }
+
+        /* --- 回應式排版修正 --- */
+        @media (max-width: 868px) {
+            .hero { flex-direction: column-reverse; text-align: center; gap: 2rem; padding-top: 2rem; }
+            .social-links { justify-content: center; } 
+            .btn-group { justify-content: center; }
+            .rules-grid { grid-template-columns: 1fr; }
+            
+            /* 顯示手機漢堡排按鈕 */
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                display: none; /* 預設隱藏 */
+                flex-direction: column;
+                position: absolute;
+                top: 85px; /* 同步導覽列高度 */
+                left: 0;
+                width: 100%;
+                background-color: rgba(255, 249, 251, 0.98);
+                border-bottom: 1px solid var(--light-pink);
+                padding: 1rem 0;
+                height: auto;
+                gap: 12px;
+                box-shadow: 0 4px 12px rgba(255, 143, 174, 0.08);
+            }
+
+            /* 當啟動 .open class 時顯示選單 */
+            .nav-links.open {
+                display: flex;
+                animation: slideDown 0.25s ease-out forwards;
+            }
+
+            .nav-links li {
+                width: 100%;
+                justify-content: center;
+                height: 45px;
+            }
+
+            .nav-links .nav-item {
+                width: 85%;
+                justify-content: center;
+                padding: 0.8rem 0;
+            }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 導覽列 -->
+    <nav>
+        <div class="nav-container">
+            <!-- 檔名已修正為 莉比Ribi LOGO.png -->
+            <div class="logo">
+                <img src="logo.png" alt="莉比Ribi LOGO">
+            </div>
+            <!-- 手機版按鈕 -->
+            <button class="menu-toggle" onclick="toggleMenu()" aria-label="切換選單">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li class="active" onclick="switchPage('about')"><span class="nav-item">首頁</span></li>
+                <li onclick="switchPage('notice')"><span class="nav-item">關於委託</span></li>
+                <li onclick="switchPage('prices')"><span class="nav-item">委託價目表</span></li>
+                <li onclick="switchPage('modelers')"><span class="nav-item">合作建模師</span></li>
+                <li onclick="switchPage('portfolio')"><span class="nav-item">作品展示</span></li>
+                <li onclick="switchPage('contact')"><span class="nav-item">我要委託</span></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 分頁 1：首頁 -->
+    <div id="about" class="page-content active">
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title"> <span>莉比Ribi</span> </h1>
+                <p class="hero-subtitle">我是擅長繪製可愛插畫的台灣繪師—莉比Ribi。努力用元氣滿滿的粉嫩色彩與細緻筆觸，將最耀眼的作品呈現給大家。這裡提供各類精緻插畫、Q版模板、以及專業的商用VTuber拆層立繪服務，期待能與你一同創作更多精彩作品！</p>
+                
+                <div class="social-links">
+                    <a href="https://x.com/yazawaribii" target="_blank" class="social-icon" title="Twitter / X">
+                        <i class="fa-brands fa-x-twitter"></i>
+                    </a>
+                    <a href="https://discord.com/invite/hTgBmrS7fx" target="_blank" class="social-icon" title="Discord">
+                        <i class="fa-brands fa-discord"></i>
+                    </a>
+                    <a href="mailto:yazawaribii@gmail.com" class="social-icon" title="Email 聯絡">
+                        <i class="fa-solid fa-envelope"></i>
+                    </a>
+                </div>
+
+                <div class="btn-group">
+                    <button onclick="switchPage('prices')" class="cta-btn">委託價目表</button>
+                    <button onclick="switchPage('portfolio')" class="sec-btn">作品展示</button>
+                </div>
+            </div>
+            <div class="hero-avatar">
+                <!-- 預留頭像位置，之後可以把檔名改為妳的 avatar.png 之類的檔案 -->
+                <img src="avatar.png" alt="莉比Ribi">
+            </div>
+        </section>
+    </div>
+
+    <!-- 分頁 2：關於委託 -->
+    <div id="notice" class="page-content">
+        <h2 class="section-title">委託須知與說明</h2>
+        <div class="rules-grid">
+            <div class="rules-card">
+                <h3>付款方式細則</h3>
+                <ul class="rules-list" style="margin-bottom: 2rem;">
+                    <li><strong>匯款方式：</strong>支援 <span style="color: #FF8FAE; font-weight: bold;">銀行轉帳、Paypal</span>。</li>
+                    <li><strong>付款期限：</strong>討論完畢起 <span style="color: #FF8FAE; font-weight: bold;"> 3 </span>天內需完成匯款。</li>
+                    <li><strong>正式排單：</strong>確認收到款項後才會正式排單。</li>
+                </ul>
+
+                <h3>分類接單類型</h3>
+                <ul class="rules-list">
+                    <li><span class="tag no" style="background-color: #A4A4A4;">不接</span> 老人、獸人、澀圖 (H)、可怕、BL 類型的元素。</li>
+                    <li><span class="tag no" style="background-color: #FFB6CA;">不擅長</span> 男角（但願意努力嘗試）。純動物Q版則可接。</li>
+                    <li><span class="tag yes"style="background-color: #FF8FAE;">可接</span> 原創、二創、Vtuber、遊戲角色等插畫。</li>
+                </ul>
+            </div>
+
+            <div class="rules-card">
+                <h3>委託小須知</h3>
+                <ul class="rules-list">
+                    <li><span style="color: #FF8FAE; font-weight: bold;">付款</span>後正式列入排單。</li>
+                    <li>製作途中取消，<span style="color: #FF8FAE; font-weight: bold;">訂金恕不退還</span>，請體諒繪製作品的辛苦。</li>
+                    <li>作品預設為<span style="color: #FF8FAE; font-weight: bold;">公開展示與直播繪製</span>，若需保密請提前告知。</li>
+                    <li><span style="color: #FF8FAE; font-weight: bold;">非商用</span>：可用於個人收藏、頭貼、直播素材。<br>公開使用請標註：莉比Ribi。</li>
+                    <li><span style="color: #FF8FAE; font-weight: bold;">商用</span>：除上述授權外，可作為販售周邊等營利用途，同樣需標註繪師。</li>
+                    <li>如有<span style="color: #FF8FAE; font-weight: bold;">授權使用</span>上的疑問，歡迎私訊詢問。</li>
+
+                </ul>
+            </div>
+        </div>
+
+        <h2 class="section-title">專業委託流程</h2>
+        <div class="process-section">
+            <div class="process-title">類型 A：一般委託流程</div>
+            <div class="flow-steps">
+                <div class="flow-node"><div class="flow-num">1</div><h4>討論與估價</h4><p>評估報價與交期。</p></div>
+                <div class="flow-node"><div class="flow-num">2</div><h4>付款排單</h4><p>付清全額或 50% 訂金。</p></div>
+                <div class="flow-node"><div class="flow-num">3</div><h4>草圖確認</h4><p>可免費修改 2 次，<br>工期約 7-14 天。</p></div>
+                <div class="flow-node"><div class="flow-num">4</div><h4>完稿交付</h4><p>微調後交付雲端檔案。</p></div>
+            </div>
+        </div>
+        <div class="process-section">
+            <div class="process-title">類型 B：V皮委託流程</div>
+            <div class="flow-steps">
+                <div class="flow-node"><div class="flow-num">1</div><h4>流程討論</h4><p>確認 V皮繪製需求，付 20% 訂金或全額。</p></div>
+                <div class="flow-node"><div class="flow-num">2</div><h4>設計與拆層</h4><p>草圖、細緻線稿與全色拆層確認、<br>三視圖繪製。</p></div>
+                <div class="flow-node"><div class="flow-num">3</div><h4>交付與售後</h4><p>工期約 1-2 個月，交付已拆層 PSD 檔案。<br>如有需求會推薦合作的建模師。</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分頁 3：委託價目表 -->
+    <div id="prices" class="page-content">
+        <h2 class="section-title">委託價目表</h2>
+
+        <div class="schedule-box">
+            <h3>目前委託排程狀況</h3>
+            <p>2026排單最新進度與滿單狀況，請點擊下方公開表單查看：</p>
+            <a href="https://reurl.cc/Ga2lG3" target="_blank" class="schedule-link">點此查看排程進度表 ➔</a>
+        </div>
+
+        <div class="price-grid">
+            <div class="price-card">
+                <div class="price-header"><h3>頭貼 / 立繪</h3></div>
+                <div class="price-body">
+                    <div class="price-item"><span class="price-name">正比立繪 (全身)</span><span class="price-val">NT$ 2,000 UP</span></div>
+                    <div class="price-item"><span class="price-name">正比頭貼 (半身以內)</span><span class="price-val">NT$ 1,200 UP</span></div>
+                    <div class="price-item"><span class="price-name">Q版立繪 (全身)</span><span class="price-val">NT$ 850 UP</span></div>
+                    <div class="price-item"><span class="price-name">Q版頭貼 (半身以內)</span><span class="price-val">NT$ 600 UP</span></div>
+                    <div class="price-item"><span class="price-name">驚喜包 (正比半身以內)</span><span class="price-val">NT$ 850</span></div>
+                    <p class="price-note">
+                        ※ 驚喜包類型不開放雙人。<br>
+                        ※ 雙人限點價格為「單人價格 x 1.5」，僅限全身立繪以雙重計算。<br>
+                        ※ 討論出來的複雜角色或附件，會依複雜度酌收 +50~150 元。
+                    </p>
+                </div>
+            </div>
+
+            <div class="price-card">
+                <div class="price-header"><h3>精緻插畫</h3></div>
+                <div class="price-body">
+                    <div class="price-item"><span class="price-name">精緻插畫 (橫式)</span><span class="price-val">NT$ 3,500 UP</span></div>
+                    <div class="price-item"><span class="price-name">精緻插畫 (直式)</span><span class="price-val">NT$ 3,000 UP</span></div>
+                    <div class="price-item"><span class="price-name">曲繪插畫</span><span class="price-val">NT$ 5,000～8,000 UP</span></div>
+                    <p class="price-note" style="margin-top: 2rem;">
+                        ※ 價目適用範圍：插畫桌布、橫幅、曲繪。<br>
+                        ※ 最終報價將依畫面複雜度、精細度、排字<br>以及排版需求進行調整。
+                    </p>
+                </div>
+            </div>
+
+            <div class="price-card">
+                <div class="price-header"><h3>靜態貼圖/合作動態模板</h3></div>
+                <div class="price-body">
+                    <div class="price-item"><span class="price-name">哭喔模板(吉祥物版)</span><span class="price-val">NT$ 450  UP</span></div>
+                    <div class="price-item"><span class="price-name">哭喔模板(人物版)</span><span class="price-val">NT$ 600 UP</span></div>
+                    <div class="price-item"><span class="price-name">模板貼圖</span><span class="price-val">NT$ 300 UP/張</span></div>
+                    <div class="price-item"><span class="price-name">客製化資訊欄貼圖</span><span class="price-val">NT$ 800 UP/張</span></div>
+                    <div class="price-item"><span class="price-name">合作跳跳GIF(建模師：阿卡貓)</span><span class="price-val">NT$ 1200 UP</span></div>
+                    <p class="price-note" style="margin-top: 2rem;">
+                         ※ 最終報價將依畫面複雜度、精細度、排字<br>以及排版需求進行調整。
+                    </p>
+                </div>
+            </div>
+
+            <div class="price-card v-skin">
+                <div class="price-header"><h3>商用V皮設計 (純拆層)</h3></div>
+                <div class="price-body">
+                    <div class="price-item"><span class="price-name">立繪繪製 + 細緻拆層</span><span class="price-val">NT$ 18,000 ~ 30,000 UP</span></div>
+                    <div class="price-item"><span class="price-name">加購 三視圖</span><span class="price-val">+ NT$ 2,500 UP</span></div>
+                    <div class="price-item"><span class="price-name">加購 物件、髮型設計</span><span class="price-val">+ NT$500 ~ 1,500 UP</span></div>
+                    <p class="price-note">
+                        • 規格：350dpi，完稿交付完整已拆層之 PSD 檔案。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分頁：合作建模師 -->
+    <div id="modelers" class="page-content">
+        <h2 class="section-title">推薦合作Live2D建模師</h2>
+        <p style="text-align:center; color: var(--text-muted); margin-bottom: 2.5rem;">
+            如有 Live2D 動態化需求，歡迎參考以下長期合作的建模師夥伴：
+        </p>
+
+        <div class="modeler-grid" style="max-width: 720px; margin: 0 auto;">
+            <a href="https://x.com/HakkaNekoLive2D" target="_blank" class="modeler-box">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Ribi/modelerA.jpg?raw=true" class="modeler-avatar" alt="建模師A">
+                <h4>阿卡貓</h4>
+            </a>
+            <a href="https://x.com/Minottaur" target="_blank" class="modeler-box">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Ribi/modelerB.jpg?raw=true" class="modeler-avatar" alt="建模師B">
+                <h4>Minotaur</h4>
+            </a>
+            <a href="https://x.com/kamiya_uyuki" target="_blank" class="modeler-box">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Ribi/modelerC.jpg?raw=true" class="modeler-avatar" alt="建模師C">
+                <h4>狼谷卯雪</h4>
+            </a>
+        </div>
+
+        <div style="text-align: center; margin: 2.5rem 0 0 0;">
+            <a href="https://forms.gle/HQN7BRtj7hQgSXY38" target="_blank" class="cta-btn">(整修中)我想申請加入合作建模師 ➔</a>
+        </div>
+    </div>
+
+<!-- 分頁 4：作品展示 -->
+    <div id="portfolio" class="page-content">
+        <h2 class="section-title">作品展示 Gallery</h2>
+        
+        <div class="portfolio-tabs">
+            <button class="tab-btn active" onclick="filterPortfolio('all')">全部作品</button>
+            <button class="tab-btn" onclick="filterPortfolio('Profile')">頭貼 / 驚喜包</button>
+            <button class="tab-btn" onclick="filterPortfolio('chibi')">Q版</button>
+            <button class="tab-btn" onclick="filterPortfolio('vtuber')">人設立繪 / 三視圖</button>
+            <button class="tab-btn" onclick="filterPortfolio('illustration')">精緻全彩插畫</button>
+            <button class="tab-btn" onclick="filterPortfolio('stickers')">貼圖 / 模板</button>
+        </div>
+
+        <!-- 這裡只需要一個父層 grid 就好了 -->
+        <div class="portfolio-grid" id="portfolioGrid">
+            
+            <div class="portfolio-item Profile">
+                <img src="https://pbs.twimg.com/media/Gw2RLzubIAAQWKP?format=jpg&name=medium" alt="VTuber-悠妮涅可" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-悠妮涅可</h3><p>精緻頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/Loopy02.jpg?raw=true" alt="VTuber-波露露比" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-波露露比</h3><p>驚喜包頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://pbs.twimg.com/media/HHxLxWbbEAARlhw?format=jpg&name=medium" alt="VTuber-莓子熊" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-莓子熊</h3><p>驚喜包頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/Feituu01.jpg?raw=true" alt="VTuber-緋菟" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-緋菟</h3><p>驚喜包頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://pbs.twimg.com/media/Gw2RLz1bAAAnmJW?format=jpg&name=medium" alt="VTuber-緒莉亞" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-緒莉亞</h3><p>驚喜包頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/Licht.jpg?raw=true" alt="VTuber-莉希特" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-莉希特</h3><p>驚喜包頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/TootooPyon01.jpg?raw=true" alt="VTuber-兔兔ぴょんちゃん" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-兔兔ぴょんちゃん</h3><p>驚喜包頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/ShinYuki01.jpg?raw=true" alt="VTuber-雪寶うさぎ" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-雪寶うさぎ</h3><p>驚喜包頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/UniNeko01.jpg?raw=true" alt="VTuber-悠妮涅可" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-悠妮涅可</h3><p>精緻頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/UniNeko04.jpg?raw=true" alt="VTuber-悠妮涅可" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-悠妮涅可</h3><p>精緻頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/UniNeko03.jpg?raw=true" alt="VTuber-悠妮涅可" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-悠妮涅可</h3><p>精緻頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/NanashiYuki02.jpg?raw=true" alt="VTuber-Nanashi Yuki" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-Nanashi Yuki</h3><p>驚喜包頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/77.jpg?raw=true" alt="淺夏柒柒" class="portfolio-img">
+                <div class="portfolio-info"><h3>淺夏柒柒</h3><p>驚喜包頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/Huanyu.jpg?raw=true" alt="VTuber-幻雨悠希" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-幻雨悠希</h3><p>驚喜包頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/00.jpg?raw=true" alt="背後靈" class="portfolio-img">
+                <div class="portfolio-info"><h3>背後靈</h3><p>驚喜包頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/UniNeko05.jpg?raw=true" alt="VTuber-悠妮涅可" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-悠妮涅可</h3><p>精緻頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/Aiyu01.jpg?raw=true" alt="VTuber-菜心" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-菜心</h3><p>精緻雙人頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/Guguru01.jpg?raw=true" alt="VTuber-咕咕嚕諾姆" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-咕咕嚕諾姆</h3><p>精緻雙人頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/TotoRei.jpg?raw=true" alt="VTuber-都兔零" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-都兔零</h3><p>驚喜包頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/Oda.jpg?raw=true" alt="VTuber-歐妲" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-歐妲</h3><p>驚喜包頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/nuonuo.jpg?raw=true" alt="其他委託" class="portfolio-img">
+                <div class="portfolio-info"><h3>其他委託</h3><p>驚喜包頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/chami.jpg?raw=true" alt="VTuber-茶靡靡" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-茶靡靡</h3><p>驚喜包頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/Limi01.jpg?raw=true" alt="VTuber-黎汨Limi" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-黎汨Limi</h3><p>驚喜包頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item Profile">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/7701.jpg?raw=true" alt="淺夏柒柒" class="portfolio-img">
+                <div class="portfolio-info"><h3>淺夏柒柒</h3><p>驚喜包頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item chibi">
+                <img src="https://pbs.twimg.com/media/G3hOBPYWwAEjtbU?format=jpg&name=4096x4096" alt="VTuber-悠妮涅可" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-悠妮涅可</h3><p>Q版頭貼</p></div>
+            </div>
+
+            <div class="portfolio-item chibi">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Chibi/Aya01.gif?raw=true" alt="VTuber-采彩Aya" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-采彩Aya</h3><p>Q版插畫</p></div>
+            </div>
+
+            <div class="portfolio-item chibi">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Chibi/Chibi_COMMISSION.jpg?raw=true" alt="VTuber" class="portfolio-img">
+                <div class="portfolio-info"><h3>周邊設計</h3><p>Q版飯友</p></div>
+            </div>
+
+            <div class="portfolio-item chibi">
+                <img src="https://pbs.twimg.com/media/GHLZJNyaQAAxqLV?format=jpg&name=4096x4096" alt="VTuber-莉希特" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-莉希特</h3><p>Q版</p></div>
+            </div>
+
+            <div class="portfolio-item chibi">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Chibi/sofia.jpg?raw=true" alt="VTuber-蘇菲蕥Sofia" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-蘇菲蕥Sofia</h3><p>Q版</p></div>
+            </div>
+
+            <div class="portfolio-item chibi">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Chibi/Liv.jpg?raw=true" alt="VTuber-莉芙嘉薇亞" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-莉芙嘉薇亞</h3><p>Q版</p></div>
+            </div>
+
+            <div class="portfolio-item chibi">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Chibi/Miyuki01.jpg?raw=true" alt="VTuber-深雪みゆき" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-深雪みゆき</h3><p>Q版</p></div>
+            </div>
+
+            <div class="portfolio-item chibi">
+                <img src="https://pbs.twimg.com/media/F69rHlzbwAAoACv?format=jpg&name=medium" alt="VTuber-十六夜 · 路希菲爾" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-十六夜 · 路希菲爾</h3><p>Q版立繪</p></div>
+            </div>
+
+            <div class="portfolio-item chibi">
+                <img src="https://pbs.twimg.com/media/F69rHlyaQAA2flp?format=jpg&name=medium" alt="MOON²" class="portfolio-img">
+                <div class="portfolio-info"><h3>網路作家｜MOON²
+</h3><p>Q版插畫</p></div>
+            </div>
+
+            <div class="portfolio-item vtuber">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/VTubers.jpg?raw=true" alt="VTuber" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber</h3><p>角色設計</p></div>
+            </div>
+
+            <div class="portfolio-item vtuber">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/Aya.png?raw=true" alt="VTuber-采彩Aya" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-采彩Aya</h3><p>2.5形象角色設計</p></div>
+            </div>
+
+            <div class="portfolio-item vtuber">
+                <img src="https://pbs.twimg.com/media/Gw2Vz7cbMAAfoMA?format=jpg&name=medium" alt="VTuber-無尾熊女孩" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-無尾熊女孩</h3><p>尚未售出/角色設計-合作建模：Minotaur</p></div>
+            </div>
+
+            <div class="portfolio-item vtuber">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/MepuruMyo.png?raw=true" alt="VTuber-楓糖渺" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-楓糖渺</h3><p>角色設計-合作建模：狼谷卯雪</p></div>
+            </div>
+
+            <div class="portfolio-item vtuber">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/tootooPyon01.png?raw=true" alt="兔兔ぴょんちゃん" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-兔兔ぴょんちゃん</h3><p>角色設計-合作建模：1.0-Minotaur／1.5-阿卡貓</p></div>
+            </div>
+
+            <div class="portfolio-item vtuber">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/Nato.png?raw=true" alt="鈴木奈兔" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-鈴木奈兔</h3><p>4.0角色設計&建模</p></div>
+            </div>
+
+            <div class="portfolio-item vtuber">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/TotoRei.png?raw=true" alt="都兔零" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-都兔零</h3><p>角色設計-建模師：YYL</p></div>
+            </div>
+
+            <div class="portfolio-item vtuber">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/Ribi.png?raw=true" alt="莉比醬" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-魔法少女莉比醬</h3><p>角色設計&建模</p></div>
+            </div>
+
+            <div class="portfolio-item vtuber">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/tootooPyon02.png?raw=true" alt="兔兔ぴょんちゃん" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-兔兔ぴょんちゃん</h3><p>角色設計-合作建模：阿卡貓</p></div>
+            </div>
+
+            <div class="portfolio-item vtuber">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/Feituu00.png?raw=true" alt="緋菟" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-緋菟</h3><p>角色設計</p></div>
+            </div>
+
+            <div class="portfolio-item vtuber">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/yuchen.jpg?raw=true" alt="瑀弦" class="portfolio-img">
+                <div class="portfolio-info"><h3>瑀弦</h3><p>角色卡設計</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/Nanashi%20yuki.gif?raw=true" alt="VTuber-Nanashi Yuki" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-Nanashi Yuki</h3><p>曲繪插畫-飛雲之上</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/IchigoTokikoi.jpg?raw=true" alt="VTuber-莓芊時戀" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-莓芊時戀</h3><p>精緻插畫</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/Apple01.jpg?raw=true" alt="VTuber-森花艾波" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-森花艾波</h3><p>精緻插畫</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/Apple02.jpg?raw=true" alt="VTuber-森花艾波" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-森花艾波</h3><p>精緻插畫</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/Aya.jpg?raw=true" alt="VTuber-采彩Aya" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-采彩Aya</h3><p>精緻插畫(待機插畫)</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/DadaRelive5th.jpg?raw=true" alt="VTuber-灰妲" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-灰妲</h3><p>精緻插畫</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/Enomu.gif?raw=true" alt="VTuber-伊糯姆" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-伊糯姆</h3><p>精緻插畫(待機插畫)</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/Guguru01.jpg?raw=true" alt="VTuber-咕咕嚕諾姆" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-咕咕嚕諾姆</h3><p>精緻插畫</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/Guguru02.jpg?raw=true" alt="VTuber-咕咕嚕諾姆" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-咕咕嚕諾姆</h3><p>精緻插畫</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/GxUUrXFakAAvOcy.jpg?raw=true" alt="VTuber-悠妮涅可" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-悠妮涅可</h3><p>精緻插畫(待機動畫)</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/GxUYGLCaIAAPsEs.jpg?raw=true" alt="VTuber-七音Clio" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-七音Clio</h3><p>精緻插畫</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/GxUYLcXaIAAn5YD.jpg?raw=true" alt="VTuber-莉希特" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-莉希特</h3><p>精緻插畫(待機動畫)</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/Loopy.jpg?raw=true" alt="VTuber-波露露比" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-波露露比</h3><p>精緻插畫</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/Quokka.jpg?raw=true" alt="VTuber-珂卡" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-珂卡</h3><p>精緻插畫(待機動畫)</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/ShinYuki.jpg?raw=true" alt="VTuber-雪寶うさぎ" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-雪寶うさぎ</h3><p>精緻插畫(宣傳插畫)</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/SiQi.jpg?raw=true" alt="VTuber-司淇" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-司淇</h3><p>精緻插畫(待機動畫)</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/Unineko01.jpg?raw=true" alt="VTuber-悠妮涅可" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-悠妮涅可</h3><p>精緻插畫</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/kurimu.jpg?raw=true" alt="VTuber-甜蜜の奶油" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-甜蜜の奶油</h3><p>精緻插畫(待機插畫)</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/tootooPyon.jpg?raw=true" alt="VTuber-兔兔ぴょんちゃん" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-兔兔ぴょんちゃん</h3><p>精緻插畫(宣傳插畫)</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/yumeno_kaoru02.jpg?raw=true" alt="VTuber-夢野薰草" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-夢野薰草</h3><p>精緻插畫</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://pbs.twimg.com/media/GvbPquGaYAAA5r6?format=jpg&name=4096x4096" alt="VTuber-悠妮涅可" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-悠妮涅可</h3><p>精緻插畫</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://pbs.twimg.com/media/GvbNi_3X0AAFPEV?format=jpg&name=medium" alt="VTuber-錒欣" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-錒欣</h3><p>精緻插畫</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://pbs.twimg.com/media/G3CJ6BXawAAPhEs?format=jpg&name=large" alt="VTuber-棉花糖99" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-棉花糖99</h3><p>精緻插畫</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/Totorei02.jpg?raw=true" alt="VTuber-都兔零" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-都兔零</h3><p>精緻插畫</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/Kururun.jpg?raw=true" alt="VTuber-庫路路" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-庫路路</h3><p>精緻插畫</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/Miyuki.jpg?raw=true" alt="VTuber-深雪みゆき" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-深雪みゆき</h3><p>精緻插畫</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/Unineko02.jpg?raw=true" alt="VTuber-悠妮涅可" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-悠妮涅可</h3><p>精緻插畫</p></div>
+            </div>
+
+            <div class="portfolio-item illustration">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/Ribi-Cover.jpg?raw=true" alt="VTuber-魔法少女莉比醬" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-魔法少女莉比醬</h3><p>曲繪插畫-ツインテール魔法少女</p></div>
+            </div>
+
+            <div class="portfolio-item stickers">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/stickers/Cry.png?raw=true" alt="哭喔模板" class="portfolio-img">
+                <div class="portfolio-info"><h3>是在哭喔</h3><p>模板 (吉祥物／人物)</p></div>
+            </div>
+
+            <div class="portfolio-item stickers">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/stickers/Blueberry.png?raw=true" alt="VTuber-藍莓起司" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-藍莓起司</h3><p>貼圖模板</p></div>
+            </div>
+
+            <div class="portfolio-item stickers">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/stickers/NatoSS.png?raw=true" alt="VTuber-鈴木奈兔" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-鈴木奈兔</h3><p>貼圖模板</p></div>
+            </div>
+
+            <div class="portfolio-item stickers">
+                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/stickers/ShinYukiSS.png?raw=true" alt="VTuber-雪寶うさぎ" class="portfolio-img">
+                <div class="portfolio-info"><h3>VTuber-雪寶うさぎ</h3><p>圖奇自介欄位</p></div>
+            </div>
+
+        </div> <!-- 這裡只關閉一次 grid -->
+    </div>
+
+    <!-- 分頁 5：聯絡我 -->
+    <div id="contact" class="page-content">
+        <h2 class="section-title">委託需求整理</h2>
+        <div class="form-box">
+            <h3>準備好提交委託了嗎？</h3>
+            <p style="margin-bottom: 2rem; color: var(--text-muted);">填寫完委託表單後，莉比也會在確認排程後主動聯絡你。</p>
+            <a href="https://forms.gle/HQN7BRtj7hQgSXY38" target="_blank" class="cta-btn" style="display:inline-block;">前往填寫委託表單 ➔</a>
+        </div>
+    </div>
+
+    <!-- 放大燈箱元件 -->
+    <div class="lightbox-overlay" id="lightboxOverlay">
+        <div class="lightbox-content">
+            <img src="" alt="放大圖" class="lightbox-img" id="lightboxImg">
+            <div class="lightbox-caption" id="lightboxCaption"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Ribi Yazawa. Proudly Portfolio Created.</p>
+    </footer>
+
+    <script>
+        // 1. 手機版選單切換
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('open');
+        }
+
+        // 2. 獨立的多分頁切換邏輯
+        function switchPage(pageId) {
+            const pages = document.querySelectorAll('.page-content');
+            pages.forEach(page => page.classList.remove('active'));
+
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+
+            const menuItems = document.querySelectorAll('.nav-links li');
+            menuItems.forEach(item => item.classList.remove('active'));
+
+            const activeLi = Array.from(menuItems).find(item => {
+                return item.getAttribute('onclick').includes(pageId);
+            });
+            if (activeLi) {
+                activeLi.classList.add('active');
+            }
+
+            document.getElementById('navLinks').classList.remove('open');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 3. 作品集篩選過濾功能
+        function filterPortfolio(category) {
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            const clickedTab = Array.from(tabs).find(tab => tab.getAttribute('onclick').includes(category));
+            if (clickedTab) clickedTab.classList.add('active');
+
+            const grid = document.getElementById('portfolioGrid');
+            grid.className = 'portfolio-grid';
+            if(category !== 'all') {
+                grid.classList.add('view-' + category);
+            }
+            
+            // 處理顯示隱藏
+            const items = document.querySelectorAll('.portfolio-item');
+            items.forEach(item => {
+                if(category === 'all' || item.classList.contains(category)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // 4. 簡單的燈箱觸發
+        const lightbox = document.getElementById('lightboxOverlay');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const lightboxCaption = document.getElementById('lightboxCaption');
+
+        document.querySelectorAll('.portfolio-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const img = item.querySelector('img').src;
+                const title = item.querySelector('h3').innerText;
+                lightboxImg.src = img;
+                lightboxCaption.innerText = title;
+                lightbox.classList.add('active');
+            });
+        });
+
+        lightbox.addEventListener('click', () => {
+            lightbox.classList.remove('active');
+        });
+    </script>
+</body>
+</html>
