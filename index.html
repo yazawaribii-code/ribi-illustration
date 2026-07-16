@@ -504,10 +504,122 @@
             transition: opacity 0.25s ease;
         }
         .lightbox-overlay.active { opacity: 1; pointer-events: auto; }
-        .lightbox-content { max-width: 80%; max-height: 80vh; position: relative; transform: scale(0.95); transition: transform 0.25s ease; }
+        .lightbox-content {
+            max-width: 92vw;
+            max-height: 90vh;
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.25s ease;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 1.5rem;
+        }
         .lightbox-overlay.active .lightbox-content { transform: scale(1); }
-        .lightbox-img { max-width: 100%; max-height: 75vh; display: block; border-radius: 16px; border: 5px solid #fff; box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
+        /* 圖片＋標題，包成同一欄，跟右側的說明卡分開 */
+        .lightbox-media {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+            max-width: 60vw;
+            max-height: 90vh;
+        }
+        .lightbox-img { max-width: 100%; max-height: 75vh; flex-shrink: 0; display: block; border-radius: 16px; border: 5px solid #fff; box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
         .lightbox-caption { color: #fff; text-align: center; margin-top: 0.8rem; font-size: 1rem; font-weight: bold; }
+
+        /* --- 委託須知小卡片（各作品各自的內容，套用在圖片燈箱內） --- */
+        .lightbox-notice {
+            display: none;
+            max-width: 320px;
+            margin: 0.9rem auto 0;
+            background: linear-gradient(160deg, #fff 0%, var(--light-pink) 100%);
+            border: 2px dashed var(--primary-pink);
+            border-radius: 18px;
+            padding: 1rem 1.2rem;
+            text-align: left;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+        }
+        /* 桌機版：燈箱內的說明卡固定在圖片右側，卡片本身可獨立捲動，避免內容被螢幕高度切掉 */
+        .lightbox-content .lightbox-notice {
+            margin: 0;
+            flex-shrink: 0;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .lightbox-notice.active { display: block; animation: noticePop 0.3s ease; }
+        .lightbox-notice h4 {
+            color: var(--primary-pink);
+            font-size: 0.95rem;
+            text-align: center;
+            margin-bottom: 0.6rem;
+            letter-spacing: 1px;
+        }
+        .lightbox-notice ul { list-style: none; padding: 0; margin: 0; }
+        .lightbox-notice li {
+            position: relative;
+            padding-left: 1.4rem;
+            margin-bottom: 0.45rem;
+            font-size: 0.82rem;
+            line-height: 1.5;
+            color: var(--text-main);
+        }
+        .lightbox-notice li:last-child { margin-bottom: 0; }
+        .lightbox-notice li::before {
+            content: '•';
+            position: absolute;
+            left: 0.15rem;
+            top: 0;
+            font-size: 1.1rem;
+            line-height: 1.4;
+            color: var(--primary-pink);
+            font-weight: bold;
+        }
+        .lightbox-notice li.notice-warn::before { content: '🚫'; }
+        @keyframes noticePop {
+            from { opacity: 0; transform: translateY(8px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* --- 委託須知按鈕（給不會開燈箱的影片型卡片，如 DC跳跳模板） --- */
+        .notice-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background-color: rgba(255,255,255,0.9);
+            color: var(--primary-pink);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+            z-index: 5;
+        }
+        .notice-btn:hover { background-color: var(--primary-pink); color: #fff; }
+
+        /* --- 委託須知彈出視窗（給影片型卡片單獨使用，不影響原本的燈箱／影片播放邏輯） --- */
+        .notice-popup-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.65);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+            z-index: 2100;
+            padding: 1rem;
+        }
+        .notice-popup-overlay.active { opacity: 1; pointer-events: auto; }
+        .notice-popup-overlay .lightbox-notice { margin: 0; }
 
         /* 頁尾 */
         footer { text-align: center; padding: 2.5rem; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--light-pink); margin-top: 4rem; }
@@ -518,6 +630,30 @@
             .social-links { justify-content: center; } 
             .btn-group { justify-content: center; }
             .rules-grid { grid-template-columns: 1fr; }
+
+/* 手機版：燈箱改回上下排列（圖片在上、說明卡在下），整個燈箱可往下滑動看完整說明 */
+            .lightbox-content {
+                flex-direction: column;
+                align-items: center;
+                max-width: 92vw;
+                max-height: 90vh; /* 限制了燈箱整體高度 */
+                overflow-y: auto;  /* 允許內容過長時在內部滾動 */
+                padding: 1.5rem 0.25rem 0.25rem; /* 上方保留 1.5rem 空間，左右下保留原樣 */
+            }
+            .lightbox-media {
+                width: 100%;       /* 寬度撐滿 */
+                max-width: 100%;
+                height: auto;      /* ✨ 強制高度自適應，不讓它被壓縮或裁剪 */
+                max-height: none;  /* 解除高度限制 */
+                object-fit: contain; /* ✨ 確保圖片完整顯示，不被裁切 */
+                display: block;    /* 避免下方出現空白間隙 */
+            }
+            .lightbox-content .lightbox-notice {
+                margin: 0.9rem auto 0;
+                max-height: none;
+                overflow-y: visible;
+                width: 100%;
+            }
             
             /* 顯示手機漢堡排按鈕 */
             .menu-toggle {
@@ -648,6 +784,8 @@
                     <li><span style="color: #FF8FAE; font-weight: bold;">非商用</span>：可用於個人收藏、頭貼、直播素材。<br>公開使用請標註：莉比Ribi。</li>
                     <li><span style="color: #FF8FAE; font-weight: bold;">商用</span>：除上述授權外，可作為販售周邊等營利用途，同樣需標註繪師。</li>
                     <li>如有<span style="color: #FF8FAE; font-weight: bold;">授權使用</span>上的疑問，歡迎私訊詢問。</li>
+                    <li>若預先卡位的委託未在<span style="color: #FF8FAE; font-weight: bold;">約定時間內</span>與我聯絡，將會自動將排單空位讓出。</li>
+
 
                 </ul>
             </div>
@@ -1201,7 +1339,7 @@
                 <div class="portfolio-info"><h3>VTuber-魔法少女莉比醬</h3><p>曲繪插畫-ツインテール魔法少女</p></div>
             </div>
 
-            <div class="portfolio-item stickers">
+            <div class="portfolio-item stickers" data-notice-id="notice-cry">
                 <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/stickers/Cry.png?raw=true" alt="哭喔模板" class="portfolio-img">
                 <div class="portfolio-info"><h3>是在哭喔</h3><p>模板 (吉祥物／人物)</p></div>
             </div>
@@ -1216,7 +1354,7 @@
                 <div class="portfolio-info"><h3>VTuber-鈴木奈兔</h3><p>貼圖模板</p></div>
             </div>
 
-            <div class="portfolio-item stickers">
+            <div class="portfolio-item stickers" data-notice-id="notice-shinyuki-intro">
                 <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/stickers/ShinYukiSS.png?raw=true" alt="VTuber-雪寶うさぎ" class="portfolio-img">
                 <div class="portfolio-info"><h3>VTuber-雪寶うさぎ</h3><p>圖奇自介欄位</p></div>
             </div>
@@ -1227,6 +1365,8 @@
         <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/stickers/Discord%20Reactive.jpg?raw=true" alt="DC跳跳模板" class="portfolio-img">
         <!-- 圖片正中央的播放按鈕圖示 -->
         <div class="play-icon">▶</div>
+        <!-- 委託須知按鈕：點擊只彈出須知小卡，不會觸發影片連結 -->
+        <button type="button" class="notice-btn" data-notice-id="notice-dc" onclick="event.preventDefault(); event.stopPropagation(); openNoticePopup(this);">📄</button>
     </a>
     
     <div class="portfolio-info">
@@ -1248,11 +1388,54 @@
         </div>
     </div>
 
+    <!-- 各作品各自的委託須知內容（之後要各自修改文字，直接改對應 template 裡的內容即可，互不影響） -->
+    <template id="notice-cry">
+        <h4>💌 委託須知</h4>
+        <ul>
+            <li>內容物：PNG×1</li>
+            <li>網路商用(全平台皆可使用)</li>
+            <li>如有印製販賣周邊需求請告知</li>
+            <li>部分作品會在圖奇工作台繪製</li>
+            <li>如有需要無文字圖檔可告知</li>
+            <li>禁止事項：二次改圖／自繪發言🚫</li>
+        </ul>
+    </template>
+
+    <template id="notice-shinyuki-intro">
+        <h4>💌 委託須知</h4>
+        <ul>
+            <li>內容物：PNG×委託數量+貼圖</li>
+            <li>尺寸：原圖尺寸+圖奇說明欄最大尺寸320px</li>
+            <li>部分作品會在圖奇工作台繪製</li>
+            <li>禁止事項：二次改圖／自繪發言🚫</li>
+        </ul>
+    </template>
+
+    <template id="notice-dc">
+        <h4>💌 委託須知</h4>
+        <ul>
+            <li>內容物：PNG×1 GIF</li>
+            <li>網路商用(全平台皆可使用)</li>
+            <li>如有印製販賣周邊需求請告知</li>
+            <li>部分作品會在圖奇工作台繪製</li>
+            <li>如有需要無文字圖檔可告知</li>
+            <li>禁止事項：二次改圖／自繪發言🚫</li>
+        </ul>
+    </template>
+
+    <!-- 委託須知彈出視窗：專門給像 DC跳跳模板 這種點圖會直接跳轉影片、不會開燈箱的卡片使用 -->
+    <div class="notice-popup-overlay" id="noticePopupOverlay">
+        <div class="lightbox-notice active" id="noticePopupContent"></div>
+    </div>
+
     <!-- 放大燈箱元件 -->
     <div class="lightbox-overlay" id="lightboxOverlay">
         <div class="lightbox-content">
-            <img src="" alt="放大圖" class="lightbox-img" id="lightboxImg">
-            <div class="lightbox-caption" id="lightboxCaption"></div>
+            <div class="lightbox-media">
+                <img src="" alt="放大圖" class="lightbox-img" id="lightboxImg">
+                <div class="lightbox-caption" id="lightboxCaption"></div>
+            </div>
+            <div class="lightbox-notice" id="lightboxNotice"></div>
         </div>
     </div>
 
@@ -1320,6 +1503,7 @@
         const lightbox = document.getElementById('lightboxOverlay');
         const lightboxImg = document.getElementById('lightboxImg');
         const lightboxCaption = document.getElementById('lightboxCaption');
+        const lightboxNotice = document.getElementById('lightboxNotice');
 
         // 點擊 YouTube 縮圖後，才將縮圖換成內嵌播放器（自動播放）
         function playYouTube(event, el) {
@@ -1340,12 +1524,41 @@
                 const title = item.querySelector('h3').innerText;
                 lightboxImg.src = img;
                 lightboxCaption.innerText = title;
+
+                const noticeId = item.dataset.noticeId;
+                const noticeTpl = noticeId ? document.getElementById(noticeId) : null;
+                if (noticeTpl) {
+                    lightboxNotice.innerHTML = '';
+                    lightboxNotice.appendChild(noticeTpl.content.cloneNode(true));
+                    lightboxNotice.classList.add('active');
+                } else {
+                    lightboxNotice.innerHTML = '';
+                    lightboxNotice.classList.remove('active');
+                }
+
                 lightbox.classList.add('active');
             });
         });
 
         lightbox.addEventListener('click', () => {
             lightbox.classList.remove('active');
+        });
+
+        // 5. 給「點圖片會直接跳轉影片」的卡片（例如 DC跳跳模板）單獨使用的委託須知彈窗
+        const noticePopupOverlay = document.getElementById('noticePopupOverlay');
+        const noticePopupContent = document.getElementById('noticePopupContent');
+
+        function openNoticePopup(btn) {
+            const noticeId = btn.getAttribute('data-notice-id');
+            const noticeTpl = noticeId ? document.getElementById(noticeId) : null;
+            if (!noticeTpl) return;
+            noticePopupContent.innerHTML = '';
+            noticePopupContent.appendChild(noticeTpl.content.cloneNode(true));
+            noticePopupOverlay.classList.add('active');
+        }
+
+        noticePopupOverlay.addEventListener('click', () => {
+            noticePopupOverlay.classList.remove('active');
         });
     </script>
 </body>
