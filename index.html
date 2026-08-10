@@ -7,6 +7,9 @@
     
     <!-- 新增網站本身的 Favicon.png -->
     <link rel="icon" type="image/png" href="Favicon.png">
+
+    <!-- 優先預載首頁個人頭像，加快圖片顯示速度 -->
+    <link rel="preload" as="image" href="avatar.webp" fetchpriority="high">
     
     <!-- 更新為最穩定的 Font Awesome 6.6.0 向量圖示庫，確保 X-Twitter 圖示正常顯示 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
@@ -754,7 +757,7 @@
             </div>
             <div class="hero-avatar">
                 <!-- 預留頭像位置，之後可以把檔名改為妳的 avatar.png 之類的檔案 -->
-                <img src="avatar.webp" alt="莉比Ribi">
+                <img src="avatar.webp" alt="莉比Ribi" fetchpriority="high" loading="eager" decoding="sync">
             </div>
         </section>
     </div>
