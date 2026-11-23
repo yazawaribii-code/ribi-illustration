@@ -1,6 +1,6 @@
 # 莉比Ribi｜插畫作品集 & 委託資訊
 
-🎨 **官方網站 Official Website**：https://illustration.ribimahou.com/
+🎨 **傳送門**：https://illustration.ribimahou.com/
 
 ---
 
