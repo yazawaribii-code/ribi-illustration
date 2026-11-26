@@ -9,6 +9,7 @@
     <link rel="icon" type="image/png" href="Favicon.png">
 
     <!-- 優先預載首頁個人頭像，加快圖片顯示速度 -->
+    <link rel="preload" as="image" href="loading.webp" fetchpriority="high">
     <link rel="preload" as="image" href="avatar.webp" fetchpriority="high">
     
     <!-- 更新為最穩定的 Font Awesome 6.6.0 向量圖示庫，確保 X-Twitter 圖示正常顯示 -->
@@ -17,13 +18,13 @@
 <!-- 這裡就是我們新加入的魔法標籤 -->
 <meta property="og:title" content="莉比Ribi | 繪圖委託">
 <meta property="og:description" content="我是台灣繪師莉比Ribi，擅長以活潑粉嫩色彩與精緻筆觸創作日系插畫。提供VTuber立繪拆圖、Q版模板與客製化繪圖服務，期待能與你一同創作出精彩作品！🩷">
-<meta property="og:image" content="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Ribi/avatar.png?raw=true">
+<meta property="og:image" content="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Ribi/avatar.png">
 <meta property="og:url" content="https://illustration.ribimahou.com/">
 <meta name="theme-color" content="#FFB6C1">
 
 <!-- 加上這兩個 twitter:card 標籤，Discord/Twitter 才會把圖放大顯示在下方 -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Ribi/avatar.png?raw=true">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Ribi/avatar.png">
     
     <style>
         :root {
@@ -123,6 +124,7 @@
             align-items: center;
             transition: all 0.2s ease;
             border-radius: 6px;
+            white-space: nowrap; /* 防止選單文字被擠成兩行 */
         }
 
         .nav-links .nav-item:hover,
@@ -432,10 +434,6 @@
             transition: all 0.3s ease;
         }
 
-        .portfolio-grid.view-chibi { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
-        .portfolio-grid.view-vtuber { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
-        .portfolio-grid.view-illustration { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
-        .portfolio-grid.view-stickers { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
 
         .portfolio-item { 
             background-color: var(--card-bg); 
@@ -450,9 +448,6 @@
         
         .portfolio-img { width: 100%; height: 240px; object-fit: cover; background-color: var(--light-pink); transition: height 0.2s ease; }
         
-        .portfolio-grid.view-vtuber .portfolio-img { height: 460px; }
-        .portfolio-grid.view-stickers .portfolio-img { height: 200px; }
-        .portfolio-grid.view-chibi .portfolio-img { height: 250px; }
 
         .portfolio-info { padding: 1.2rem; }
         .portfolio-info h3 { font-size: 1.1rem; margin-bottom: 0.2rem; }
@@ -485,7 +480,7 @@
         }
 
         /* --- 作品展示：YouTube 縮圖點擊後才載入播放器（比例與 .portfolio-img 一致） --- */
-        .video-thumb { position: relative; display: block; height: 240px; cursor: pointer; overflow: hidden; }
+        .video-thumb { position: relative; display: block; height: var(--h, 240px); cursor: pointer; overflow: hidden; }
         .video-thumb .portfolio-img { height: 100%; }
         .video-thumb:hover .play-icon {
             background-color: var(--primary-pink);
@@ -631,6 +626,766 @@
         /* 頁尾 */
         footer { text-align: center; padding: 2.5rem; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--light-pink); margin-top: 4rem; }
 
+        /* --- 網頁加載中動畫（夾娃娃機莉比） --- */
+        #loader {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ffafc7;
+            overflow: hidden;
+            /* 退場用：畫面像鏡頭收光圈一樣，縮成一個點消失 */
+            clip-path: circle(150vmax at 50% 50%);
+            transition: clip-path 0.75s cubic-bezier(.75, 0, .25, 1);
+        }
+        #loader.iris { clip-path: circle(0px at 50% 50%); }
+
+        .loader-stage {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 莉比被夾子夾著，從上方輕輕晃呀晃 */
+        .loader-ribi {
+            width: min(260px, 62vw);
+            transform-origin: 58% 0%;
+            animation: claw-swing 2.4s ease-in-out infinite, claw-drop 0.8s cubic-bezier(.34,1.56,.64,1) both;
+        }
+        .loader-ribi img { width: 100%; height: auto; display: block; }
+        @keyframes claw-swing {
+            0%, 100% { rotate: -5deg; }
+            50%      { rotate: 5deg; }
+        }
+        @keyframes claw-drop {
+            from { transform: translateY(-60vh); }
+            to   { transform: translateY(0); }
+        }
+
+        /* 地上的小影子 */
+        .loader-shadow {
+            width: 120px;
+            height: 14px;
+            margin-top: -6px;
+            border-radius: 50%;
+            background: rgba(214, 72, 120, 0.25);
+            animation: shadow-pulse 2.4s ease-in-out infinite;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+        @keyframes shadow-pulse {
+            0%, 100% { transform: scaleX(1);   opacity: 0.8; }
+            50%      { transform: scaleX(0.8); opacity: 0.5; }
+        }
+
+        /* Loading 文字一個字一個字跳 */
+        .loader-text {
+            margin-top: 1.2rem;
+            height: 2.4rem;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            font-size: 1.25rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: #fff;
+            text-shadow: 0 2px 0 #f0789d;
+        }
+        .loader-text span {
+            display: inline-block;
+            animation: letter-hop 1.2s ease-in-out infinite;
+            animation-delay: calc(var(--i) * 0.08s);
+        }
+        @keyframes letter-hop {
+            0%, 60%, 100% { transform: translateY(0); }
+            30%           { transform: translateY(-8px); }
+        }
+        .loader-sub {
+            margin-top: 0.1rem;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #c2456f;
+            transition: opacity 0.2s ease;
+        }
+
+        /* 進度條 */
+        .loader-bar {
+            position: relative;
+            width: min(220px, 60vw);
+            height: 10px;
+            margin-top: 1rem;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.55);
+            border: 2px solid #fff;
+            overflow: hidden;
+        }
+        .loader-bar::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            width: 40%;
+            border-radius: 10px;
+            background: repeating-linear-gradient(45deg, #ff6f98 0 8px, #ff97b5 8px 16px);
+            animation: bar-slide 1.4s ease-in-out infinite;
+        }
+        @keyframes bar-slide {
+            from { transform: translateX(-100%); }
+            to   { transform: translateX(250%); }
+        }
+
+        /* --- 加載畫面的卡通雲朵 --- */
+        .loader-sky { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+        .loader-cloud {
+            position: absolute;
+            width: var(--w, 160px);
+            filter: drop-shadow(0 6px 0 rgba(214, 72, 120, 0.18));
+            animation: cloud-drift var(--t, 7s) ease-in-out infinite alternate;
+        }
+        .loader-cloud svg { width: 100%; height: auto; display: block; }
+        @keyframes cloud-drift {
+            from { transform: translateX(-14px); }
+            to   { transform: translateX(14px); }
+        }
+        /* 抓到的時候，雲朵往兩邊散開 */
+        #loader.caught .loader-cloud.l { animation: cloud-out-l 0.8s cubic-bezier(.6, -0.3, .7, 1) forwards; }
+        #loader.caught .loader-cloud.r { animation: cloud-out-r 0.8s cubic-bezier(.6, -0.3, .7, 1) forwards; }
+        @keyframes cloud-out-l { to { transform: translateX(-70vw); } }
+        @keyframes cloud-out-r { to { transform: translateX(70vw); } }
+
+        /* --- 加載畫面的卡通星星（一閃一閃） --- */
+        .loader-star {
+            position: absolute;
+            width: var(--w, 34px);
+            animation: star-twinkle var(--t, 1.8s) ease-in-out infinite;
+            animation-delay: var(--d, 0s);
+        }
+        .loader-star svg { width: 100%; height: auto; display: block; overflow: visible; }
+        @keyframes star-twinkle {
+            0%, 100% { transform: scale(0.75) rotate(-10deg); opacity: 0.7; }
+            50%      { transform: scale(1.1) rotate(10deg);   opacity: 1; }
+        }
+        .loader-tw {
+            position: absolute;
+            color: #fff;
+            font-size: var(--s, 1rem);
+            animation: star-twinkle 1.4s ease-in-out infinite;
+            animation-delay: var(--d, 0s);
+        }
+
+        /* ===== 戲劇性退場：抓到了！→ 夾子把莉比咻地拉走 → 畫面收光圈 ===== */
+
+        /* 抓到的瞬間，整個舞台震一下 */
+        #loader.caught .loader-stage { animation: stage-shake 0.4s ease; }
+        @keyframes stage-shake {
+            0%, 100% { transform: translate(0, 0); }
+            20% { transform: translate(-6px, 3px); }
+            40% { transform: translate(6px, -3px); }
+            60% { transform: translate(-4px, 2px); }
+            80% { transform: translate(3px, -1px); }
+        }
+
+        /* 莉比先往下蹲一下蓄力，再被夾子猛力拉上去飛出畫面 */
+        #loader.caught .loader-ribi {
+            animation: claw-yank 0.8s cubic-bezier(.55, -0.4, .75, .25) forwards;
+        }
+        @keyframes claw-yank {
+            0%   { transform: translateY(0) scale(1, 1); }
+            30%  { transform: translateY(16px) scale(1.06, 0.9); }
+            100% { transform: translateY(-130vh) scale(0.9, 1.2); }
+        }
+
+        #loader.caught .loader-shadow { animation: none; transform: scaleX(0); opacity: 0; }
+        #loader.caught .loader-sub { opacity: 0; }
+        #loader.caught .loader-bar::after { animation: none; transform: none; width: 100%; }
+
+        /* 「抓到了！」大字跳出來 */
+        .loader-text.got {
+            font-size: 2rem;
+            letter-spacing: 3px;
+            color: #fff;
+            text-shadow: 2px 2px 0 #f0789d, 4px 4px 0 var(--gold-color);
+            animation: got-pop 0.5s cubic-bezier(.34, 1.9, .64, 1) both;
+        }
+        @keyframes got-pop {
+            from { transform: scale(0.2) rotate(-12deg); opacity: 0; }
+            to   { transform: scale(1) rotate(-4deg); opacity: 1; }
+        }
+
+        /* 金色衝擊波圓圈 */
+        .loader-ring {
+            position: absolute;
+            left: 50%;
+            top: calc(min(260px, 62vw) / 2);
+            width: 80px;
+            height: 80px;
+            margin: -40px 0 0 -40px;
+            border-radius: 50%;
+            border: 4px solid #fff3a8;
+            opacity: 0;
+            pointer-events: none;
+        }
+        #loader.caught .loader-ring { animation: ring-blast 0.7s ease-out forwards; }
+        @keyframes ring-blast {
+            0%   { transform: scale(0.2); opacity: 1; border-width: 10px; }
+            100% { transform: scale(5);   opacity: 0; border-width: 1px; }
+        }
+
+        /* 金色星星爆炸（由 JS 產生） */
+        .loader-spark {
+            position: absolute;
+            left: 50%;
+            top: calc(min(260px, 62vw) / 2);
+            font-size: var(--s, 1.4rem);
+            line-height: 1;
+            color: var(--gold-color);
+            text-shadow: 0 0 6px #fff, 0 0 12px rgba(230, 169, 59, 0.6);
+            pointer-events: none;
+            animation: spark-fly 0.85s cubic-bezier(.15, .8, .3, 1) forwards;
+        }
+        @keyframes spark-fly {
+            0%   { transform: translate(-50%, -50%) scale(0.3) rotate(0deg); opacity: 1; }
+            70%  { opacity: 1; }
+            100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1) rotate(200deg); opacity: 0; }
+        }
+
+        /* 光圈打開後，網頁內容稍微「彈」進來 */
+        body.reveal .page-content.active { animation: page-pop 0.8s cubic-bezier(.34, 1.4, .64, 1); }
+        @keyframes page-pop {
+            from { transform: scale(0.94); }
+            to   { transform: scale(1); }
+        }
+        /* 退場結束後，停住目前頁面的動畫，避免淡入動畫重播造成閃白、跳動 */
+        .page-content.no-anim { animation: none !important; }
+
+        /* 喜歡「減少動態效果」的使用者：關掉晃動與爆炸 */
+        @media (prefers-reduced-motion: reduce) {
+            .loader-ribi, .loader-shadow, .loader-text span, .loader-bar::after,
+            #loader.caught .loader-ribi, #loader.caught .loader-stage, .loader-spark,
+            body.reveal .page-content.active { animation: none; }
+        }
+
+        /* 背景圖上的文字保持清楚：首頁文字加毛玻璃底，標題加白色光暈 */
+        /* 首頁文字：卡通貼紙便條（白底＋粉色車縫線＋平塗陰影＋紙膠帶） */
+        .hero-content {
+            position: relative;
+            background-color: rgba(255, 255, 255, 0.92);
+            border: 3px solid #fff;
+            outline: 2px dashed #ffb3c8;
+            outline-offset: -12px;
+            border-radius: 26px;
+            padding: 2.4rem 2.4rem 2.2rem;
+            box-shadow: 8px 8px 0 #ffd3e0;
+        }
+        .hero-content::before {
+            content: '';
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            width: 120px;
+            height: 28px;
+            transform: translateX(-50%) rotate(-3deg);
+            background: repeating-linear-gradient(45deg, rgba(255, 175, 199, 0.85) 0 8px, rgba(255, 214, 226, 0.85) 8px 16px);
+            border-radius: 3px;
+            box-shadow: 0 2px 4px rgba(214, 72, 120, 0.15);
+        }
+        /* ===== 全站便條風：所有大卡片共用（白底＋車縫線＋平塗陰影＋紙膠帶） ===== */
+        .rules-card, .process-section, .price-card, .schedule-box, .form-box {
+            position: relative;
+            background-color: rgba(255, 255, 255, 0.94);
+            border: 3px solid #fff;
+            outline: 2px dashed #ffb3c8;
+            outline-offset: -11px;
+            border-radius: 24px;
+            box-shadow: 7px 7px 0 #ffd3e0;
+        }
+        /* 紙膠帶：粉色、黃色輪流，角度也稍微不一樣，比較像手貼的 */
+        .rules-card::before, .process-section::before, .price-card::before,
+        .schedule-box::before, .form-box::before {
+            content: '';
+            position: absolute;
+            top: -13px;
+            left: 50%;
+            width: 100px;
+            height: 26px;
+            z-index: 2;
+            transform: translateX(-50%) rotate(-3deg);
+            background: repeating-linear-gradient(45deg, rgba(255, 175, 199, 0.85) 0 8px, rgba(255, 214, 226, 0.85) 8px 16px);
+            border-radius: 3px;
+            box-shadow: 0 2px 4px rgba(214, 72, 120, 0.15);
+            pointer-events: none;
+        }
+        .rules-card:nth-child(even)::before, .price-card:nth-child(even)::before,
+        .process-section:nth-of-type(odd)::before, .form-box::before {
+            transform: translateX(-50%) rotate(3deg);
+            background: repeating-linear-gradient(45deg, rgba(255, 228, 140, 0.9) 0 8px, rgba(255, 243, 190, 0.9) 8px 16px);
+            box-shadow: 0 2px 4px rgba(200, 150, 40, 0.18);
+        }
+
+        /* 價目表卡片：讓紙膠帶可以超出卡片，粉色標題列配合圓角 */
+        .price-card { overflow: visible; }
+        .price-card:hover { box-shadow: 9px 11px 0 #ffd3e0; }
+        .price-header { border-radius: 21px 21px 0 0; padding-top: 1.5rem; }
+
+        /* V皮卡片：金色版便條 */
+        .price-card.v-skin {
+            border: 3px solid #fff;
+            outline-color: var(--gold-color);
+            box-shadow: 7px 7px 0 #ffe4a3;
+        }
+        .price-card.v-skin:hover { box-shadow: 9px 11px 0 #ffe4a3; }
+        .price-card.v-skin::before {
+            transform: translateX(-50%) rotate(-2deg);
+            background: repeating-linear-gradient(45deg, rgba(230, 169, 59, 0.85) 0 8px, rgba(255, 228, 150, 0.9) 8px 16px);
+        }
+
+        /* --- 流程步驟：彩色貼紙＋圖示徽章＋點點小路連接 --- */
+        .flow-steps {
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: 1fr;
+            gap: 2.2rem;
+            margin-top: 2.2rem;
+            padding: 0 0.4rem 0.4rem;
+        }
+        .flow-node {
+            --c: #ff8fae;
+            --bg: #ffeef3;
+            position: relative;
+            background-color: var(--bg);
+            border: none;
+            /* 不規則圓角，像手剪的貼紙 */
+            border-radius: 30px 24px 32px 22px / 24px 30px 22px 32px;
+            padding: 0 1rem 1.4rem;
+            box-shadow: 0 5px 0 color-mix(in srgb, var(--c) 25%, transparent);
+            transform: rotate(-1.5deg);
+            transition: transform 0.25s ease;
+        }
+        .flow-node:nth-child(even) { transform: rotate(1.5deg); }
+        .flow-node:hover { transform: translateY(-4px) rotate(0deg); }
+        /* 四種粉色輪流：櫻花粉 → 珊瑚粉 → 玫瑰粉 → 草莓粉 */
+        .flow-node:nth-child(4n+2) { --c: #ff9a9e; --bg: #fff0f0; }
+        .flow-node:nth-child(4n+3) { --c: #e88dc6; --bg: #fdeef8; }
+        .flow-node:nth-child(4n+4) { --c: #f77fa3; --bg: #ffe6ee; }
+
+        /* 圖示徽章：圓形、白框，一半凸出貼紙上方 */
+        .flow-badge {
+            position: relative;
+            width: 58px;
+            height: 58px;
+            margin: -29px auto 0.7rem;
+            border-radius: 50%;
+            background-color: var(--c);
+            border: 4px solid #fff;
+            box-shadow: 0 4px 0 color-mix(in srgb, var(--c) 30%, transparent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.3rem;
+        }
+        .flow-num {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #fff;
+            color: var(--c);
+            border: 2px solid var(--c);
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flow-node h4 { font-size: 1.02rem; margin-bottom: 0.35rem; color: var(--text-main); }
+        .flow-node p { font-size: 0.85rem; color: var(--text-muted); }
+
+        /* 步驟之間的點點小路 */
+        .flow-node:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -2.2rem;
+            width: 2.2rem;
+            height: 10px;
+            margin-top: -5px;
+            background: radial-gradient(circle, #ffb3c8 2.6px, transparent 3.2px) 0 0 / 11px 10px repeat-x;
+        }
+
+        @media (max-width: 868px) {
+            .flow-steps { grid-auto-flow: row; gap: 2.6rem; margin-top: 2.4rem; }
+            .flow-node:not(:last-child)::after {
+                top: auto;
+                bottom: -2.6rem;
+                right: auto;
+                left: 50%;
+                width: 10px;
+                height: 2.6rem;
+                margin: 0 0 0 -5px;
+                background: radial-gradient(circle, #ffb3c8 2.6px, transparent 3.2px) 0 4px / 10px 11px repeat-y;
+                z-index: -1;
+            }
+        }
+
+        /* ===== 作品展示：自動捲動的作品架 ===== */
+        .portfolio-tabs { margin-bottom: 2.2rem; }
+        .shelf {
+            margin-bottom: 2.4rem;
+            scroll-margin-top: 110px;
+        }
+        .shelf-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 0 0.4rem 0.6rem;
+        }
+        .shelf-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.15rem;
+            text-shadow: 0 0 6px #fff, 0 0 12px #fff;
+        }
+        .shelf-title::before { content: '✦'; color: var(--primary-pink); }
+        .shelf-count {
+            font-size: 0.75rem;
+            color: #fff;
+            background-color: var(--primary-pink);
+            padding: 0.05rem 0.6rem;
+            border-radius: 20px;
+            text-shadow: none;
+        }
+        .shelf-arrows { display: flex; gap: 0.5rem; }
+        .shelf-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--light-pink);
+            background-color: #fff;
+            color: var(--primary-pink);
+            box-shadow: 3px 3px 0 #ffd3e0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .shelf-btn:hover { background-color: var(--primary-pink); color: #fff; border-color: var(--primary-pink); }
+        .shelf-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #ffd3e0; }
+
+        .shelf-track {
+            display: flex;
+            gap: 1.1rem;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-behavior: auto !important;  /* 自動捲動需要即時移動，不能用平滑捲動 */
+            padding: 0.6rem 0.4rem 1rem;
+            scrollbar-width: none;
+            cursor: grab;
+            /* 左右兩端淡出 */
+            -webkit-mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
+            mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent);
+        }
+        .shelf-track::-webkit-scrollbar { display: none; }
+        .shelf-track.dragging { cursor: grabbing; }
+        .shelf-track.dragging * { pointer-events: none; }
+
+        /* 每一類作品的卡片尺寸 */
+        .shelf { --w: 210px; --h: 210px; }
+        .shelf[data-cat="chibi"]        { --w: 210px; --h: 240px; }
+        .shelf[data-cat="vtuber"]       { --w: 400px; --h: 225px; }  /* 人設圖多為 16:9 橫式 */
+        .shelf[data-cat="illustration"] { --w: 330px; --h: 220px; }
+        .shelf-track .portfolio-item {
+            position: relative;
+            flex: 0 0 var(--w);
+            width: var(--w);
+        }
+        .shelf-track .portfolio-img { height: var(--h); }
+        .shelf-track .portfolio-item:hover { transform: translateY(-5px) rotate(-1deg); }
+        .shelf-track .portfolio-info { padding: 0.65rem 0.85rem 0.75rem; }
+        .shelf-track .portfolio-info h3,
+        .shelf-track .portfolio-info p {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .shelf-track .portfolio-info h3 { font-size: 0.95rem; }
+        .shelf-track .portfolio-info p { font-size: 0.78rem; }
+
+        /* 點分類按鈕跳到那一排時，閃一下提示 */
+        .shelf.flash .shelf-title { animation: shelf-flash 1s ease; }
+        @keyframes shelf-flash {
+            0%, 100% { transform: scale(1); }
+            30% { transform: scale(1.12); color: var(--primary-pink); }
+        }
+
+        /* --- 燈箱：左右切換＋張數 --- */
+        .lb-nav {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.92);
+            color: var(--primary-pink);
+            font-size: 1.15rem;
+            box-shadow: 0 4px 0 #ffd3e0;
+            cursor: pointer;
+            z-index: 2001;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .lb-nav:hover { background-color: var(--primary-pink); color: #fff; }
+        .lb-prev { left: 2.5vw; }
+        .lb-next { right: 2.5vw; }
+        .lb-counter {
+            position: fixed;
+            bottom: 3vh;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 255, 255, 0.92);
+            color: var(--primary-pink);
+            padding: 0.2rem 0.9rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            z-index: 2001;
+        }
+        .lightbox-overlay.single .lb-nav,
+        .lightbox-overlay.single .lb-counter { display: none; }
+
+        /* 讓委託須知按鈕浮在作品卡片右上角 */
+        .portfolio-item { position: relative; }
+
+        /* ===== 手機版排版修正 ===== */
+        @media (max-width: 868px) {
+            .page-content { padding: 7.5rem 1rem 3rem; }
+            .section-title { font-size: 1.55rem; margin-bottom: 2.4rem; }
+
+            /* 首頁介紹卡：文字靠左（不再左右撐開字距）、按鈕不換行 */
+            .hero-content { padding: 2rem 1.4rem 1.8rem; }
+            .hero-title { font-size: 2.3rem; margin-bottom: 1rem; }
+            .hero-subtitle { text-align: left; font-size: 0.98rem; }
+            .btn-group { flex-wrap: wrap; gap: 0.8rem; }
+            .cta-btn, .sec-btn { white-space: nowrap; padding-left: 1.5rem; padding-right: 1.5rem; }
+            .hero-avatar img { width: min(320px, 80vw); height: auto; aspect-ratio: 320 / 380; }
+
+            /* 卡片內距縮小，內容不擠 */
+            .rules-card, .process-section, .schedule-box, .form-box { padding: 1.8rem 1.3rem; }
+
+            /* 價目表：卡片不超出螢幕、價格太長時自動換到下一行 */
+            .price-grid { grid-template-columns: 1fr; gap: 2.2rem; }
+            .price-body { padding: 1.5rem 1.3rem; }
+            .price-item { flex-wrap: wrap; column-gap: 0.6rem; row-gap: 0.15rem; }
+            .price-val { margin-left: auto; white-space: nowrap; font-size: 1.02rem; }
+            .price-note br { display: none; }
+
+            /* 作品展示：分類按鈕改成可以左右滑的一排 */
+            .portfolio-tabs {
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                overflow-x: auto;
+                margin: 0 -1rem 1.6rem;
+                padding: 0.3rem 1rem 0.6rem;
+                scrollbar-width: none;
+            }
+            .portfolio-tabs::-webkit-scrollbar { display: none; }
+            .tab-btn { flex: 0 0 auto; white-space: nowrap; padding: 0.5rem 1.1rem; font-size: 0.88rem; }
+
+            .shelf { --w: 150px; --h: 150px; margin-bottom: 1.8rem; }
+            .shelf[data-cat="chibi"]        { --w: 150px; --h: 175px; }
+            .shelf[data-cat="vtuber"]       { --w: 272px; --h: 153px; }
+            .shelf[data-cat="illustration"] { --w: 240px; --h: 160px; }
+            .shelf-track { gap: 0.8rem; margin: 0 -1rem; padding: 0.5rem 1rem 0.9rem; }
+            .shelf-title { font-size: 1.02rem; }
+            .shelf-btn { width: 32px; height: 32px; font-size: 0.8rem; }
+            .shelf-track .portfolio-info { padding: 0.5rem 0.65rem 0.6rem; }
+            .shelf-track .portfolio-info h3 { font-size: 0.82rem; }
+            .shelf-track .portfolio-info p { font-size: 0.7rem; }
+            .play-icon { width: 44px; height: 44px; font-size: 1.1rem; }
+
+            /* 燈箱切換鈕移到下方，不擋到圖片 */
+            .lb-nav { top: auto; bottom: 2.2vh; transform: none; width: 42px; height: 42px; }
+            .lb-prev { left: 8vw; }
+            .lb-next { right: 8vw; }
+            .lb-counter { bottom: calc(2.2vh + 10px); }
+            .lightbox-content { max-height: 80vh; margin-bottom: 8vh; }
+        }
+
+        /* ===== ?edit 作品編輯面板（只有網址加 ?edit 才會出現） ===== */
+        .ed-fab {
+            position: fixed; right: 20px; bottom: 20px; z-index: 1500;
+            background: var(--primary-pink); color: #fff; border: 3px solid #fff;
+            border-radius: 50px; padding: 0.75rem 1.3rem; font-weight: bold; font-size: 0.95rem;
+            box-shadow: 4px 4px 0 #ffd3e0; cursor: pointer; font-family: inherit;
+        }
+        .ed-panel {
+            position: fixed; top: 0; right: 0; bottom: 0; width: min(440px, 100vw); z-index: 1600;
+            background: #fff9fb; border-left: 3px solid #ffd3e0; box-shadow: -8px 0 24px rgba(255, 143, 174, 0.18);
+            display: flex; flex-direction: column; transform: translateX(105%); transition: transform 0.3s ease;
+            font-family: var(--font-family);
+        }
+        .ed-panel.open { transform: none; }
+        .ed-head { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.2rem; background: var(--primary-pink); color: #fff; font-weight: bold; font-size: 1.05rem; }
+        .ed-close { background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; line-height: 1; }
+        .ed-tabs { display: flex; gap: 0.4rem; padding: 0.8rem 1rem 0; }
+        .ed-tabs button { flex: 1; border: 2px solid var(--light-pink); background: #fff; color: var(--text-main); border-radius: 20px; padding: 0.45rem 0; font-weight: bold; cursor: pointer; font-family: inherit; }
+        .ed-tabs button.on { background: var(--primary-pink); border-color: var(--primary-pink); color: #fff; }
+        .ed-status { display: none; margin: 0.7rem 1rem 0; padding: 0.6rem 0.8rem; border-radius: 12px; font-size: 0.85rem; background: #fff; border: 2px dashed #ffc6d6; }
+        .ed-status.show { display: block; }
+        .ed-status.ok { border-color: #8fd6ae; background: #effaf3; }
+        .ed-status.warn { border-color: #f4c56a; background: #fff8e6; }
+        .ed-status.err { border-color: #ff8080; background: #fff0f0; }
+        .ed-sec { display: none; padding: 1rem; overflow-y: auto; flex: 1; }
+        .ed-sec.on { display: block; }
+        .ed-drop {
+            display: flex; flex-direction: column; align-items: center; gap: 0.3rem; padding: 1.6rem 1rem;
+            border: 3px dashed #ffb3c8; border-radius: 20px; background: #fff; color: var(--primary-pink);
+            cursor: pointer; text-align: center; transition: background 0.2s;
+        }
+        .ed-drop i { font-size: 2rem; }
+        .ed-drop small { color: var(--text-muted); }
+        .ed-drop.over { background: var(--light-pink); }
+        .ed-opts { display: flex; flex-direction: column; gap: 0.3rem; margin: 0.8rem 0; font-size: 0.85rem; color: var(--text-main); }
+        .ed-card { display: flex; gap: 0.7rem; align-items: flex-start; background: #fff; border: 2px solid var(--light-pink); border-radius: 16px; padding: 0.6rem; margin-bottom: 0.6rem; position: relative; }
+        .ed-card img { width: 74px; height: 74px; object-fit: cover; border-radius: 10px; flex-shrink: 0; background: var(--light-pink); }
+        .ed-fields { flex: 1; display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+        .ed-fields small { color: var(--text-muted); font-size: 0.72rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .ed-input, .ed-fields select, .ed-row select {
+            width: 100%; border: 2px solid var(--light-pink); border-radius: 10px; padding: 0.35rem 0.6rem;
+            font-size: 0.85rem; font-family: inherit; background: #fff; color: var(--text-main);
+        }
+        .ed-input:focus, .ed-fields select:focus { outline: none; border-color: var(--primary-pink); }
+        .ed-x { position: absolute; top: -8px; right: -8px; width: 24px; height: 24px; border-radius: 50%; border: none; background: var(--primary-pink); color: #fff; cursor: pointer; }
+        .ed-btns { display: flex; flex-direction: column; gap: 0.25rem; }
+        .ed-btns button { width: 34px; height: 26px; border: 2px solid var(--light-pink); background: #fff; border-radius: 8px; cursor: pointer; color: var(--primary-pink); font-size: 0.75rem; }
+        .ed-btns button:disabled { opacity: 0.3; cursor: default; }
+        .ed-btns button.sure { width: 52px; background: #ff8080; border-color: #ff8080; color: #fff; }
+        .ed-main { width: 100%; margin-top: 0.4rem; background: var(--primary-pink); color: #fff; border: none; border-radius: 30px; padding: 0.75rem; font-weight: bold; font-size: 0.95rem; cursor: pointer; box-shadow: 3px 3px 0 #ffd3e0; font-family: inherit; }
+        .ed-main:disabled { opacity: 0.45; cursor: default; }
+        .ed-ghost { background: #fff; color: var(--primary-pink); border: 2px solid var(--primary-pink); border-radius: 30px; padding: 0.5rem; font-weight: bold; cursor: pointer; font-family: inherit; }
+        .ed-small { width: auto; margin: 0; padding: 0.5rem 1rem; white-space: nowrap; }
+        .ed-row { display: flex; gap: 0.5rem; align-items: center; margin: 0.5rem 0; }
+        .ed-tip { font-size: 0.8rem; color: var(--text-muted); margin: 0.4rem 0 0.8rem; line-height: 1.6; }
+
+        /* --- 粉色捲軸 --- */
+        ::-webkit-scrollbar { width: 12px; height: 12px; }
+        ::-webkit-scrollbar-track { background: #fff0f5; }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #ffb3c8, #ff8fae);
+            border-radius: 10px;
+            border: 3px solid #fff0f5;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: #ff7aa0; }
+        /* Firefox 用這個 */
+        @supports not selector(::-webkit-scrollbar) {
+            html { scrollbar-color: #ff9fb9 #fff0f5; scrollbar-width: thin; }
+        }
+
+        /* --- 背景漂浮的白色小星星 --- */
+        #starField {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .star-particle {
+            position: absolute;
+            bottom: -30px;
+            color: #fff;
+            line-height: 1;
+            text-shadow: 0 0 4px rgba(255, 143, 174, 0.75), 0 0 10px rgba(255, 179, 200, 0.6);
+            /* 往上飄（等速）＋ 左右輕搖（柔和來回）＋ 微微閃爍（只改亮度） */
+            animation:
+                star-rise var(--dur, 26s) linear infinite,
+                star-sway var(--sway, 7s) ease-in-out infinite alternate,
+                star-glow 3.5s ease-in-out infinite alternate;
+            animation-delay: var(--delay, 0s), var(--delay, 0s), var(--blink, 0s);
+        }
+        @keyframes star-rise {
+            0%   { transform: translateY(0);      opacity: 0; }
+            12%  { opacity: 0.95; }
+            85%  { opacity: 0.95; }
+            100% { transform: translateY(-110vh); opacity: 0; }
+        }
+        @keyframes star-sway {
+            from { translate: calc(var(--drift, 20px) * -1) 0; }
+            to   { translate: var(--drift, 20px) 0; }
+        }
+        @keyframes star-glow {
+            from { filter: brightness(1); }
+            to   { filter: brightness(1.15) drop-shadow(0 0 3px #fff); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #starField { display: none; }
+        }
+
+        /* 合作建模師小卡：金色小便條（不貼膠帶） */
+        .modeler-box {
+            background-color: #fffdf5;
+            border: 3px solid #fff;
+            outline: 2px dashed #f2c977;
+            outline-offset: -9px;
+            border-radius: 18px;
+            box-shadow: 5px 5px 0 #ffe4a3;
+        }
+
+        /* 作品卡片：白邊＋平塗陰影，跟便條風一致 */
+        .portfolio-item {
+            border: 3px solid #fff;
+            box-shadow: 5px 5px 0 #ffd3e0;
+        }
+        .portfolio-item:hover { box-shadow: 7px 9px 0 #ffd3e0; }
+
+        .section-title, #prices > h4, #modelers > p {
+            text-shadow: 0 0 6px #fff, 0 0 12px #fff, 0 0 18px #fff;
+        }
+
+        /* --- 網站背景圖（透明度 45%） --- */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: url('bg.webp') -6vw center / min(80vw, 1500px) auto no-repeat;
+            opacity: 0.45;
+            pointer-events: none;
+            /* 橢圓漸層遮罩：四周慢慢淡掉，跟底色自然融合，不會看到圖片邊緣 */
+            -webkit-mask-image: radial-gradient(ellipse min(40vw, 750px) min(23vw, 430px) at min(34vw, 690px) 50%, #000 50%, transparent 100%);
+            mask-image: radial-gradient(ellipse min(40vw, 750px) min(23vw, 430px) at min(34vw, 690px) 50%, #000 50%, transparent 100%);
+        }
+        @media (max-width: 868px) {
+            body::before {
+                background-image: url('bg-mobile.webp');
+                background-size: auto 60vh;
+                /* 讓莉比的臉落在畫面左邊約 1/3 的位置 */
+                background-position: calc(35vw - 53vh) bottom;
+                -webkit-mask-image: linear-gradient(to top, #000 25%, transparent 58%);
+                mask-image: linear-gradient(to top, #000 25%, transparent 58%);
+            }
+        }
+
+        /* --- 圖片保護：禁止拖曳、長按選單（iPad / 手機） --- */
+        img {
+            -webkit-user-drag: none;
+            user-drag: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* --- 平板尺寸：導覽列縮小間距，避免文字換行、擋到標題 --- */
+        @media (min-width: 869px) and (max-width: 1100px) {
+            .nav-container { padding: 0 1.2rem; }
+            .logo img { max-height: 60px; }
+            .nav-links { gap: 2px; }
+            .nav-links .nav-item { padding: 0 0.7rem; font-size: 0.95rem; }
+        }
+
         /* --- 回應式排版修正 --- */
         @media (max-width: 868px) {
             .hero { flex-direction: column-reverse; text-align: center; gap: 2rem; padding-top: 2rem; }
@@ -707,7 +1462,62 @@
         }
     </style>
 </head>
-<body>
+<body class="loading">
+
+    <!-- 背景漂浮的白色小星星（由下方 JS 產生） -->
+    <div id="starField" aria-hidden="true"></div>
+
+    <!-- 網頁加載中動畫 -->
+    <div id="loader" aria-label="網頁載入中" role="status">
+        <!-- 雲朵和星星的形狀（只定義一次，下面重複使用） -->
+        <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+            <defs>
+                <symbol id="cloudShape" viewBox="0 0 160 90">
+                    <path d="M34 80 C14 80 6 64 14 52 C6 38 20 22 38 28 C42 10 66 4 80 18 C92 2 122 6 124 28 C142 24 156 40 148 56 C158 70 144 82 128 80 Z"
+                          fill="#fff" stroke="#f27ca0" stroke-width="4" stroke-linejoin="round"/>
+                    <ellipse cx="46" cy="62" rx="8" ry="5" fill="#ffd0de"/>
+                    <ellipse cx="116" cy="62" rx="8" ry="5" fill="#ffd0de"/>
+                </symbol>
+                <symbol id="starShape" viewBox="-12 -12 24 24">
+                    <path d="M0 -10 L2.9 -3.6 L9.5 -3.1 L4.6 1.4 L5.9 8.1 L0 4.7 L-5.9 8.1 L-4.6 1.4 L-9.5 -3.1 L-2.9 -3.6 Z"
+                          fill="#fff3a0" stroke="#f27ca0" stroke-width="1.6" stroke-linejoin="round"/>
+                    <circle cx="-2.2" cy="-1.5" r="1.1" fill="#fff"/>
+                </symbol>
+            </defs>
+        </svg>
+
+        <div class="loader-sky" aria-hidden="true">
+            <div class="loader-cloud l" style="left: 4%;  top: 10%; --w: 180px; --t: 6s;"><svg><use href="#cloudShape"/></svg></div>
+            <div class="loader-cloud r" style="right: 6%; top: 18%; --w: 140px; --t: 8s;"><svg><use href="#cloudShape"/></svg></div>
+            <div class="loader-cloud l" style="left: -2%; bottom: 14%; --w: 150px; --t: 7s;"><svg><use href="#cloudShape"/></svg></div>
+            <div class="loader-cloud r" style="right: -1%; bottom: 8%; --w: 200px; --t: 9s;"><svg><use href="#cloudShape"/></svg></div>
+
+            <div class="loader-star" style="left: 26%; top: 14%; --w: 38px; --d: 0s;"><svg><use href="#starShape"/></svg></div>
+            <div class="loader-star" style="right: 24%; top: 8%;  --w: 28px; --d: 0.6s;"><svg><use href="#starShape"/></svg></div>
+            <div class="loader-star" style="left: 14%; top: 48%; --w: 26px; --d: 1.1s;"><svg><use href="#starShape"/></svg></div>
+            <div class="loader-star" style="right: 14%; top: 50%; --w: 40px; --d: 0.3s;"><svg><use href="#starShape"/></svg></div>
+            <div class="loader-star" style="left: 30%; bottom: 10%; --w: 30px; --d: 0.9s;"><svg><use href="#starShape"/></svg></div>
+            <div class="loader-star" style="right: 30%; bottom: 22%; --w: 24px; --d: 1.4s;"><svg><use href="#starShape"/></svg></div>
+
+            <span class="loader-tw" style="left: 40%; top: 10%; --s: 1.1rem; --d: 0.2s;">✦</span>
+            <span class="loader-tw" style="right: 38%; top: 30%; --s: 0.8rem; --d: 0.7s;">✦</span>
+            <span class="loader-tw" style="left: 20%; top: 70%; --s: 0.9rem; --d: 1.2s;">✦</span>
+            <span class="loader-tw" style="right: 20%; top: 72%; --s: 1.2rem; --d: 0.5s;">✦</span>
+        </div>
+
+        <div class="loader-stage">
+            <div class="loader-ring"></div>
+            <div class="loader-ribi">
+                <img src="loading.webp" alt="莉比 載入中" fetchpriority="high" decoding="async">
+            </div>
+            <div class="loader-shadow"></div>
+            <div class="loader-text" id="loaderText">
+                <span style="--i:0">L</span><span style="--i:1">o</span><span style="--i:2">a</span><span style="--i:3">d</span><span style="--i:4">i</span><span style="--i:5">n</span><span style="--i:6">g</span><span style="--i:7">.</span><span style="--i:8">.</span><span style="--i:9">.</span>
+            </div>
+            <div class="loader-sub">莉比努力抓取中～</div>
+            <div class="loader-bar"></div>
+        </div>
+    </div>
 
     <!-- 導覽列 -->
     <nav>
@@ -736,7 +1546,7 @@
         <section class="hero">
             <div class="hero-content">
                 <h1 class="hero-title"> <span>莉比Ribi</span> </h1>
-                <p class="hero-subtitle">我是擅長繪製可愛插畫的台灣繪師—莉比Ribi。努力用元氣滿滿的粉嫩色彩與細緻筆觸，將最耀眼的作品呈現給大家。這裡提供各類精緻插畫、Q版模板、以及專業的商用VTuber拆層立繪服務，期待能與你一同創作更多精彩作品！</p>
+                <p class="hero-subtitle">我是擅長繪製可愛插畫的台灣繪師—莉比Ribi。努力用元氣滿滿的粉嫩色彩與細緻筆觸，將最耀眼的作品呈現給大家。這裡提供各類精緻插畫、Q版模板、以及專業的商用V皮繪製服務，期待能與你一同創作更多精彩作品！</p>
                 
                 <div class="social-links">
                     <a href="https://x.com/yazawaribii" target="_blank" class="social-icon" title="Twitter / X">
@@ -802,18 +1612,18 @@
         <div class="process-section">
             <div class="process-title">類型 A：一般委託流程</div>
             <div class="flow-steps">
-                <div class="flow-node"><div class="flow-num">1</div><h4>討論與估價</h4><p>評估報價與交期。</p></div>
-                <div class="flow-node"><div class="flow-num">2</div><h4>付款排單</h4><p>付清全額或 50% 訂金。</p></div>
-                <div class="flow-node"><div class="flow-num">3</div><h4>草圖確認</h4><p>可免費修改 2 次，<br>工期約 7-14 天。</p></div>
-                <div class="flow-node"><div class="flow-num">4</div><h4>完稿交付</h4><p>微調後交付雲端檔案。</p></div>
+                <div class="flow-node"><div class="flow-badge"><i class="fa-solid fa-comments"></i><span class="flow-num">1</span></div><h4>討論與估價</h4><p>評估報價與交期。</p></div>
+                <div class="flow-node"><div class="flow-badge"><i class="fa-solid fa-coins"></i><span class="flow-num">2</span></div><h4>付款排單</h4><p>付清全額或 50% 訂金。</p></div>
+                <div class="flow-node"><div class="flow-badge"><i class="fa-solid fa-pencil"></i><span class="flow-num">3</span></div><h4>草圖確認</h4><p>可免費修改 2 次，<br>工期約 7-14 天。</p></div>
+                <div class="flow-node"><div class="flow-badge"><i class="fa-solid fa-gift"></i><span class="flow-num">4</span></div><h4>完稿交付</h4><p>微調後交付雲端檔案。</p></div>
             </div>
         </div>
         <div class="process-section">
             <div class="process-title">類型 B：V皮委託流程</div>
             <div class="flow-steps">
-                <div class="flow-node"><div class="flow-num">1</div><h4>流程討論</h4><p>確認 V皮繪製需求，付 20% 訂金或全額。</p></div>
-                <div class="flow-node"><div class="flow-num">2</div><h4>設計與拆層</h4><p>草圖、細緻線稿與全色拆層確認、<br>三視圖繪製。</p></div>
-                <div class="flow-node"><div class="flow-num">3</div><h4>交付與售後</h4><p>工期約 1-2 個月，交付已拆層 PSD 檔案。<br>如有需求會推薦合作的建模師。</p></div>
+                <div class="flow-node"><div class="flow-badge"><i class="fa-solid fa-comments"></i><span class="flow-num">1</span></div><h4>流程討論</h4><p>確認 V皮繪製需求，付 20% 訂金或全額。</p></div>
+                <div class="flow-node"><div class="flow-badge"><i class="fa-solid fa-layer-group"></i><span class="flow-num">2</span></div><h4>設計與拆層</h4><p>草圖、細緻線稿與全色拆層確認、<br>三視圖繪製。</p></div>
+                <div class="flow-node"><div class="flow-badge"><i class="fa-solid fa-box-open"></i><span class="flow-num">3</span></div><h4>交付與售後</h4><p>工期約 1-2 個月，交付已拆層 PSD 檔案。<br>如有需求會推薦合作的建模師。</p></div>
             </div>
         </div>
     </div>
@@ -889,22 +1699,22 @@
 
     <!-- 分頁：合作建模師 -->
     <div id="modelers" class="page-content">
-        <h2 class="section-title">推薦合作Live2D建模師<br>(頁面整修中)</h2>
+        <h2 class="section-title">推薦合作Live2D建模師<br></h2>
         <p style="text-align:center; color: var(--text-muted); margin-bottom: 2.5rem;">
             如有 Live2D 動態化需求，歡迎參考以下長期合作的建模師夥伴：
         </p>
 
         <div class="modeler-grid" style="max-width: 720px; margin: 0 auto;">
             <a href="https://x.com/HakkaNekoLive2D" target="_blank" class="modeler-box">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Ribi/modelerA.webp?raw=true" class="modeler-avatar" alt="建模師A">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Ribi/modelerA.webp" class="modeler-avatar" alt="建模師A">
                 <h4>阿卡貓</h4>
             </a>
             <a href="https://x.com/Minottaur" target="_blank" class="modeler-box">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Ribi/modelerB.webp?raw=true" class="modeler-avatar" alt="建模師B">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Ribi/modelerB.webp" class="modeler-avatar" alt="建模師B">
                 <h4>Minotaur</h4>
             </a>
             <a href="https://x.com/kamiya_uyuki" target="_blank" class="modeler-box">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Ribi/modelerC.webp?raw=true" class="modeler-avatar" alt="建模師C">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Ribi/modelerC.webp" class="modeler-avatar" alt="建模師C">
                 <h4>狼谷卯雪</h4>
             </a>
         </div>
@@ -929,325 +1739,336 @@
 
         <!-- 這裡只需要一個父層 grid 就好了 -->
         <div class="portfolio-grid" id="portfolioGrid">
+
+            <!-- ✨✨ 作品怎麼新增？ ✨✨
+                 推薦：打開 網址/?edit 用上傳面板，拖圖片進去就好（作品會存在 GitHub 的 portfolio/gallery.json）
+                 ※ 一旦建立了 gallery.json，網站就會以它為準，下面這些作品只會在讀不到清單時當「備份」顯示。
+
+                 還沒建立 gallery.json 之前，也可以手動在這裡新增，一行就好：
+                 <div class="portfolio-item chibi" data-img="portfolio/Chibi/webp/檔名.webp" data-title="VTuber-名字" data-desc="Q版"></div>
+                 分類：Profile（頭貼）、chibi（Q版）、vtuber（人設立繪）、illustration（精緻插畫）、stickers（貼圖/模板）
+                 data-img：GitHub 圖片頁右上「⋯ → Copy path」複製的內容直接貼上
+            -->
+
             
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/fix/01%E6%82%A0%E5%A6%AE-Gw2RLzubIAAQWKP.jpg?raw=true" alt="VTuber-悠妮涅可" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/fix/01%E6%82%A0%E5%A6%AE-Gw2RLzubIAAQWKP.jpg" alt="VTuber-悠妮涅可" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-悠妮涅可</h3><p>精緻頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/Loopy02.webp?raw=true" alt="VTuber-鮪魚小貓蛋餅" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/Loopy02.webp" alt="VTuber-鮪魚小貓蛋餅" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-鮪魚小貓蛋餅</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/fix/03%E8%8E%93%E5%AD%90%E7%86%8A-HHxLxWbbEAARlhw.jpg?raw=true" alt="VTuber-莓子熊" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/fix/03%E8%8E%93%E5%AD%90%E7%86%8A-HHxLxWbbEAARlhw.jpg" alt="VTuber-莓子熊" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-莓子熊</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/Feituu01.webp?raw=true" alt="VTuber-緋菟" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/Feituu01.webp" alt="VTuber-緋菟" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-緋菟</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/fix/05%E7%B7%92%E8%8E%89%E4%BA%9E-Gw2RLz1bAAAnmJW.jpg?raw=true" alt="VTuber-緒莉亞" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/fix/05%E7%B7%92%E8%8E%89%E4%BA%9E-Gw2RLz1bAAAnmJW.jpg" alt="VTuber-緒莉亞" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-緒莉亞</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/Licht.webp?raw=true" alt="VTuber-莉希特" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/Licht.webp" alt="VTuber-莉希特" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-莉希特</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/TootooPyon01.webp?raw=true" alt="VTuber-兔兔ぴょんちゃん" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/TootooPyon01.webp" alt="VTuber-兔兔ぴょんちゃん" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-兔兔ぴょんちゃん</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/ShinYuki01.webp?raw=true" alt="VTuber-雪寶うさぎ" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/ShinYuki01.webp" alt="VTuber-雪寶うさぎ" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-雪寶うさぎ</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/UniNeko01.webp?raw=true" alt="VTuber-悠妮涅可" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/UniNeko01.webp" alt="VTuber-悠妮涅可" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-悠妮涅可</h3><p>精緻頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/UniNeko04.webp?raw=true" alt="VTuber-悠妮涅可" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/UniNeko04.webp" alt="VTuber-悠妮涅可" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-悠妮涅可</h3><p>精緻頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/UniNeko03.webp?raw=true" alt="VTuber-悠妮涅可" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/UniNeko03.webp" alt="VTuber-悠妮涅可" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-悠妮涅可</h3><p>精緻頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/NanashiYuki02.webp?raw=true" alt="VTuber-Nanashi Yuki" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/NanashiYuki02.webp" alt="VTuber-Nanashi Yuki" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-Nanashi Yuki</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/77.webp?raw=true" alt="淺夏柒柒" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/77.webp" alt="淺夏柒柒" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>淺夏柒柒</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/Huanyu.webp?raw=true" alt="VTuber-幻雨悠希" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/Huanyu.webp" alt="VTuber-幻雨悠希" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-幻雨悠希</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/00.webp?raw=true" alt="背後靈" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/00.webp" alt="背後靈" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>背後靈</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/UniNeko05.webp?raw=true" alt="VTuber-悠妮涅可" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/UniNeko05.webp" alt="VTuber-悠妮涅可" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-悠妮涅可</h3><p>精緻頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/Aiyu01.webp?raw=true" alt="VTuber-菜心" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/Aiyu01.webp" alt="VTuber-菜心" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-菜心</h3><p>精緻雙人頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/RIBI-Mineko.webp?raw=true" alt="VTuber-Mineko" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/RIBI-Mineko.webp" alt="VTuber-Mineko" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-Mineko</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/Guguru01.webp?raw=true" alt="VTuber-咕咕嚕諾姆" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/Guguru01.webp" alt="VTuber-咕咕嚕諾姆" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-咕咕嚕諾姆</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/TotoRei.webp?raw=true" alt="VTuber-都兔零" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/TotoRei.webp" alt="VTuber-都兔零" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-都兔零</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/Oda.webp?raw=true" alt="VTuber-歐妲" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/Oda.webp" alt="VTuber-歐妲" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-歐妲</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/nuonuo.webp?raw=true" alt="其他委託" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/nuonuo.webp" alt="其他委託" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>其他委託</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/chami.webp?raw=true" alt="VTuber-茶靡靡" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/chami.webp" alt="VTuber-茶靡靡" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-茶靡靡</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/Limi01.webp?raw=true" alt="VTuber-黎汨Limi" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/Limi01.webp" alt="VTuber-黎汨Limi" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-黎汨Limi</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/7701.webp?raw=true" alt="淺夏柒柒" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/7701.webp" alt="淺夏柒柒" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>淺夏柒柒</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/Loopy03.webp?raw=true" alt="VTuber-鮪魚小貓蛋餅" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/Loopy03.webp" alt="VTuber-鮪魚小貓蛋餅" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-鮪魚小貓蛋餅</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item Profile">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Profile/webp/6mo.webp?raw=true" alt="實況主-六茉" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Profile/webp/6mo.webp" alt="實況主-六茉" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>實況主-六茉</h3><p>驚喜包頭貼</p></div>
             </div>
 
             <div class="portfolio-item chibi">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Chibi/fix/U%E5%A6%AEQ-G3hOBPYWwAEjtbU.jpg?raw=true" alt="VTuber-悠妮涅可" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Chibi/fix/U%E5%A6%AEQ-G3hOBPYWwAEjtbU.jpg" alt="VTuber-悠妮涅可" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-悠妮涅可</h3><p>Q版頭貼</p></div>
             </div>
 
             <div class="portfolio-item chibi">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Chibi/Aya01.gif?raw=true" alt="VTuber-采彩Aya" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Chibi/Aya01.gif" alt="VTuber-采彩Aya" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-采彩Aya</h3><p>Q版插畫</p></div>
             </div>
 
             <div class="portfolio-item chibi">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Chibi/Chibi_COMMISSION.jpg?raw=true" alt="VTuber" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Chibi/Chibi_COMMISSION.jpg" alt="VTuber" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>周邊設計</h3><p>Q版飯友</p></div>
             </div>
 
             <div class="portfolio-item chibi">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Chibi/fix/%E8%8E%89%E5%B8%8C%E7%89%B9-GHLZJNyaQAAxqLV.jpg?raw=true" alt="VTuber-莉希特" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Chibi/fix/%E8%8E%89%E5%B8%8C%E7%89%B9-GHLZJNyaQAAxqLV.jpg" alt="VTuber-莉希特" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-莉希特</h3><p>Q版</p></div>
             </div>
 
             <div class="portfolio-item chibi">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Chibi/webp/sofia.webp?raw=true" alt="VTuber-蘇菲蕥Sofia" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Chibi/webp/sofia.webp" alt="VTuber-蘇菲蕥Sofia" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-蘇菲蕥Sofia</h3><p>Q版</p></div>
             </div>
 
             <div class="portfolio-item chibi">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Chibi/webp/Liv.webp?raw=true" alt="VTuber-莉芙嘉薇亞" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Chibi/webp/Liv.webp" alt="VTuber-莉芙嘉薇亞" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-莉芙嘉薇亞</h3><p>Q版</p></div>
             </div>
 
             <div class="portfolio-item chibi">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Chibi/webp/Licht--.webp?raw=true" alt="VTuber-莉希特" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Chibi/webp/Licht--.webp" alt="VTuber-莉希特" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-莉希特</h3><p>Q版飯友</p></div>
             </div>
 
             <div class="portfolio-item chibi">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Chibi/webp/nana_Q.webp?raw=true" alt="Q版委託" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Chibi/webp/nana_Q.webp" alt="Q版委託" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>Q版委託</h3><p>Q版</p></div>
             </div>
 
             <div class="portfolio-item chibi">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Chibi/Miyuki01.jpg?raw=true" alt="VTuber-深雪みゆき" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Chibi/Miyuki01.jpg" alt="VTuber-深雪みゆき" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-深雪みゆき</h3><p>Q版</p></div>
             </div>
 
             <div class="portfolio-item chibi">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Chibi/webp/tokikoi_Q.webp?raw=true" alt="VTuber-莓芊時戀" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Chibi/webp/tokikoi_Q.webp" alt="VTuber-莓芊時戀" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-莓芊時戀
 </h3><p>Q版飯友</p></div>
             </div>
 
             <div class="portfolio-item chibi">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Chibi/webp/tootoo_Q.webp?raw=true" alt="VTuber-兔兔ぴょんちゃん" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Chibi/webp/tootoo_Q.webp" alt="VTuber-兔兔ぴょんちゃん" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-兔兔ぴょんちゃん</h3><p>Q版</p></div>
             </div>
 
             <div class="portfolio-item chibi">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Chibi/fix/16%E5%A4%9CQ.jpg?raw=true" alt="VTuber-十六夜 · 路希菲爾" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Chibi/fix/16%E5%A4%9CQ.jpg" alt="VTuber-十六夜 · 路希菲爾" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-十六夜 · 路希菲爾</h3><p>Q版立繪</p></div>
             </div>
 
             <div class="portfolio-item chibi">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Chibi/webp/Yuri_Q.webp?raw=true" alt="Q版委託" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Chibi/webp/Yuri_Q.webp" alt="Q版委託" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>Q版委託
 </h3><p>Q版</p></div>
             </div>
 
             <div class="portfolio-item chibi">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Chibi/fix/%E9%9B%99%E6%9C%88Q.jpg?raw=true" alt="MOON²" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Chibi/fix/%E9%9B%99%E6%9C%88Q.jpg" alt="MOON²" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>網路作家-MOON²
 </h3><p>Q版插畫</p></div>
             </div>
 
             <div class="portfolio-item chibi">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/Chibi/webp/Yu.webp?raw=true" alt="Q版委託" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Chibi/webp/Yu.webp" alt="Q版委託" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>Q版委託
 </h3><p>Q版</p></div>
             </div>
 
             <div class="portfolio-item vtuber">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/webp/VTubers.webp?raw=true" alt="VTuber" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/vtuber/webp/VTubers.webp" alt="VTuber" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber</h3><p>角色設計</p></div>
             </div>
 
             <div class="portfolio-item vtuber">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/webp/Aya.webp?raw=true" alt="VTuber-采彩Aya" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/vtuber/webp/Aya.webp" alt="VTuber-采彩Aya" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-采彩Aya</h3><p>2.5形象角色設計</p></div>
             </div>
 
             <div class="portfolio-item vtuber">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/webp/fix/%E7%84%A1%E5%B0%BE%E7%86%8A.jpg?raw=true" alt="VTuber-無尾熊女孩" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/vtuber/webp/fix/%E7%84%A1%E5%B0%BE%E7%86%8A.jpg" alt="VTuber-無尾熊女孩" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-無尾熊女孩</h3><p>尚未售出/角色設計-合作建模：Minotaur</p></div>
             </div>
 
             <div class="portfolio-item vtuber">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/webp/MepuruMyo.webp?raw=true" alt="VTuber-楓糖渺" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/vtuber/webp/MepuruMyo.webp" alt="VTuber-楓糖渺" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-楓糖渺</h3><p>角色設計-合作建模：狼谷卯雪</p></div>
             </div>
 
             <div class="portfolio-item vtuber">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/webp/tootooPyon01.webp?raw=true" alt="兔兔ぴょんちゃん" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/vtuber/webp/tootooPyon01.webp" alt="兔兔ぴょんちゃん" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-兔兔ぴょんちゃん</h3><p>角色設計-合作建模：1.0-Minotaur／1.5-阿卡貓</p></div>
             </div>
 
             <div class="portfolio-item vtuber">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/webp/Nato.webp?raw=true" alt="鈴木奈兔" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/vtuber/webp/Nato.webp" alt="鈴木奈兔" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-鈴木奈兔</h3><p>4.0角色設計&建模</p></div>
             </div>
 
             <div class="portfolio-item vtuber">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/webp/TotoRei.webp?raw=true" alt="都兔零" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/vtuber/webp/TotoRei.webp" alt="都兔零" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-都兔零</h3><p>角色設計-建模師：YYL</p></div>
             </div>
 
             <div class="portfolio-item vtuber">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/webp/Ribi.webp?raw=true" alt="莉比醬" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/vtuber/webp/Ribi.webp" alt="莉比醬" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-魔法少女莉比醬</h3><p>角色設計&建模</p></div>
             </div>
 
             <div class="portfolio-item vtuber">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/webp/tootooPyon02.webp?raw=true" alt="兔兔ぴょんちゃん" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/vtuber/webp/tootooPyon02.webp" alt="兔兔ぴょんちゃん" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-兔兔ぴょんちゃん</h3><p>角色設計-合作建模：阿卡貓</p></div>
             </div>
 
             <div class="portfolio-item vtuber">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/webp/Feituu00.webp?raw=true" alt="緋菟" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/vtuber/webp/Feituu00.webp" alt="緋菟" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-緋菟</h3><p>角色設計</p></div>
             </div>
 
             <div class="portfolio-item vtuber">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/vtuber/webp/yuchen.webp?raw=true" alt="瑀弦" class="portfolio-img" style="object-position: center 30%;">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/vtuber/webp/yuchen.webp" alt="瑀弦" class="portfolio-img" loading="lazy" decoding="async" style="object-position: center 30%;">
                 <div class="portfolio-info"><h3>瑀弦</h3><p>角色卡設計</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/Nanashi%20yuki.gif?raw=true" alt="VTuber-Nanashi Yuki" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/Nanashi%20yuki.gif" alt="VTuber-Nanashi Yuki" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-Nanashi Yuki</h3><p>曲繪插畫-飛雲之上</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/IchigoTokikoi.webp?raw=true" alt="VTuber-莓芊時戀" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/IchigoTokikoi.webp" alt="VTuber-莓芊時戀" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-莓芊時戀</h3><p>精緻插畫</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/Apple01.webp?raw=true" alt="VTuber-森花艾波" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/Apple01.webp" alt="VTuber-森花艾波" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-森花艾波</h3><p>精緻插畫</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/Apple02.webp?raw=true" alt="VTuber-森花艾波" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/Apple02.webp" alt="VTuber-森花艾波" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-森花艾波</h3><p>精緻插畫</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/Aya.webp?raw=true" alt="VTuber-采彩Aya" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/Aya.webp" alt="VTuber-采彩Aya" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-采彩Aya</h3><p>精緻插畫(待機插畫)</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/Unineko03.webp?raw=true" alt="VTuber-悠妮涅可" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/Unineko03.webp" alt="VTuber-悠妮涅可" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-悠妮涅可</h3><p>精緻插畫</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/Enomu.gif?raw=true" alt="VTuber-伊糯姆" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/Enomu.gif" alt="VTuber-伊糯姆" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-伊糯姆</h3><p>精緻插畫(待機插畫)</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/Guguru01.webp?raw=true" alt="VTuber-咕咕嚕諾姆" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/Guguru01.webp" alt="VTuber-咕咕嚕諾姆" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-咕咕嚕諾姆</h3><p>精緻插畫</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/Guguru02.webp?raw=true" alt="VTuber-咕咕嚕諾姆" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/Guguru02.webp" alt="VTuber-咕咕嚕諾姆" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-咕咕嚕諾姆</h3><p>精緻插畫</p></div>
             </div>
 
 <div class="portfolio-item illustration">
     <!-- 用 a 標籤包住圖片，target="_blank" 讓推特影片在新分頁開啟播放 -->
     <a href="https://x.com/i/status/1825106428471988559" target="_blank" rel="noopener" class="video-link">
-        <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/GxUUrXFakAAvOcy.webp?raw=true" alt="VTuber-悠妮涅可" class="portfolio-img">
+        <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/GxUUrXFakAAvOcy.webp" alt="VTuber-悠妮涅可" class="portfolio-img" loading="lazy" decoding="async">
         <!-- 圖片正中央的播放按鈕圖示 -->
         <div class="play-icon">▶</div>
     </a>
@@ -1259,14 +2080,14 @@
 </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/GxUYGLCaIAAPsEs.webp?raw=true" alt="VTuber-七音Clio" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/GxUYGLCaIAAPsEs.webp" alt="VTuber-七音Clio" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-七音Clio</h3><p>精緻插畫(待機插畫)</p></div>
             </div>
 
 <div class="portfolio-item illustration">
     <!-- 用 a 標籤包住圖片，target="_blank" 讓推特影片在新分頁開啟播放 -->
     <a href="https://x.com/i/status/1894684690059239467" target="_blank" rel="noopener" class="video-link">
-        <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/GxUYLcXaIAAn5YD.webp?raw=true" alt="VTuber-莉希特" class="portfolio-img">
+        <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/GxUYLcXaIAAn5YD.webp" alt="VTuber-莉希特" class="portfolio-img" loading="lazy" decoding="async">
         <!-- 圖片正中央的播放按鈕圖示 -->
         <div class="play-icon">▶</div>
     </a>
@@ -1278,128 +2099,129 @@
 </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/Loopy.webp?raw=true" alt="VTuber-鮪魚小貓蛋餅" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/Loopy.webp" alt="VTuber-鮪魚小貓蛋餅" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-鮪魚小貓蛋餅</h3><p>精緻插畫</p></div>
             </div>
 
             <div class="portfolio-item illustration">
                 <!-- 點擊縮圖後才載入 YouTube 播放器（不會跳轉分頁，直接在原地播放） -->
                 <div class="video-thumb" data-yt="NwfXpw63aUU" onclick="playYouTube(event, this)">
-                    <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/Quokka.webp?raw=true" alt="VTuber-珂卡" class="portfolio-img">
+                    <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/Quokka.webp" alt="VTuber-珂卡" class="portfolio-img" loading="lazy" decoding="async">
                     <div class="play-icon">▶</div>
                 </div>
                 <div class="portfolio-info"><h3>VTuber-珂卡</h3><p>精緻插畫(待機動畫)-合作建模：Minotaur</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/ShinYuki.webp?raw=true" alt="VTuber-雪寶うさぎ" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/ShinYuki.webp" alt="VTuber-雪寶うさぎ" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-雪寶うさぎ</h3><p>精緻插畫(宣傳插畫)</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/SiQi.webp?raw=true" alt="VTuber-司淇" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/SiQi.webp" alt="VTuber-司淇" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-司淇</h3><p>精緻插畫(結尾插畫)</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/Unineko01.webp?raw=true" alt="VTuber-悠妮涅可" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/Unineko01.webp" alt="VTuber-悠妮涅可" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-悠妮涅可</h3><p>精緻插畫</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/kurimu.webp?raw=true" alt="VTuber-甜蜜の奶油" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/kurimu.webp" alt="VTuber-甜蜜の奶油" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-甜蜜の奶油</h3><p>精緻插畫(待機插畫)</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/tootooPyon.webp?raw=true" alt="VTuber-兔兔ぴょんちゃん" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/tootooPyon.webp" alt="VTuber-兔兔ぴょんちゃん" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-兔兔ぴょんちゃん</h3><p>精緻插畫(宣傳插畫)</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/yumeno_kaoru02.webp?raw=true" alt="VTuber-夢野薰草" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/yumeno_kaoru02.webp" alt="VTuber-夢野薰草" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-夢野薰草</h3><p>精緻插畫</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/fix/%E6%82%A0%E5%A6%AE%E5%A4%8F%E6%97%A5-GvbPquGaYAAA5r6.jpg?raw=true" alt="VTuber-悠妮涅可" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/fix/%E6%82%A0%E5%A6%AE%E5%A4%8F%E6%97%A5-GvbPquGaYAAA5r6.jpg" alt="VTuber-悠妮涅可" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-悠妮涅可</h3><p>精緻插畫</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/fix/%E9%8C%92%E6%AC%A3%E5%A4%8F%E6%97%A5.jpg?raw=true" alt="VTuber-錒欣" class="portfolio-img" style="object-position: center 30%;">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/fix/%E9%8C%92%E6%AC%A3%E5%A4%8F%E6%97%A5.jpg" alt="VTuber-錒欣" class="portfolio-img" loading="lazy" decoding="async" style="object-position: center 30%;">
                 <div class="portfolio-info"><h3>VTuber-錒欣</h3><p>精緻插畫</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/fix/%E6%A3%89%E8%8A%B1%E7%B3%9699.jpg?raw=true" alt="VTuber-棉花糖99" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/fix/%E6%A3%89%E8%8A%B1%E7%B3%9699.jpg" alt="VTuber-棉花糖99" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-棉花糖99</h3><p>精緻插畫</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/Totorei02.webp?raw=true" alt="VTuber-都兔零" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/Totorei02.webp" alt="VTuber-都兔零" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-都兔零</h3><p>精緻插畫</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/Kururun.webp?raw=true" alt="VTuber-庫路路" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/Kururun.webp" alt="VTuber-庫路路" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-庫路路</h3><p>精緻插畫</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/Miyuki.webp?raw=true" alt="VTuber-深雪みゆき" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/Miyuki.webp" alt="VTuber-深雪みゆき" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-深雪みゆき</h3><p>精緻插畫</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/Unineko02.webp?raw=true" alt="VTuber-悠妮涅可" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/Unineko02.webp" alt="VTuber-悠妮涅可" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-悠妮涅可</h3><p>精緻插畫</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/Ribi-Cover.webp?raw=true" alt="VTuber-魔法少女莉比醬" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/Ribi-Cover.webp" alt="VTuber-魔法少女莉比醬" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-魔法少女莉比醬</h3><p>曲繪插畫-ツインテール魔法少女</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/Totorei03.webp?raw=true" alt="VTuber-都兔零" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/Totorei03.webp" alt="VTuber-都兔零" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-都兔零</h3><p>精緻插畫</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/yuchen_.webp?raw=true" alt="個人委託" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/yuchen_.webp" alt="個人委託" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>個人委託</h3><p>精緻插畫</p></div>
             </div>
 
             <div class="portfolio-item illustration">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/illustration/webp/nato01.webp?raw=true" alt="VTuber-鈴木奈兔" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/illustration/webp/nato01.webp" alt="VTuber-鈴木奈兔" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-鈴木奈兔</h3><p>精緻插畫</p></div>
             </div>
 
             <div class="portfolio-item stickers" data-notice-id="notice-cry">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/stickers/Cry.png?raw=true" alt="哭喔模板" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/stickers/Cry.png" alt="哭喔模板" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>是在哭喔</h3><p>模板 (吉祥物／人物)</p></div>
             </div>
 
             <div class="portfolio-item stickers">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/stickers/Blueberry.png?raw=true" alt="VTuber-藍莓起司" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/stickers/Blueberry.png" alt="VTuber-藍莓起司" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-藍莓起司</h3><p>貼圖模板</p></div>
             </div>
 
             <div class="portfolio-item stickers">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/stickers/NatoSS.png?raw=true" alt="VTuber-鈴木奈兔" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/stickers/NatoSS.png" alt="VTuber-鈴木奈兔" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-鈴木奈兔</h3><p>貼圖模板</p></div>
             </div>
 
             <div class="portfolio-item stickers" data-notice-id="notice-shinyuki-intro">
-                <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/stickers/ShinYukiSS.png?raw=true" alt="VTuber-雪寶うさぎ" class="portfolio-img">
+                <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/stickers/ShinYukiSS.png" alt="VTuber-雪寶うさぎ" class="portfolio-img" loading="lazy" decoding="async">
                 <div class="portfolio-info"><h3>VTuber-雪寶うさぎ</h3><p>圖奇自介欄位</p></div>
             </div>
 
 <div class="portfolio-item stickers" data-notice-id="notice-dc">
+    <button class="notice-btn" data-notice-id="notice-dc" onclick="event.stopPropagation(); openNoticePopup(this)" aria-label="委託須知"><i class="fa-solid fa-circle-info"></i></button>
     <!-- 用 a 標籤包住圖片，target="_blank" 讓推特影片在新分頁開啟播放 -->
-    <a href="https://x.com/i/status/1791829120290340959" rel="noopener" class="video-link">
-        <img src="https://github.com/yazawaribii-code/RibiPortfolio/blob/main/portfolio/stickers/Discord%20Reactive.jpg?raw=true" alt="DC跳跳模板" class="portfolio-img">
+    <a href="https://x.com/i/status/1791829120290340959" target="_blank" rel="noopener" class="video-link">
+        <img src="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/stickers/Discord%20Reactive.jpg" alt="DC跳跳模板" class="portfolio-img" loading="lazy" decoding="async">
         <!-- 圖片正中央的播放按鈕圖示 -->
         <div class="play-icon">▶</div>
     </a>
@@ -1464,6 +2286,9 @@
 
     <!-- 放大燈箱元件 -->
     <div class="lightbox-overlay" id="lightboxOverlay">
+        <button class="lb-nav lb-prev" id="lbPrev" aria-label="上一張"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="lb-nav lb-next" id="lbNext" aria-label="下一張"><i class="fa-solid fa-chevron-right"></i></button>
+        <div class="lb-counter" id="lbCounter"></div>
         <div class="lightbox-content">
             <div class="lightbox-media">
                 <img src="" alt="放大圖" class="lightbox-img" id="lightboxImg">
@@ -1478,6 +2303,90 @@
     </footer>
 
     <script>
+        // 0. 網頁加載完成後：抓到了！→ 莉比被夾走 → 畫面收光圈，顯示網頁
+        (function () {
+            const loader = document.getElementById('loader');
+            const stage = loader.querySelector('.loader-stage');
+            const text = document.getElementById('loaderText');
+            const MIN_SHOW = 1200;   // 至少顯示 1.2 秒，讓大家看到可愛的莉比
+            const MAX_WAIT = 6000;   // 網路很慢時，最多等 6 秒就先顯示網頁
+            const start = Date.now();
+            let done = false;
+
+            // 金色星星往四面八方噴出去
+            function sparkBurst() {
+                const chars = ['✦', '★', '✧', '✦'];
+                const count = 16;
+                for (let i = 0; i < count; i++) {
+                    const s = document.createElement('span');
+                    s.className = 'loader-spark';
+                    s.textContent = chars[i % chars.length];
+                    const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.4;
+                    const dist = 110 + Math.random() * 90;
+                    s.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+                    s.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+                    s.style.setProperty('--s', (0.9 + Math.random() * 1.1).toFixed(2) + 'rem');
+                    if (i % 3 === 0) s.style.color = '#ffd76a';
+                    stage.appendChild(s);
+                }
+            }
+
+            function finish() {
+                if (done) return;
+                done = true;
+                const wait = Math.max(0, MIN_SHOW - (Date.now() - start));
+                setTimeout(() => {
+                    // 第 1 幕：抓到了！
+                    text.classList.remove('got');
+                    text.textContent = '抓到了！';
+                    void text.offsetWidth;
+                    text.classList.add('got');
+                    loader.classList.add('caught');
+                    sparkBurst();
+
+                    // 第 2 幕：莉比飛出畫面後，畫面收光圈
+                    setTimeout(() => {
+                        loader.classList.add('iris');
+                        document.body.classList.remove('loading');
+                        document.body.classList.add('reveal');
+                    }, 750);
+
+                    // 第 3 幕：清掉加載畫面
+                    setTimeout(() => {
+                        const activePage = document.querySelector('.page-content.active');
+                        if (activePage) activePage.classList.add('no-anim');
+                        loader.remove();
+                        document.body.classList.remove('reveal');
+                    }, 750 + 900);
+                }, wait);
+            }
+
+            window.addEventListener('load', finish);
+            setTimeout(finish, MAX_WAIT);
+        })();
+
+        // 0-1. 背景漂浮的白色小星星
+        (function () {
+            const field = document.getElementById('starField');
+            if (!field) return;
+            const chars = ['✦', '✧', '✦', '·', '✧'];
+            const count = window.innerWidth < 868 ? 18 : 34;
+            for (let i = 0; i < count; i++) {
+                const s = document.createElement('span');
+                s.className = 'star-particle';
+                s.textContent = chars[i % chars.length];
+                const dur = 22 + Math.random() * 18;
+                s.style.left = (Math.random() * 100).toFixed(1) + '%';
+                s.style.fontSize = (0.5 + Math.random() * 0.9).toFixed(2) + 'rem';
+                s.style.setProperty('--dur', dur.toFixed(1) + 's');
+                s.style.setProperty('--delay', (-Math.random() * dur).toFixed(1) + 's');
+                s.style.setProperty('--blink', (-Math.random() * 2).toFixed(1) + 's');
+                s.style.setProperty('--drift', (12 + Math.random() * 22).toFixed(0) + 'px');
+                s.style.setProperty('--sway', (5 + Math.random() * 4).toFixed(1) + 's');
+                field.appendChild(s);
+            }
+        })();
+
         // 1. 手機版選單切換
         function toggleMenu() {
             const navLinks = document.getElementById('navLinks');
@@ -1487,7 +2396,7 @@
         // 2. 獨立的多分頁切換邏輯
         function switchPage(pageId) {
             const pages = document.querySelectorAll('.page-content');
-            pages.forEach(page => page.classList.remove('active'));
+            pages.forEach(page => page.classList.remove('active', 'no-anim'));
 
             const targetPage = document.getElementById(pageId);
             if (targetPage) {
@@ -1508,36 +2417,235 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 3. 作品集篩選過濾功能
-        function filterPortfolio(category) {
-            const tabs = document.querySelectorAll('.tab-btn');
-            tabs.forEach(tab => tab.classList.remove('active'));
-            
-            const clickedTab = Array.from(tabs).find(tab => tab.getAttribute('onclick').includes(category));
-            if (clickedTab) clickedTab.classList.add('active');
+        // 3. 作品展示：自動捲動的作品架
+        //    ※ 新增作品時，跟以前一樣把 portfolio-item 加進 portfolioGrid 就好，程式會自動分到對應的那一排
+        const SHELF_SPEED = 28;   // 自動捲動速度（每秒移動幾 px），數字越大越快
+        const SHELF_ORDER = ['Profile', 'chibi', 'vtuber', 'illustration', 'stickers'];
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const shelves = [];
 
-            const grid = document.getElementById('portfolioGrid');
-            grid.className = 'portfolio-grid';
-            if(category !== 'all') {
-                grid.classList.add('view-' + category);
-            }
-            
-            // 處理顯示隱藏
-            const items = document.querySelectorAll('.portfolio-item');
-            items.forEach(item => {
-                if(category === 'all' || item.classList.contains(category)) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
+        // 簡短寫法：data-img 只要填 GitHub 上的路徑，網址開頭會自動補上
+        const IMG_BASE = 'https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/';
+        function toImageUrl(path) {
+            path = path.trim();
+            // 貼成 github.com/.../blob/main/... 的網址也能自動轉成快速網址
+            const m = path.match(/^https?:\/\/github\.com\/([^/]+)\/([^/]+)\/blob\/([^?#]+)/);
+            if (m) return 'https://raw.githubusercontent.com/' + m[1] + '/' + m[2] + '/' + m[3];
+            if (/^https?:\/\//.test(path)) return path;
+            return IMG_BASE + path.replace(/^\/+/, '').split('/').map(encodeURIComponent).join('/');
+        }
+        function expandShortItems(grid) {
+            grid.querySelectorAll('.portfolio-item[data-img]').forEach(item => {
+                if (item.querySelector('img')) return;
+                const title = item.dataset.title || '';
+                const img = document.createElement('img');
+                img.src = toImageUrl(item.dataset.img);
+                img.alt = title;
+                img.className = 'portfolio-img';
+                img.loading = 'lazy';
+                img.decoding = 'async';
+                const info = document.createElement('div');
+                info.className = 'portfolio-info';
+                const h3 = document.createElement('h3');
+                h3.textContent = title;
+                const p = document.createElement('p');
+                p.textContent = item.dataset.desc || '';
+                info.append(h3, p);
+                item.append(img, info);
             });
         }
 
-        // 4. 簡單的燈箱觸發
+        function buildShelves() {
+            const grid = document.getElementById('portfolioGrid');
+            if (!grid) return;
+            expandShortItems(grid);
+            const items = Array.from(grid.querySelectorAll('.portfolio-item'));
+            const labels = {};
+            document.querySelectorAll('.tab-btn').forEach(tab => {
+                const m = tab.getAttribute('onclick').match(/'(\w+)'/);
+                if (m) labels[m[1]] = tab.textContent.trim();
+            });
+
+            const wrap = document.createElement('div');
+            wrap.id = 'shelves';
+            SHELF_ORDER.forEach((cat, ci) => {
+                const list = items.filter(it => it.classList.contains(cat));
+                if (!list.length) return;
+                const shelf = document.createElement('section');
+                shelf.className = 'shelf';
+                shelf.id = 'shelf-' + cat;
+                shelf.dataset.cat = cat;
+                shelf.innerHTML =
+                    '<div class="shelf-head">' +
+                        '<h3 class="shelf-title">' + (labels[cat] || cat) + '<span class="shelf-count">' + list.length + '</span></h3>' +
+                        '<div class="shelf-arrows">' +
+                            '<button class="shelf-btn" data-dir="-1" aria-label="往左看"><i class="fa-solid fa-chevron-left"></i></button>' +
+                            '<button class="shelf-btn" data-dir="1" aria-label="往右看"><i class="fa-solid fa-chevron-right"></i></button>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="shelf-track"></div>';
+                const track = shelf.querySelector('.shelf-track');
+                list.forEach((it, i) => { it.dataset.idx = i; track.appendChild(it); });
+                wrap.appendChild(shelf);
+
+                const s = {
+                    shelf, track, list,
+                    dir: ci % 2 === 0 ? 1 : -1,   // 相鄰兩排往相反方向捲
+                    ready: false, period: 0, pos: 0,
+                    hover: false, drag: false, holdUntil: 0, suppressClick: false
+                };
+                shelves.push(s);
+                bindShelf(s);
+            });
+            grid.replaceWith(wrap);
+        }
+
+        // 第一次看到這一排時：複製一份作品接在後面，做成無限循環
+        function setupShelf(s) {
+            const t = s.track;
+            if (!t.querySelector('.is-clone')) appendClones(s);
+            s.period = t.querySelector('.is-clone').offsetLeft - s.list[0].offsetLeft;
+            while (t.scrollWidth < s.period + t.clientWidth + 20) appendClones(s);
+            s.pos = s.dir < 0 ? s.period : 0;
+            t.scrollLeft = s.pos;
+            s.ready = true;
+        }
+        function appendClones(s) {
+            s.list.forEach(it => {
+                const c = it.cloneNode(true);
+                c.classList.add('is-clone');
+                c.setAttribute('aria-hidden', 'true');
+                s.track.appendChild(c);
+            });
+        }
+
+        function bindShelf(s) {
+            const t = s.track;
+            const now = () => performance.now();
+
+            // 滑鼠移上去暫停
+            t.addEventListener('mouseenter', () => { s.hover = true; });
+            t.addEventListener('mouseleave', () => { s.hover = false; s.holdUntil = now() + 600; });
+            // 手機滑動、觸控板滾動時暫停一下
+            t.addEventListener('touchstart', () => { s.holdUntil = now() + 1e9; }, { passive: true });
+            t.addEventListener('touchend', () => { s.holdUntil = now() + 2500; }, { passive: true });
+            t.addEventListener('wheel', () => { s.holdUntil = now() + 2000; }, { passive: true });
+
+            // 自己滑到底時，無縫接回開頭
+            t.addEventListener('scroll', () => {
+                if (!s.ready || !isUserHolding(s)) return;
+                const x = t.scrollLeft;
+                if (x >= s.period + 1) t.scrollLeft = x - s.period;
+                else if (x <= 0) t.scrollLeft = x + s.period;
+            });
+
+            // 電腦版：按住滑鼠左右拖曳
+            let startX = 0, startScroll = 0, moved = 0;
+            t.addEventListener('pointerdown', e => {
+                if (e.pointerType !== 'mouse' || e.button !== 0) return;
+                if (e.target.closest('.notice-btn, iframe')) return;
+                s.drag = true; moved = 0;
+                startX = e.clientX; startScroll = t.scrollLeft;
+            });
+            window.addEventListener('pointermove', e => {
+                if (!s.drag) return;
+                const dx = e.clientX - startX;
+                moved = Math.max(moved, Math.abs(dx));
+                if (moved > 5) t.classList.add('dragging');
+                let x = startScroll - dx;
+                if (s.period) x = ((x % s.period) + s.period) % s.period;
+                t.scrollLeft = x;
+            });
+            window.addEventListener('pointerup', () => {
+                if (!s.drag) return;
+                s.drag = false;
+                t.classList.remove('dragging');
+                s.holdUntil = now() + 1200;
+                if (moved > 5) s.suppressClick = true;
+            });
+            // 拖曳結束時不要誤觸點開作品／影片
+            t.addEventListener('click', e => {
+                if (s.suppressClick) { e.preventDefault(); e.stopPropagation(); s.suppressClick = false; }
+            }, true);
+
+            // 點作品 → 開啟燈箱（影片、須知按鈕照原本的方式）
+            t.addEventListener('click', e => {
+                const item = e.target.closest('.portfolio-item');
+                if (!item || e.target.closest('.video-link, .video-thumb, .notice-btn')) return;
+                openLightbox(s, Number(item.dataset.idx));
+            });
+
+            // 左右箭頭
+            s.shelf.querySelectorAll('.shelf-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (!s.ready) return;
+                    const dir = Number(btn.dataset.dir);
+                    const step = (s.list[0].offsetWidth + 16) * 2;
+                    s.holdUntil = now() + 2500;
+                    if (dir < 0 && t.scrollLeft < step) t.scrollLeft += s.period;
+                    if (dir > 0 && t.scrollLeft > s.period) t.scrollLeft -= s.period;
+                    t.scrollBy({ left: dir * step, behavior: 'smooth' });
+                });
+            });
+        }
+
+        function isUserHolding(s) {
+            return s.hover || s.drag || performance.now() < s.holdUntil;
+        }
+
+        // 每一格畫面都讓作品架往前移一點點
+        let lastFrame = performance.now();
+        function shelfTick(time) {
+            const dt = Math.min(64, time - lastFrame) / 1000;
+            lastFrame = time;
+            shelves.forEach(s => {
+                if (!s.track.offsetParent) return;          // 作品展示頁沒打開時不動
+                if (!s.ready) setupShelf(s);
+                const paused = reduceMotion || isUserHolding(s) ||
+                    lightbox.classList.contains('active') ||
+                    s.track.querySelector('iframe');           // 影片播放中就停下來
+                if (paused) { s.pos = s.track.scrollLeft; return; }
+                s.pos += s.dir * SHELF_SPEED * dt;
+                if (s.pos >= s.period) s.pos -= s.period;
+                if (s.pos < 0) s.pos += s.period;
+                s.track.scrollLeft = s.pos;
+            });
+            requestAnimationFrame(shelfTick);
+        }
+
+        // 畫面大小改變（例如手機轉橫向）時，重新計算循環長度
+        window.addEventListener('resize', () => {
+            shelves.forEach(s => {
+                if (!s.ready) return;
+                s.period = s.track.querySelector('.is-clone').offsetLeft - s.list[0].offsetLeft;
+                while (s.track.scrollWidth < s.period + s.track.clientWidth + 20) appendClones(s);
+            });
+        });
+
+        // 分類按鈕：跳到那一排
+        function filterPortfolio(category) {
+            document.querySelectorAll('.tab-btn').forEach(tab => {
+                tab.classList.toggle('active', tab.getAttribute('onclick').includes("'" + category + "'"));
+            });
+            if (category === 'all') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+            const shelf = document.getElementById('shelf-' + category);
+            if (!shelf) return;
+            shelf.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            shelf.classList.remove('flash');
+            void shelf.offsetWidth;
+            shelf.classList.add('flash');
+        }
+
+        // 4. 燈箱：放大看作品，可以左右切換同一排的作品
         const lightbox = document.getElementById('lightboxOverlay');
         const lightboxImg = document.getElementById('lightboxImg');
         const lightboxCaption = document.getElementById('lightboxCaption');
         const lightboxNotice = document.getElementById('lightboxNotice');
+        const lbCounter = document.getElementById('lbCounter');
+        let lbList = [], lbIndex = 0, lbSwiped = false;
 
         // 點擊 YouTube 縮圖後，才將縮圖換成內嵌播放器（自動播放）
         function playYouTube(event, el) {
@@ -1546,37 +2654,472 @@
             el.innerHTML = '<iframe src="https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
         }
 
-        document.querySelectorAll('.portfolio-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                // 若點擊的是影片連結（如 X/YT 播放按鈕或播放器），直接播放影片，不觸發燈箱
-                if (e.target.closest('.video-link') || e.target.closest('.video-thumb')) return;
+        function openLightbox(s, idx) {
+            lbList = s.list.filter(it => it.querySelector('img'));
+            lbIndex = lbList.indexOf(s.list[idx]);
+            if (lbIndex < 0) return;
+            showLightboxItem(0);
+            lightbox.classList.toggle('single', lbList.length < 2);
+            lightbox.classList.add('active');
+        }
 
-                const imgEl = item.querySelector('img');
-                if (!imgEl) return; // 影片播放器啟動中，沒有圖片可放大，不觸發燈箱
+        function showLightboxItem(dir) {
+            const item = lbList[lbIndex];
+            lightboxImg.src = item.querySelector('img').src;
+            lightboxCaption.innerText = item.querySelector('h3').innerText;
+            lbCounter.textContent = (lbIndex + 1) + ' / ' + lbList.length;
 
-                const img = imgEl.src;
-                const title = item.querySelector('h3').innerText;
-                lightboxImg.src = img;
-                lightboxCaption.innerText = title;
+            const noticeId = item.dataset.noticeId;
+            const noticeTpl = noticeId ? document.getElementById(noticeId) : null;
+            lightboxNotice.innerHTML = '';
+            if (noticeTpl) {
+                lightboxNotice.appendChild(noticeTpl.content.cloneNode(true));
+                lightboxNotice.classList.add('active');
+            } else {
+                lightboxNotice.classList.remove('active');
+            }
+            if (dir && lightboxImg.animate) {
+                lightboxImg.animate(
+                    [{ opacity: 0, transform: 'translateX(' + (dir * 24) + 'px)' }, { opacity: 1, transform: 'none' }],
+                    { duration: 220, easing: 'ease-out' }
+                );
+            }
+        }
 
-                const noticeId = item.dataset.noticeId;
-                const noticeTpl = noticeId ? document.getElementById(noticeId) : null;
-                if (noticeTpl) {
-                    lightboxNotice.innerHTML = '';
-                    lightboxNotice.appendChild(noticeTpl.content.cloneNode(true));
-                    lightboxNotice.classList.add('active');
-                } else {
-                    lightboxNotice.innerHTML = '';
-                    lightboxNotice.classList.remove('active');
-                }
+        function stepLightbox(d) {
+            if (lbList.length < 2) return;
+            lbIndex = (lbIndex + d + lbList.length) % lbList.length;
+            showLightboxItem(d);
+        }
 
-                lightbox.classList.add('active');
-            });
+        document.getElementById('lbPrev').addEventListener('click', e => { e.stopPropagation(); stepLightbox(-1); });
+        document.getElementById('lbNext').addEventListener('click', e => { e.stopPropagation(); stepLightbox(1); });
+        lbCounter.addEventListener('click', e => e.stopPropagation());
+
+        // 鍵盤：← → 切換，Esc 關閉
+        document.addEventListener('keydown', e => {
+            if (!lightbox.classList.contains('active')) return;
+            if (e.key === 'ArrowLeft') stepLightbox(-1);
+            else if (e.key === 'ArrowRight') stepLightbox(1);
+            else if (e.key === 'Escape') lightbox.classList.remove('active');
         });
+
+        // 手機：左右滑動切換
+        let tsX = 0, tsY = 0;
+        lightbox.addEventListener('touchstart', e => {
+            tsX = e.touches[0].clientX; tsY = e.touches[0].clientY;
+        }, { passive: true });
+        lightbox.addEventListener('touchend', e => {
+            const dx = e.changedTouches[0].clientX - tsX;
+            const dy = e.changedTouches[0].clientY - tsY;
+            if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+                stepLightbox(dx < 0 ? 1 : -1);
+                lbSwiped = true;
+                setTimeout(() => { lbSwiped = false; }, 400);
+            }
+        }, { passive: true });
 
         lightbox.addEventListener('click', () => {
+            if (lbSwiped) return;      // 剛滑動完不要誤關燈箱
             lightbox.classList.remove('active');
         });
+
+        // ===== 作品清單：優先讀取 GitHub 上的 portfolio/gallery.json，讀不到就用頁面裡的作品 =====
+        const GH = { owner: 'yazawaribii-code', repo: 'RibiPortfolio', branch: 'main', listPath: 'portfolio/gallery.json' };
+        const CAT_FOLDERS = {
+            Profile: 'portfolio/Profile/webp',
+            chibi: 'portfolio/Chibi/webp',
+            vtuber: 'portfolio/vtuber/webp',
+            illustration: 'portfolio/illustration/webp',
+            stickers: 'portfolio/stickers'
+        };
+        const CAT_NAMES = { Profile: '頭貼 / 驚喜包', chibi: 'Q版', vtuber: '人設立繪 / 三視圖', illustration: '精緻插畫', stickers: '貼圖 / 模板' };
+        let galleryItems = null;   // 讀到 gallery.json 時，這裡就是作品清單
+
+        function pathFromUrl(src) {
+            if (src.startsWith(IMG_BASE)) {
+                try { return decodeURIComponent(src.slice(IMG_BASE.length)); } catch (e) { return src.slice(IMG_BASE.length); }
+            }
+            return src;
+        }
+
+        // 頁面上的作品卡 → 清單資料
+        function itemFromElement(el) {
+            const img = el.querySelector('img');
+            const it = {
+                cat: SHELF_ORDER.find(c => el.classList.contains(c)) || 'illustration',
+                img: img ? pathFromUrl(img.src) : '',
+                title: (el.querySelector('h3') || {}).textContent?.trim() || '',
+                desc: (el.querySelector('.portfolio-info p') || {}).textContent?.trim() || ''
+            };
+            if (el.dataset.noticeId) it.notice = el.dataset.noticeId;
+            if (el.querySelector('.notice-btn')) it.noticeBtn = true;
+            const link = el.querySelector('a.video-link');
+            if (link) it.link = link.href;
+            const yt = el.querySelector('.video-thumb');
+            if (yt) it.youtube = yt.dataset.yt;
+            if (img && img.style.objectPosition) it.pos = img.style.objectPosition;
+            return it;
+        }
+
+        // 清單資料 → 頁面上的作品卡
+        function elementFromItem(it) {
+            const d = document.createElement('div');
+            d.className = 'portfolio-item ' + it.cat;
+            if (it.notice) d.dataset.noticeId = it.notice;
+            if (it.notice && it.noticeBtn) {
+                const btn = document.createElement('button');
+                btn.className = 'notice-btn';
+                btn.dataset.noticeId = it.notice;
+                btn.setAttribute('aria-label', '委託須知');
+                btn.setAttribute('onclick', 'event.stopPropagation(); openNoticePopup(this)');
+                btn.innerHTML = '<i class="fa-solid fa-circle-info"></i>';
+                d.appendChild(btn);
+            }
+            const img = document.createElement('img');
+            img.src = toImageUrl(it.img);
+            img.alt = it.title || '';
+            img.className = 'portfolio-img';
+            img.loading = 'lazy';
+            img.decoding = 'async';
+            if (it.pos) img.style.objectPosition = it.pos;
+            const play = () => { const p = document.createElement('div'); p.className = 'play-icon'; p.textContent = '▶'; return p; };
+            let media = img;
+            if (it.link) {
+                media = document.createElement('a');
+                media.href = it.link; media.target = '_blank'; media.rel = 'noopener'; media.className = 'video-link';
+                media.append(img, play());
+            } else if (it.youtube) {
+                media = document.createElement('div');
+                media.className = 'video-thumb';
+                media.dataset.yt = it.youtube;
+                media.setAttribute('onclick', 'playYouTube(event, this)');
+                media.append(img, play());
+            }
+            const info = document.createElement('div');
+            info.className = 'portfolio-info';
+            const h3 = document.createElement('h3'); h3.textContent = it.title || '';
+            const p = document.createElement('p'); p.textContent = it.desc || '';
+            info.append(h3, p);
+            d.append(media, info);
+            return d;
+        }
+
+        // 目前畫面上的作品（依排的順序）
+        function currentItems() {
+            if (galleryItems) return galleryItems.map(it => Object.assign({}, it));
+            const out = [];
+            shelves.forEach(s => s.list.forEach(el => out.push(itemFromElement(el))));
+            return out;
+        }
+
+        function renderGallery(items) {
+            const grid = document.createElement('div');
+            grid.className = 'portfolio-grid';
+            grid.id = 'portfolioGrid';
+            items.forEach(it => grid.appendChild(elementFromItem(it)));
+            const old = document.getElementById('shelves') || document.getElementById('portfolioGrid');
+            old.replaceWith(grid);
+            shelves.length = 0;
+            buildShelves();
+        }
+
+        async function loadGallery() {
+            try {
+                const r = await fetch(IMG_BASE + GH.listPath, { cache: 'no-cache' });
+                if (r.ok) {
+                    const data = await r.json();
+                    if (data && Array.isArray(data.items) && data.items.length) {
+                        galleryItems = data.items;
+                        renderGallery(galleryItems);
+                        return;
+                    }
+                }
+            } catch (e) { /* 讀不到清單就用頁面上的作品 */ }
+            buildShelves();
+        }
+
+        loadGallery();
+        requestAnimationFrame(shelfTick);
+
+        // ===== ?edit 上傳模式（網址後面加 ?edit 才會出現） =====
+        if (/[?&]edit\b/.test(location.search)) {
+            const API = 'https://api.github.com/repos/' + GH.owner + '/' + GH.repo + '/contents/';
+            const TOKEN_KEY = 'ribiGhToken';
+            let token = '';
+            try { token = localStorage.getItem(TOKEN_KEY) || ''; } catch (e) {}
+            let pending = [];        // 等待上傳的圖片
+            let working = null;      // 管理分頁的暫存清單
+            let lastCat = 'illustration';   // 新增圖片時預設的分類（會記住上一次選的）
+
+            const encPath = path => path.split('/').map(encodeURIComponent).join('/');
+            const ghHeaders = () => ({
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/vnd.github+json',
+                'X-GitHub-Api-Version': '2022-11-28'
+            });
+            function bytesToBase64(bytes) {
+                let bin = '';
+                for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+                return btoa(bin);
+            }
+            async function ghGetList() {
+                const r = await fetch(API + encPath(GH.listPath) + '?ref=' + GH.branch, { headers: ghHeaders(), cache: 'no-store' });
+                if (r.status === 404) return null;
+                if (!r.ok) throw new Error('讀取作品清單失敗（' + r.status + '）');
+                const j = await r.json();
+                const bytes = Uint8Array.from(atob(j.content.replace(/\n/g, '')), c => c.charCodeAt(0));
+                return { sha: j.sha, data: JSON.parse(new TextDecoder().decode(bytes)) };
+            }
+            async function ghPut(path, base64, message, sha) {
+                const body = { message, content: base64, branch: GH.branch };
+                if (sha) body.sha = sha;
+                const r = await fetch(API + encPath(path), { method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body) });
+                if (!r.ok) {
+                    const err = new Error(r.status === 401 ? '金鑰無效或已過期，請到「設定」重新貼上' :
+                                          r.status === 403 || r.status === 404 ? '金鑰沒有寫入權限，請確認 Contents 有設成 Read and write' :
+                                          '上傳失敗（' + r.status + '）');
+                    err.status = r.status;
+                    throw err;
+                }
+                return r.json();
+            }
+            // 讀最新清單 → 修改 → 存回去（第一次會自動用目前網站上的作品建立清單）
+            async function saveList(mutate, message) {
+                for (let attempt = 0; attempt < 2; attempt++) {
+                    const cur = await ghGetList();
+                    const data = cur ? cur.data : { version: 1, items: currentItems() };
+                    data.items = mutate(data.items) || data.items;
+                    const text = JSON.stringify(data, null, 2);
+                    try {
+                        await ghPut(GH.listPath, bytesToBase64(new TextEncoder().encode(text)), message, cur && cur.sha);
+                        galleryItems = data.items;
+                        renderGallery(galleryItems);
+                        return;
+                    } catch (e) {
+                        if (e.status !== 409 || attempt) throw e;   // 409 = 剛好有別的修改，重試一次
+                    }
+                }
+            }
+
+            // 上傳前自動轉 webp、最長邊縮到 2000px（GIF 動圖保持原樣）
+            async function prepareImage(file, compress) {
+                const ext = (file.name.split('.').pop() || 'png').toLowerCase();
+                if (!compress || file.type === 'image/gif') return { blob: file, ext };
+                try {
+                    const bmp = await createImageBitmap(file);
+                    const scale = Math.min(1, 2000 / Math.max(bmp.width, bmp.height));
+                    const c = document.createElement('canvas');
+                    c.width = Math.round(bmp.width * scale);
+                    c.height = Math.round(bmp.height * scale);
+                    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+                    const blob = await new Promise(res => c.toBlob(res, 'image/webp', 0.88));
+                    if (!blob || blob.type !== 'image/webp') return { blob: file, ext };   // 瀏覽器不支援轉 webp
+                    if (ext === 'webp' && blob.size >= file.size) return { blob: file, ext };
+                    return { blob, ext: 'webp' };
+                } catch (e) {
+                    return { blob: file, ext };
+                }
+            }
+            function makeFileName(original, ext, i) {
+                const base = original.replace(/\.[^.]+$/, '').replace(/[^A-Za-z0-9_-]+/g, '').slice(0, 30) || 'art';
+                const t = new Date();
+                const stamp = t.getFullYear() + String(t.getMonth() + 1).padStart(2, '0') + String(t.getDate()).padStart(2, '0') +
+                              '-' + String(t.getHours()).padStart(2, '0') + String(t.getMinutes()).padStart(2, '0') + String(t.getSeconds()).padStart(2, '0');
+                return base + '-' + stamp + (i ? '-' + i : '') + '.' + ext;
+            }
+            const fmtSize = n => n > 1048576 ? (n / 1048576).toFixed(1) + 'MB' : Math.round(n / 1024) + 'KB';
+            const catOptions = sel => SHELF_ORDER.map(c => '<option value="' + c + '"' + (c === sel ? ' selected' : '') + '>' + CAT_NAMES[c] + '</option>').join('');
+
+            // --- 建立面板 ---
+            const fab = document.createElement('button');
+            fab.className = 'ed-fab';
+            fab.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> 編輯作品';
+            const panel = document.createElement('aside');
+            panel.className = 'ed-panel';
+            panel.innerHTML =
+                '<div class="ed-head"><span>✦ 作品編輯模式</span><button class="ed-close" aria-label="關閉">×</button></div>' +
+                '<div class="ed-tabs"><button data-tab="add" class="on">新增作品</button><button data-tab="manage">管理作品</button><button data-tab="setting">設定</button></div>' +
+                '<div class="ed-status" id="edStatus"></div>' +
+                '<section class="ed-sec on" data-sec="add">' +
+                    '<label class="ed-drop" id="edDrop"><input type="file" accept="image/*" multiple hidden id="edFile">' +
+                    '<i class="fa-solid fa-cloud-arrow-up"></i><b>把圖片拖進來</b><small>或點這裡選擇圖片（可以一次選很多張）</small></label>' +
+                    '<div class="ed-opts"><label><input type="checkbox" id="edCompress" checked> 自動轉 webp、縮到 2000px</label>' +
+                    '<label><input type="checkbox" id="edFront" checked> 放在那一排最前面</label></div>' +
+                    '<div id="edPending"></div>' +
+                    '<button class="ed-main" id="edUpload" disabled>上傳到作品集 ✦</button>' +
+                '</section>' +
+                '<section class="ed-sec" data-sec="manage">' +
+                    '<div class="ed-row"><select id="edFilter">' + catOptions('Profile') + '</select><button class="ed-main ed-small" id="edSave">儲存變更</button></div>' +
+                    '<p class="ed-tip">可以直接改名稱、換到別排、用 ▲▼ 調整順序，最後記得按「儲存變更」。</p>' +
+                    '<div id="edList"></div>' +
+                '</section>' +
+                '<section class="ed-sec" data-sec="setting">' +
+                    '<p class="ed-tip">貼上 GitHub 金鑰（github_pat_ 開頭）。金鑰只會存在<b>這台裝置的瀏覽器</b>裡，不會放進網站程式碼。</p>' +
+                    '<input type="password" id="edToken" class="ed-input" placeholder="github_pat_xxxxxxxx">' +
+                    '<div class="ed-row"><button class="ed-main ed-small" id="edTokenSave">儲存並測試</button><button class="ed-ghost ed-small" id="edTokenClear">清除金鑰</button></div>' +
+                    '<p class="ed-tip">作品清單位置：' + GH.repo + '/' + GH.listPath + '</p>' +
+                '</section>';
+            document.body.append(fab, panel);
+
+            const $ = sel => panel.querySelector(sel);
+            const statusEl = $('#edStatus');
+            function status(msg, type) {
+                statusEl.textContent = msg || '';
+                statusEl.className = 'ed-status' + (msg ? ' show ' + (type || '') : '');
+            }
+            function switchTab(name) {
+                panel.querySelectorAll('.ed-tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === name));
+                panel.querySelectorAll('.ed-sec').forEach(s => s.classList.toggle('on', s.dataset.sec === name));
+                if (name === 'manage') { working = currentItems(); renderManage(); }
+            }
+            fab.onclick = () => { panel.classList.add('open'); if (!token) { switchTab('setting'); status('第一次使用，請先貼上 GitHub 金鑰喔～', 'warn'); } };
+            $('.ed-close').onclick = () => panel.classList.remove('open');
+            panel.querySelectorAll('.ed-tabs button').forEach(b => b.onclick = () => switchTab(b.dataset.tab));
+
+            // --- 設定：金鑰 ---
+            $('#edToken').value = token;
+            $('#edTokenSave').onclick = async () => {
+                token = $('#edToken').value.trim();
+                try { localStorage.setItem(TOKEN_KEY, token); } catch (e) {}
+                status('測試連線中…');
+                try {
+                    const r = await fetch('https://api.github.com/repos/' + GH.owner + '/' + GH.repo, { headers: ghHeaders() });
+                    const j = await r.json();
+                    if (!r.ok) throw new Error(r.status === 401 ? '金鑰無效，請重新複製一次' : '找不到 ' + GH.repo + '，請確認金鑰有勾選這個 repository');
+                    if (!j.permissions || !j.permissions.push) throw new Error('金鑰只有讀取權限，請把 Contents 設成 Read and write');
+                    status('連線成功！可以開始上傳作品了 🎉', 'ok');
+                    setTimeout(() => switchTab('add'), 900);
+                } catch (e) { status(e.message, 'err'); }
+            };
+            $('#edTokenClear').onclick = () => {
+                token = ''; $('#edToken').value = '';
+                try { localStorage.removeItem(TOKEN_KEY); } catch (e) {}
+                status('已清除這台裝置上的金鑰', 'ok');
+            };
+
+            // --- 新增作品 ---
+            const drop = $('#edDrop');
+            function addFiles(files) {
+                Array.from(files).filter(f => f.type.startsWith('image/')).forEach(f => {
+                    pending.push({ file: f, url: URL.createObjectURL(f), cat: lastCat, title: '', desc: '' });
+                });
+                renderPending();
+            }
+            $('#edFile').onchange = e => { addFiles(e.target.files); e.target.value = ''; };
+            ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+            ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+            drop.addEventListener('drop', e => addFiles(e.dataTransfer.files));
+
+            function renderPending() {
+                const box = $('#edPending');
+                box.innerHTML = '';
+                pending.forEach((p, i) => {
+                    const row = document.createElement('div');
+                    row.className = 'ed-card';
+                    row.innerHTML =
+                        '<img src="' + p.url + '" alt="">' +
+                        '<div class="ed-fields">' +
+                            '<select>' + catOptions(p.cat) + '</select>' +
+                            '<input class="ed-input" placeholder="作品名稱（例：VTuber-莉比）">' +
+                            '<input class="ed-input" placeholder="小字說明（例：精緻插畫）">' +
+                            '<small>' + p.file.name + '・' + fmtSize(p.file.size) + '</small>' +
+                        '</div>' +
+                        '<button class="ed-x" aria-label="移除">×</button>';
+                    const [sel, t, d] = row.querySelectorAll('select, input');
+                    t.value = p.title; d.value = p.desc;
+                    sel.onchange = () => { p.cat = sel.value; lastCat = sel.value; };
+                    t.oninput = () => p.title = t.value;
+                    d.oninput = () => p.desc = d.value;
+                    row.querySelector('.ed-x').onclick = () => { URL.revokeObjectURL(p.url); pending.splice(i, 1); renderPending(); };
+                    box.appendChild(row);
+                });
+                $('#edUpload').disabled = !pending.length;
+                $('#edUpload').textContent = pending.length ? '上傳 ' + pending.length + ' 張到作品集 ✦' : '上傳到作品集 ✦';
+            }
+
+            $('#edUpload').onclick = async () => {
+                if (!token) { switchTab('setting'); status('請先設定 GitHub 金鑰', 'warn'); return; }
+                if (pending.some(p => !p.title.trim())) { status('每張圖都要填作品名稱喔', 'warn'); return; }
+                const btn = $('#edUpload');
+                btn.disabled = true;
+                const added = [];
+                try {
+                    for (let i = 0; i < pending.length; i++) {
+                        const p = pending[i];
+                        status('處理第 ' + (i + 1) + ' / ' + pending.length + ' 張：' + p.title + '…');
+                        const { blob, ext } = await prepareImage(p.file, $('#edCompress').checked);
+                        const path = CAT_FOLDERS[p.cat] + '/' + makeFileName(p.file.name, ext, i);
+                        const b64 = bytesToBase64(new Uint8Array(await blob.arrayBuffer()));
+                        await ghPut(path, b64, '新增作品：' + p.title + '（?edit 上傳）');
+                        added.push({ cat: p.cat, img: path, title: p.title.trim(), desc: p.desc.trim() });
+                    }
+                    status('更新作品清單中…');
+                    const front = $('#edFront').checked;
+                    await saveList(items => front ? added.concat(items) : items.concat(added), '作品清單：新增 ' + added.length + ' 件');
+                    pending.forEach(p => URL.revokeObjectURL(p.url));
+                    pending = [];
+                    renderPending();
+                    status('上傳完成 🎉 你現在就看得到；其他人大約 5 分鐘後會看到新作品', 'ok');
+                } catch (e) {
+                    status(e.message + (added.length ? '（已上傳 ' + added.length + ' 張圖，但清單還沒更新，請再按一次上傳）' : ''), 'err');
+                    // 已經上傳成功的圖不用重傳：從待上傳清單移除，避免重複
+                    if (added.length) { pending.splice(0, added.length); renderPending(); }
+                } finally {
+                    btn.disabled = !pending.length;
+                }
+            };
+
+            // --- 管理作品 ---
+            $('#edFilter').onchange = renderManage;
+            function renderManage() {
+                const cat = $('#edFilter').value;
+                const box = $('#edList');
+                box.innerHTML = '';
+                const idxs = working.map((it, i) => it.cat === cat ? i : -1).filter(i => i >= 0);
+                if (!idxs.length) { box.innerHTML = '<p class="ed-tip">這一排還沒有作品～</p>'; return; }
+                idxs.forEach((gi, n) => {
+                    const it = working[gi];
+                    const row = document.createElement('div');
+                    row.className = 'ed-card';
+                    row.innerHTML =
+                        '<img src="" alt="" loading="lazy">' +
+                        '<div class="ed-fields"><input class="ed-input"><input class="ed-input"><select>' + catOptions(it.cat) + '</select></div>' +
+                        '<div class="ed-btns"><button title="往前">▲</button><button title="往後">▼</button><button title="刪除" class="del">🗑</button></div>';
+                    row.querySelector('img').src = toImageUrl(it.img);
+                    const [t, d] = row.querySelectorAll('input');
+                    t.value = it.title || ''; d.value = it.desc || '';
+                    t.oninput = () => it.title = t.value;
+                    d.oninput = () => it.desc = d.value;
+                    row.querySelector('select').onchange = e => { it.cat = e.target.value; renderManage(); };
+                    const [up, down, del] = row.querySelectorAll('.ed-btns button');
+                    up.disabled = n === 0;
+                    down.disabled = n === idxs.length - 1;
+                    up.onclick = () => { const o = idxs[n - 1]; [working[o], working[gi]] = [working[gi], working[o]]; renderManage(); };
+                    down.onclick = () => { const o = idxs[n + 1]; [working[o], working[gi]] = [working[gi], working[o]]; renderManage(); };
+                    del.onclick = () => {
+                        if (!del.classList.contains('sure')) { del.classList.add('sure'); del.textContent = '確定?'; return; }
+                        working.splice(gi, 1); renderManage();
+                    };
+                    box.appendChild(row);
+                });
+            }
+            $('#edSave').onclick = async () => {
+                if (!token) { switchTab('setting'); status('請先設定 GitHub 金鑰', 'warn'); return; }
+                status('儲存中…');
+                try {
+                    const snapshot = working.map(it => Object.assign({}, it));
+                    await saveList(() => snapshot, '作品清單：調整作品');
+                    working = currentItems();
+                    renderManage();
+                    status('儲存完成 🎉 其他人大約 5 分鐘後會看到變更', 'ok');
+                } catch (e) { status(e.message, 'err'); }
+            };
+
+            // 進入編輯模式時，直接打開作品展示頁
+            switchPage('portfolio');
+        }
+
 
         // 5. 給「點圖片會直接跳轉影片」的卡片（例如 DC跳跳模板）單獨使用的委託須知彈窗
         const noticePopupOverlay = document.getElementById('noticePopupOverlay');
@@ -1593,6 +3136,14 @@
 
         noticePopupOverlay.addEventListener('click', () => {
             noticePopupOverlay.classList.remove('active');
+        });
+
+        // 6. 圖片保護：在圖片上按右鍵、拖曳圖片時不會有反應
+        document.addEventListener('contextmenu', (e) => {
+            if (e.target.tagName === 'IMG') e.preventDefault();
+        });
+        document.addEventListener('dragstart', (e) => {
+            if (e.target.tagName === 'IMG') e.preventDefault();
         });
     </script>
 </body>
