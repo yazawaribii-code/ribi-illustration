@@ -722,14 +722,25 @@
             --o: #fff;      /* 內圈白色描邊 */
             --o2: #ff8fae;  /* 外圈粉色框線 */
             text-shadow:
-                /* 白色粗描邊（八個方向疊出來） */
-                 3px 0 0 var(--o), -3px 0 0 var(--o), 0 3px 0 var(--o), 0 -3px 0 var(--o),
-                 2px 2px 0 var(--o), -2px 2px 0 var(--o), 2px -2px 0 var(--o), -2px -2px 0 var(--o),
-                /* 粉色外框 */
-                 5px 0 0 var(--o2), -5px 0 0 var(--o2), 0 5px 0 var(--o2), 0 -5px 0 var(--o2),
-                 4px 4px 0 var(--o2), -4px 4px 0 var(--o2), 4px -4px 0 var(--o2), -4px -4px 0 var(--o2),
-                /* 往右下的金色立體陰影 */
-                 6px 7px 0 #ffd76a, 7px 8px 0 #ffd76a;
+                /* 白色描邊（沿著圓周 16 個方向，邊緣圓滑） */
+                 3.0px 0.0px 0.4px var(--o), 2.77px 1.15px 0.4px var(--o), 2.12px 2.12px 0.4px var(--o), 1.15px 2.77px 0.4px var(--o),
+                 0.0px 3.0px 0.4px var(--o), -1.15px 2.77px 0.4px var(--o), -2.12px 2.12px 0.4px var(--o), -2.77px 1.15px 0.4px var(--o),
+                 -3.0px 0.0px 0.4px var(--o), -2.77px -1.15px 0.4px var(--o), -2.12px -2.12px 0.4px var(--o), -1.15px -2.77px 0.4px var(--o),
+                 -0.0px -3.0px 0.4px var(--o), 1.15px -2.77px 0.4px var(--o), 2.12px -2.12px 0.4px var(--o), 2.77px -1.15px 0.4px var(--o),
+                /* 粉色外框（24 個方向） */
+                 5.5px 0.0px 0.4px var(--o2), 5.31px 1.42px 0.4px var(--o2), 4.76px 2.75px 0.4px var(--o2), 3.89px 3.89px 0.4px var(--o2),
+                 2.75px 4.76px 0.4px var(--o2), 1.42px 5.31px 0.4px var(--o2), 0.0px 5.5px 0.4px var(--o2), -1.42px 5.31px 0.4px var(--o2),
+                 -2.75px 4.76px 0.4px var(--o2), -3.89px 3.89px 0.4px var(--o2), -4.76px 2.75px 0.4px var(--o2), -5.31px 1.42px 0.4px var(--o2),
+                 -5.5px 0.0px 0.4px var(--o2), -5.31px -1.42px 0.4px var(--o2), -4.76px -2.75px 0.4px var(--o2), -3.89px -3.89px 0.4px var(--o2),
+                 -2.75px -4.76px 0.4px var(--o2), -1.42px -5.31px 0.4px var(--o2), -0.0px -5.5px 0.4px var(--o2), 1.42px -5.31px 0.4px var(--o2),
+                 2.75px -4.76px 0.4px var(--o2), 3.89px -3.89px 0.4px var(--o2), 4.76px -2.75px 0.4px var(--o2), 5.31px -1.42px 0.4px var(--o2),
+                /* 金色立體陰影：整個外框往右下偏移，邊緣一樣圓滑 */
+                 8.5px 4.0px 0.4px #ffd76a, 8.31px 5.42px 0.4px #ffd76a, 7.76px 6.75px 0.4px #ffd76a, 6.89px 7.89px 0.4px #ffd76a,
+                 5.75px 8.76px 0.4px #ffd76a, 4.42px 9.31px 0.4px #ffd76a, 3.0px 9.5px 0.4px #ffd76a, 1.58px 9.31px 0.4px #ffd76a,
+                 0.25px 8.76px 0.4px #ffd76a, -0.89px 7.89px 0.4px #ffd76a, -1.76px 6.75px 0.4px #ffd76a, -2.31px 5.42px 0.4px #ffd76a,
+                 -2.5px 4.0px 0.4px #ffd76a, -2.31px 2.58px 0.4px #ffd76a, -1.76px 1.25px 0.4px #ffd76a, -0.89px 0.11px 0.4px #ffd76a,
+                 0.25px -0.76px 0.4px #ffd76a, 1.58px -1.31px 0.4px #ffd76a, 3.0px -1.5px 0.4px #ffd76a, 4.42px -1.31px 0.4px #ffd76a,
+                 5.75px -0.76px 0.4px #ffd76a, 6.89px 0.11px 0.4px #ffd76a, 7.76px 1.25px 0.4px #ffd76a, 8.31px 2.58px 0.4px #ffd76a;
         }
         .loader-text span {
             display: inline-block;
