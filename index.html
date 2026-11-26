@@ -634,13 +634,25 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #ffafc7;
+            /* 跟網站同色系：中間柔柔的白光，往外慢慢變成櫻花粉 */
+            background-color: #fff6f9;
+            background-image: radial-gradient(circle at 50% 42%, #ffffff 0%, #fff6f9 38%, #ffe3ec 100%);
             overflow: hidden;
             /* 退場用：畫面像鏡頭收光圈一樣，縮成一個點消失 */
             clip-path: circle(150vmax at 50% 50%);
             transition: clip-path 0.75s cubic-bezier(.75, 0, .25, 1);
         }
         #loader.iris { clip-path: circle(0px at 50% 50%); }
+        /* 便條風車縫線外框（跟網站卡片同款） */
+        #loader::before {
+            content: '';
+            position: absolute;
+            inset: 18px;
+            border: 2.5px dashed #ffc6d6;
+            border-radius: 28px;
+            pointer-events: none;
+        }
+        @media (max-width: 868px) { #loader::before { inset: 12px; border-radius: 22px; } }
 
         .loader-stage {
             position: relative;
@@ -672,7 +684,7 @@
             height: 14px;
             margin-top: -6px;
             border-radius: 50%;
-            background: rgba(214, 72, 120, 0.25);
+            background: rgba(255, 143, 174, 0.22);
             animation: shadow-pulse 2.4s ease-in-out infinite;
             transition: transform 0.4s ease, opacity 0.4s ease;
         }
@@ -691,8 +703,8 @@
             font-size: 1.25rem;
             font-weight: bold;
             letter-spacing: 1px;
-            color: #fff;
-            text-shadow: 0 2px 0 #f0789d;
+            color: var(--primary-pink);
+            text-shadow: 0 2px 0 #fff, 0 3px 0 #ffd3e0;
         }
         .loader-text span {
             display: inline-block;
@@ -707,7 +719,7 @@
             margin-top: 0.1rem;
             font-size: 0.85rem;
             font-weight: bold;
-            color: #c2456f;
+            color: var(--text-muted);
             transition: opacity 0.2s ease;
         }
 
@@ -718,8 +730,9 @@
             height: 10px;
             margin-top: 1rem;
             border-radius: 10px;
-            background-color: rgba(255, 255, 255, 0.55);
-            border: 2px solid #fff;
+            background-color: #fff;
+            border: 2px solid #ffd3e0;
+            box-shadow: 3px 3px 0 #ffe3ec;
             overflow: hidden;
         }
         .loader-bar::after {
@@ -728,7 +741,7 @@
             inset: 0;
             width: 40%;
             border-radius: 10px;
-            background: repeating-linear-gradient(45deg, #ff6f98 0 8px, #ff97b5 8px 16px);
+            background: repeating-linear-gradient(45deg, #ff8fae 0 8px, #ffb3c8 8px 16px);
             animation: bar-slide 1.4s ease-in-out infinite;
         }
         @keyframes bar-slide {
@@ -741,7 +754,7 @@
         .loader-cloud {
             position: absolute;
             width: var(--w, 160px);
-            filter: drop-shadow(0 6px 0 rgba(214, 72, 120, 0.18));
+            filter: drop-shadow(0 5px 0 rgba(255, 143, 174, 0.22));
             animation: cloud-drift var(--t, 7s) ease-in-out infinite alternate;
         }
         .loader-cloud svg { width: 100%; height: auto; display: block; }
@@ -769,7 +782,7 @@
         }
         .loader-tw {
             position: absolute;
-            color: #fff;
+            color: #ffb3c8;
             font-size: var(--s, 1rem);
             animation: star-twinkle 1.4s ease-in-out infinite;
             animation-delay: var(--d, 0s);
@@ -805,8 +818,8 @@
         .loader-text.got {
             font-size: 2rem;
             letter-spacing: 3px;
-            color: #fff;
-            text-shadow: 2px 2px 0 #f0789d, 4px 4px 0 var(--gold-color);
+            color: var(--primary-pink);
+            text-shadow: 2px 2px 0 #fff, 4px 4px 0 #ffd76a;
             animation: got-pop 0.5s cubic-bezier(.34, 1.9, .64, 1) both;
         }
         @keyframes got-pop {
@@ -823,7 +836,7 @@
             height: 80px;
             margin: -40px 0 0 -40px;
             border-radius: 50%;
-            border: 4px solid #fff3a8;
+            border: 4px solid #f4c56a;
             opacity: 0;
             pointer-events: none;
         }
@@ -1288,7 +1301,11 @@
         /* --- 背景漂浮的白色小星星 --- */
         #starField {
             position: fixed;
-            inset: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100vh;
+            height: 100lvh;   /* 手機網址列收起/出現時高度都不變，背景不會跟著跳 */
             z-index: -1;
             pointer-events: none;
             overflow: hidden;
@@ -1310,7 +1327,7 @@
             0%   { transform: translateY(0);      opacity: 0; }
             12%  { opacity: 0.95; }
             85%  { opacity: 0.95; }
-            100% { transform: translateY(-110vh); opacity: 0; }
+            100% { transform: translateY(-110lvh); opacity: 0; }
         }
         @keyframes star-sway {
             from { translate: calc(var(--drift, 20px) * -1) 0; }
@@ -1349,7 +1366,11 @@
         body::before {
             content: '';
             position: fixed;
-            inset: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100vh;
+            height: 100lvh;   /* 手機網址列收起/出現時高度都不變，背景不會跟著跳、下方也不會露出空白 */
             z-index: -1;
             background: url('bg.webp') -6vw center / min(80vw, 1500px) auto no-repeat;
             opacity: 0.45;
@@ -1362,8 +1383,10 @@
             body::before {
                 background-image: url('bg-mobile.webp');
                 background-size: auto 60vh;
+                background-size: auto 60lvh;
                 /* 讓莉比的臉落在畫面左邊約 1/3 的位置 */
                 background-position: calc(35vw - 53vh) bottom;
+                background-position: calc(35vw - 53lvh) bottom;
                 -webkit-mask-image: linear-gradient(to top, #000 25%, transparent 58%);
                 mask-image: linear-gradient(to top, #000 25%, transparent 58%);
             }
