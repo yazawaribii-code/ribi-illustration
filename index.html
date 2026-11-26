@@ -27,6 +27,17 @@
 <meta name="twitter:image" content="https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/portfolio/Ribi/avatar.png">
     
     <style>
+        /* 加載畫面字體：源泉圓體 H（GenSenRounded TW Heavy，SIL OFL 1.1 開源授權）
+           只裁出加載畫面用到的字：Loading. 抓到了！莉比努力抓取中～
+           之後如果要改加載畫面的文字，新增的字需要重新裁切才會是源泉圓體 */
+        @font-face {
+            font-family: 'GenSenRounded H';
+            src: url(data:font/woff2;base64,d09GMgABAAAAABOYABQAAAAAI5gAABM0AAFNDgAAAAAAAAAAAAAAAAAAAAAAAAAAGYFSGi4bgmAchi4GVgCBNAgKCYRlEQwKqjihNgE2AiQDgS4LWgAEIAWDGgcgDC4XJBhaG1Ydo6KkrEpL9hcJNhW1y8E3cX82evMiHFr/aivzx8WsDIcZJW8AHwMuOYye8CoP0BTnCElmLRpLZ/fwCVAHkFSiI6MIfYzC+jpZpfrD0zb/HYKFYiE2O0AwAAkjkQMOOELnwM/ABomlfpFFuyiMRdbpusLBd8tPCrNkonBqEtqZSPOet3/nCpw5x2AuaTuJf4Lv9/vtvbhVvP2QUY2W1NLveOhQyiNkQvIUmP7OT/vV6rybEwUGkmnpmiiVUv6ff8vNm/m3orPo4iuYaVRL5PuIaNo7XBvdJIqGFGiEzGM4tR/NwmjwnuY0QB2W2GoMgbO5yS7jx2faYwECWOeqEOlZlb4UcA4GufuAnBO3ozfIObXW9QScC2udFXAurZ46kEMDACZlFVV9ECD25+YX9gCKxaCaXmd8LKKoqH5W67RN7flvCWvDXd+3DqbZTRLPk8KngqDAdXs3NEKVowPQaRhzIUn0RObV4pzrO83wKEM5zeZU5ZC5o87WqOklJ5J9PCD2duODqwkDnGoA8KgKCSXKXO0BnYaezL6VYk5J5bqqACUnxNpb8sIT56lXxPx+XAacKTDG98tZppioLzvqyq9DoYkFkRyi8sDcKAxP+RyHJORAFWWfSi1ATgsWsC72Z83HWKzYyByY7DPBjm2qImoh+F/Z3DkmISklIytnre4K4hNN93J6csu1VEu1TWqptqxiOXgHw2CwspNS5XdzEw27oWhhgJ+HFmkxp54XnMAk/WYvKAfgHfbp6QIZxwN62kHe6WY45LK+tg9Q3aZu/d9vDQCD6dNDoHhKJdVUvUvDCqqmAOgwtDQ9yRxCmkPbarm0o4sgb94/7sbMwBQrVaaGUx9uAzUZp8VUsy203Fq4bfY45I1PmF/BhYKKhz6aUNpZUpmlVFhalWXUWFad5TRUQXXOH21hywRmEjOFmcbMYGaxcgBRokwFlVRRTQ21PAaRcgBil0MWNARJw7GJpdyi8o5MOTE6gJtK8IBVwr0ekyCvyeDwdg0xO11OiGjPGJ4VNMbT+OUVFJWUVVTV1DUSHpcYMP547OFnhX5GDgKYNxsvPBKqouZO7exQOTulrVNziaOan7oxSMCv2QkA1neCYMz0VAkAtwSCqho1gjy/fZ4sYRoA0I2qmrExFnhGUvTUAygVUyKTPqNVef/jal1rrOxceqpf5xePMwgN8wxrjdds03pfGT2xE6qKTnhaqO5PPX6WYlksiUWxMOa+P5yZuOHBRP8NPdZLFjxOlw1thWjgD8i8QkY84AXCL50YB69AxAqeWmLGtf0tOGBNROOaa5ZYyHIfZoGv4FBEWjQfJx58Cw/i8nHm6QxmJcvC4OOC1zMaxqdKzAx8ysLHJU/MgcFiDDbfjTtriZMx89+4t06wMKGaNXFVf4vx8Ubzi3PgBe8v4+Oa116E/ts04/CEs4o4HJYKbiwt5yB9W154GJwrcJ0dPHhYD/s+EnfWAuOCrWHBuORocUBNeh1eK5wMmBPHYFjivBfUYPVmOxXToXGhuSG7uHjwJV2E2+1DgBtuhRmG1SyVtRfsgnabOOeRHlBTe2HviHi9LK9Tpb4kq2UvjliTZEYokY7cnFdeEEfJtWgGIw6+5tUZzPdeGhjHf2opBov28ViIq+c4CzbrjI8ycLKYvTiRo2GRjatYttKaWCWfm0/p9wGEi4Cjl6YXlF56nwRLT1NjBM9FiNTZm/e+26xvrZ3lNfigiRbEHegeNMzbDCQhcjmk2xEKLmw4o3/fHDvsmFk2GAdrOk4TEhYupmqnDgCbPZB3QDAkBsfhWjzGEQ8TjfDwTpSFY1N81CfuZHSqMWdtyD2yixPANADYT1GB5UIvZCPFqQTDlEh5giw4bcaSb/wkv9xvW1AQJT7ALTCUvCmQHEdez+JB9Ciyj0tvYBxxfTybGRQckeb/Zz9JTxSKBPHMrIjAsBAcSEkIMJJDyFsoAXAgCiIHQ4xMgf2lDg3alJxLbBBKIDPoHCN9SPLby6tYJgfEL0hSIdVUXeWYyPretFFywDXUe4H+mRCvcaKdHoKo1iuoIlHC8mbLabHjy0Dck9mQ3dIzRGxueRzLb0P501B6P3RUkrGIc9ekiFA7APElmaWhSwHgSAL8BGk1tDXSRHxqhDM4OyT7AVmD1IaQFETW+zhRaqijsvNe+SuQvN9v9Psh2YTn44ATJajEZB1aDmEJOPcZIv9o339KAl84SE3HU82xshyG94IjP/kOSRnmN2lWNbzWpom3csDssfeplv5zOs/lZ8gwV5mKdChzPO8ljqqP9TjOAwUMvXKzTq1qr7GskHk7izf6EKjH6gudCdB9uvEsdkZHnTLiC/SroqNW6ZENdw8BfBRJwIq+fZsWOYhvI8AlDB0XushNkMrg3pbg1l2Vlv4QRjiRpbwhLG72cyGWW+s11oTJE4b0WLBmUggj8zavnqnk1wJEEsU4DQDgs/2Dg10uQotbS6dRQG38JhnUAcVUa9l6v5Ase1EDOzxk9VIFrPmXB6N39CJLWSYsrsdZiEcHk7i1dG4z5AeLML9haNHm1tJimJxKXMByuHMf+kFYnfVp+5QFW5EyOOeMR20ezW/3bJIJyzAzpPpRQ8dYYjOWjWMCYoywuMnvxZqgaEozYlva9S6nkpfKg5oMi9/cO6M7qrjWXuNcoULEJoDlCQ9Gmod3NbfvJHjS0NIZvJTuiFOF17Htoc/jWXlfmqwk3svZzqtVH0hTC+y6hyQHhEgvBmuCyvdMJWsmxaQdL4YI7EMA8xgi3gMI1k7mB3maudIfYX4R5sj7UmFeDOsI88kOGGG8KsiteE1LJ0BPgabpgCGmevU4E7EMYQAlUAzBS+wuQT688bqpv6Bp6JTeyWKNu5o7wR+k7UWYdcBd00G6mhh4XVjNtHQlNCHlp6m7K+LJYpz6iz+FuCXBpylVaB01jmgA9p5DZ636cy7t5DixHWPZfVBLHVY8GENIUo+BdDfmHPN8mLU3XBNU6utFwAuvWSGNLWUq5OJSbu+Pay1dIV/4lpZrnDjtbyZDXfi47g4Z8iCGdFVe0WkIcVmyQbjjXbuo5FxXiwvZPU4jHc7RaE1RrsNUW57Ipha4l/EsoBzOiZB1jxq2+acmm3ihEoqmt7ImWiKu8HVxUoWJX8n3wb4haf8CLnOTlu1zb0MbjWP7WKXlr1sSYa281GHtmhprVGfsQkW3t98T5fErh1XQGlVvU99CJNxNcZk9NT99RciPW1OdeirGNfubs1ofx4vqs+MULk0awvFJ3QPy3KC2aS052nhx6t3drkjvrpA0DsQ98iq1It6ZWcG+5gi0Iygdc5TEhtu//HZASNElkbC8SS3dCelsGuyLjSmhEyzFDsSZVOXeAEqfz8Utb9buKU5NV+/yI+Rz+/fv4/Zvr451xkRJkJhoiSwqukAGYFtMRmatYrLoqMIq/qraq8BrzrDXb9+a35UdIFQLA5SgHI3TVxcL1e650qGrnONYE07SGpiQsgv51sJqXs0bbl8iQyzlb6gsCgC7/1qtTpjXUz+fSqWh78hlrRMnr65Je/vW1+QqryjfNuiZISMlu1i/yJ4NxqhmyMbIYn5zrU02V7w3NDrJVPFgZmWHZ2afCZhWbUj1lcmlf4hGXrHQ0VrnFA+5nGJlMdp43DZ5W/c0UVEXOKaJl511fEe8BPx7M62srLxsGpSLhcyfyk2Zxk9bZlgOZqswf4xkNlm3vg0u31b+Pe9PYsKs21y+L/SyxBkgeXjMkg1DPatW0lat8PRbvSIhxb5ood22cBGwXRveHQpderLqcmJl5XypXa15xvmp3DasZaqz8dE5oehU/WXGB1JOVU2/CcRfY8Rh+ONqcG2PO/FZEnIEIvDQbGPNnDkz7PM0eUKf7kjFtq22Lydo5NhgTe5CPu3IDVriCjZ6BiJmao2otky32Y9L7BEdufrc7d9BoXuRsFlRVe4hW8/e3p4qYDExMHTpBD2Dvq5iR0WVAZv8NoS/nJsyvWK5YWXs3+WJM9jK/QRibpF18tFMNJ1sRkpU8j5RRUUlEP6nHj5wuGr/2uiYtpjotfO6xdMV9Go6So9/XTy/+DXVY7XwUW1ZOgD5IKUSvbKDPaokct72thpdAUM2OayCaIR6w7ntaWEng5to6SarsjSGxxqNFlx0y9R+kAZCEP8f3mMoLDpq2mFIxHx7WGRjZBaKRqvRUEzhPyyTRe/zrdkDDbnebL6mSxq15+SikTK5TMaxj2aW3VWrVeq9KpVadUebMuYnBNU+UYEfHOE+qAoKjtY2ieUyeW4Te29BLALV6ogmn7R73620pug9mAYDtLduzB8+pcERzLfPhufryDlgkZYgJRCOtF8MjGfMiRj/J27Av92lWVQZ2qDZMSuWcktfpNc/GFG8sBjkVnyZztUfrrh+REUpyf2p6533UIpKDa0jRJ4ezngQGbPLTq46Szd6G5sSayMPOccMGZgolm+TDJU88lOQfWhGVWZjojy0Ker4zTL/3dnTq+tevaBSCqWSQiz7c7ZpnYZCV0GZhNHM24Oie4j1xnPG4znzczUjS5vPzzO1vaE3xsoVlBbP3+StzhMSqUSSgoWbOG3dapq72rtkashIZFdm/g1dbLcrfmwg/qq4TGfRKfS6GIlaWGBABgv2N26iKYMoalptYim//+Oo2Sq3qSHV3c3dcMWtd4+fMJKeTicZlL7GLtzqbeN+zj9xtdX649tCwNkpP/zYXJaqTdXNFjozShYYjAXrtb6EKT5BBDqhixqwBh5nqDed15AV0VN2hB+AqBH7+qlDQ9AwTBm8exkfVaIo36NWqdWeCCWqVEaMPqQK9ceGbbQeWzWrQy6XyRfUfKppclWcf0dzLX50B1tTcIg53P/4tugBqfifEyFxAKq7zchN7vV1LF7zyZUynGEkvgVrNzWKbiDBeopfMUmhoAyJ3ZKoGjKGWlJCtl6p2VBUpC8626iZKhRM1hfp9K9R+sijr7NUpWw9PJwfmbY1xkgd20eMLt8TqsdC9UqFYkgNagHjZmzCNBg2KWjVhvb1G6S3pYoMZ6kUkUr75x1tMrwr1JAWUNxxLVG5ckNkzHK9CZEiSMmlLbPDmrUiGVCPL/2T7QWGGWIxlPx7O0KJpv7E1FjVcZNShSpNKKrac/QigXYr6xSNMFmGyGSTCbHr8vbEEC4SYudVPq+sI73Ufe+igct/XTG7/Ykehv9gKTJ4Pzeig5JxeI4YlWRkKgpFQhTpgSJgTZtYIXUqkNx4mNcTAjfG0FF6TXlleXlASNFcILrTE/Din+uuD8mhd5lddl1tu/Mk2U//P/+aPCEw/kwfQa+mljHlj2YkpesRWbqlzgfE5RuTWE/Z8WvNEFEi698wZUX4wjWnFAX+JuDarSzf3v/RI7lYVawvVhdnqoB5ab18jFzkZtuabQ38XQ28Q+meD7MqD3gWD52p0aFlfN8l8ny1iFSSU+mYW1ePLFhtYnCTZNxUJCkl11CvVRjZCdEf0kuykkz0LsC4RKKj9HUVlRUVVZOwyXO2pl21HTcft10Hz0uo46mcvDe8vMfcsvKyslWssWx0XzyxV/e+TufQBjYdBel77LEd60aP2LaC9iP/ysC96vxSqURimMrI4EMA5wnlBOm/nIE5kXQCOqHHzdcEhbJL31KkQoIIRDDmuad+7px8SQ6Vapx9jZlSJUFEMwYOhX0B7MOvP/btFskmKJ6GUkRTRPdEwndCS2VVv2VB3cG5fxwRLbk+259/W9FccKsawSfTB8O9AdKWBisUcgW5k1PRo0rHdI0NpR1iox2zzFPrBpv6oSgmTyV1jrMRUWGtc6CzlCMNHx0W/i3dxAwnCdNTj9HviR8y/SbSLsMxQ983lgKJu3mhaVw95o3whHNl7QBLCgu1tbYxCxN/abfVjl4wbXpnekSRwUjVRvMXLuaDVUdah9cqUnsrIpGc9WLh67RG59QJA6xXESIvvaw+TyR8syeQMb1SjCLidIXsni6ZS2h1mmuUtqP+u6pDCr76YyIAAIDr5+o7dke68fvt30sB90gqAIA/rsFQPk//XgAQ2IXkdqZzYtz5+XNrAXCmmaA6uQCWa4E59wHCvATwcn/ASRgoiM7a3AJS8i1QXQsAAhADmWCBvpAIfEjLigQmyc2FLz6w54QufMLhMJ7LoRUejnqKcBdUZwCmxCCFBIiBKMiU7Nicb7tFMKnekJe7gBQkiOU4BjrF/ezlc8+rDQBz8akxlMbcmLNZQ2OdKoun1tMbr+Hm3eHWSkn+gOihp0bwBq2Q6KuePUcnR4cHuF69Oh7ToFOCMd6PWy1mGoaxGpIah22UJI2aIyrjExb10D2L6gXlgYLatqW6b9qWUjVHh030N4jBo2tS9WnweRNJk05IJF8ZDYxGfse8mJrfXSkfQpiEKbAR56ZMtQR3PGU6C/iYt2rUJN0J/U2dYwuola7wLzG3Q1Dbdrvqt1KN+y2lj2pwsQdLAl7pCrPlIrneZuy/3xrUK2qYA0ok7gRc5XbNSQh2gQxNe72ukhn0ZRRrX5a0vC2xGpLe81gjnXOYRbGrPrunIePGJwG45KRl8jYz6gEA) format('woff2');
+            font-weight: 900;
+            font-style: normal;
+            font-display: block;
+        }
+
         :root {
             --bg-color: #fff9fb;       
             --card-bg: #ffffff;        
@@ -694,32 +705,55 @@
         }
 
         /* Loading 文字一個字一個字跳 */
+        /* 綜藝字卡風：超粗圓體＋白色粗描邊＋粉色外框＋金色立體陰影 */
+        .loader-text, .loader-sub {
+            font-family: 'GenSenRounded H', 'Arial Rounded MT Bold', 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+            font-weight: 900;
+        }
         .loader-text {
-            margin-top: 1.2rem;
-            height: 2.4rem;
+            margin-top: 1rem;
+            height: 3.2rem;
             display: flex;
             align-items: center;
-            gap: 2px;
-            font-size: 1.25rem;
-            font-weight: bold;
+            gap: 1px;
+            font-size: 2rem;
             letter-spacing: 1px;
-            color: var(--primary-pink);
-            text-shadow: 0 2px 0 #fff, 0 3px 0 #ffd3e0;
+            color: #ff6f98;
+            --o: #fff;      /* 內圈白色描邊 */
+            --o2: #ff8fae;  /* 外圈粉色框線 */
+            text-shadow:
+                /* 白色粗描邊（八個方向疊出來） */
+                 3px 0 0 var(--o), -3px 0 0 var(--o), 0 3px 0 var(--o), 0 -3px 0 var(--o),
+                 2px 2px 0 var(--o), -2px 2px 0 var(--o), 2px -2px 0 var(--o), -2px -2px 0 var(--o),
+                /* 粉色外框 */
+                 5px 0 0 var(--o2), -5px 0 0 var(--o2), 0 5px 0 var(--o2), 0 -5px 0 var(--o2),
+                 4px 4px 0 var(--o2), -4px 4px 0 var(--o2), 4px -4px 0 var(--o2), -4px -4px 0 var(--o2),
+                /* 往右下的金色立體陰影 */
+                 6px 7px 0 #ffd76a, 7px 8px 0 #ffd76a;
         }
         .loader-text span {
             display: inline-block;
             animation: letter-hop 1.2s ease-in-out infinite;
             animation-delay: calc(var(--i) * 0.08s);
         }
+        /* 字母一個歪左、一個歪右，更有綜藝感 */
+        .loader-text span:nth-child(odd)  { rotate: -6deg; }
+        .loader-text span:nth-child(even) { rotate: 5deg; color: #ff8fae; }
+        .loader-text span:nth-child(n+8)  { color: #ffb340; }   /* 最後的 ... 用金黃色 */
         @keyframes letter-hop {
             0%, 60%, 100% { transform: translateY(0); }
-            30%           { transform: translateY(-8px); }
+            30%           { transform: translateY(-10px) scale(1.12); }
         }
         .loader-sub {
-            margin-top: 0.1rem;
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: var(--text-muted);
+            margin-top: 0.4rem;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            color: #fff;
+            background-color: #ff8fae;
+            padding: 0.2rem 1rem 0.25rem;
+            border-radius: 30px;
+            box-shadow: 3px 3px 0 #ffd3e0;
+            rotate: -2deg;
             transition: opacity 0.2s ease;
         }
 
@@ -728,7 +762,7 @@
             position: relative;
             width: min(220px, 60vw);
             height: 10px;
-            margin-top: 1rem;
+            margin-top: 1.1rem;
             border-radius: 10px;
             background-color: #fff;
             border: 2px solid #ffd3e0;
@@ -816,10 +850,10 @@
 
         /* 「抓到了！」大字跳出來 */
         .loader-text.got {
-            font-size: 2rem;
-            letter-spacing: 3px;
-            color: var(--primary-pink);
-            text-shadow: 2px 2px 0 #fff, 4px 4px 0 #ffd76a;
+            font-size: 2.9rem;
+            letter-spacing: 4px;
+            color: #ff6f98;
+            --o2: #ff6f98;
             animation: got-pop 0.5s cubic-bezier(.34, 1.9, .64, 1) both;
         }
         @keyframes got-pop {
