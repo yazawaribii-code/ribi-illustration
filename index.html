@@ -1134,6 +1134,29 @@
             30% { transform: scale(1.12); color: var(--primary-pink); }
         }
 
+        /* --- 作品圖片：還沒載好時顯示粉色閃光佔位格，載好後柔柔淡入 --- */
+        .portfolio-img {
+            background-color: #ffe3ec;
+            background-image: linear-gradient(110deg, #ffe3ec 30%, #fff7fa 50%, #ffe3ec 70%);
+            background-size: 220% 100%;
+            animation: img-shimmer 1.3s linear infinite;
+        }
+        .portfolio-img.is-loaded {
+            background-image: none;
+            animation: img-in 0.45s ease both;
+        }
+        @keyframes img-shimmer {
+            from { background-position: 120% 0; }
+            to   { background-position: -120% 0; }
+        }
+        @keyframes img-in {
+            from { opacity: 0; filter: blur(6px); }
+            to   { opacity: 1; filter: none; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .portfolio-img, .portfolio-img.is-loaded { animation: none; }
+        }
+
         /* --- 燈箱：左右切換＋張數 --- */
         .lb-nav {
             position: fixed;
@@ -2457,16 +2480,35 @@
             if (/^https?:\/\//.test(path)) return path;
             return IMG_BASE + path.replace(/^\/+/, '').split('/').map(encodeURIComponent).join('/');
         }
+        // 縮圖：作品架只載小縮圖（放在 RibiPortfolio 的 thumbs/ 資料夾），點開放大才載原圖
+        //       找不到縮圖時會自動改用原圖，所以就算還沒上傳縮圖也不會壞掉
+        const THUMB_DIR = 'thumbs/';
+        function thumbUrlFor(fullUrl) {
+            if (!fullUrl.startsWith(IMG_BASE)) return fullUrl;
+            const path = pathFromUrl(fullUrl);
+            return IMG_BASE + (THUMB_DIR + path.replace(/\.[^./]+$/, '.webp')).split('/').map(encodeURIComponent).join('/');
+        }
+        function setImgSources(img, fullUrl) {
+            img.loading = 'lazy';
+            img.decoding = 'async';
+            img.dataset.full = fullUrl;
+            img.setAttribute('onload', "this.classList.add('is-loaded')");
+            img.setAttribute('onerror', "if(this.dataset.full&&this.src!==this.dataset.full){this.src=this.dataset.full}else{this.classList.add('is-loaded')}");
+            img.src = thumbUrlFor(fullUrl);
+        }
+        function prepImg(img) {
+            if (img.dataset.full) return;
+            setImgSources(img, img.src);
+        }
+
         function expandShortItems(grid) {
             grid.querySelectorAll('.portfolio-item[data-img]').forEach(item => {
                 if (item.querySelector('img')) return;
                 const title = item.dataset.title || '';
                 const img = document.createElement('img');
-                img.src = toImageUrl(item.dataset.img);
                 img.alt = title;
                 img.className = 'portfolio-img';
-                img.loading = 'lazy';
-                img.decoding = 'async';
+                setImgSources(img, toImageUrl(item.dataset.img));
                 const info = document.createElement('div');
                 info.className = 'portfolio-info';
                 const h3 = document.createElement('h3');
@@ -2483,6 +2525,7 @@
             if (!grid) return;
             expandShortItems(grid);
             const items = Array.from(grid.querySelectorAll('.portfolio-item'));
+            items.forEach(it => it.querySelectorAll('img.portfolio-img').forEach(prepImg));
             const labels = {};
             document.querySelectorAll('.tab-btn').forEach(tab => {
                 const m = tab.getAttribute('onclick').match(/'(\w+)'/);
@@ -2688,7 +2731,14 @@
 
         function showLightboxItem(dir) {
             const item = lbList[lbIndex];
-            lightboxImg.src = item.querySelector('img').src;
+            const im = item.querySelector('img');
+            const full = im.dataset.full || im.src;
+            lightboxImg.src = im.currentSrc || im.src;          // 先顯示已經載好的縮圖，不用等
+            if (full !== lightboxImg.src) {                       // 高畫質原圖載好後再換上
+                const hi = new Image();
+                hi.onload = () => { if (lbList[lbIndex] === item) lightboxImg.src = full; };
+                hi.src = full;
+            }
             lightboxCaption.innerText = item.querySelector('h3').innerText;
             lbCounter.textContent = (lbIndex + 1) + ' / ' + lbList.length;
 
@@ -2771,7 +2821,7 @@
             const img = el.querySelector('img');
             const it = {
                 cat: SHELF_ORDER.find(c => el.classList.contains(c)) || 'illustration',
-                img: img ? pathFromUrl(img.src) : '',
+                img: img ? pathFromUrl(img.dataset.full || img.src) : '',
                 title: (el.querySelector('h3') || {}).textContent?.trim() || '',
                 desc: (el.querySelector('.portfolio-info p') || {}).textContent?.trim() || ''
             };
@@ -2800,11 +2850,9 @@
                 d.appendChild(btn);
             }
             const img = document.createElement('img');
-            img.src = toImageUrl(it.img);
             img.alt = it.title || '';
             img.className = 'portfolio-img';
-            img.loading = 'lazy';
-            img.decoding = 'async';
+            setImgSources(img, toImageUrl(it.img));
             if (it.pos) img.style.objectPosition = it.pos;
             const play = () => { const p = document.createElement('div'); p.className = 'play-icon'; p.textContent = '▶'; return p; };
             let media = img;
@@ -2864,6 +2912,29 @@
 
         loadGallery();
         requestAnimationFrame(shelfTick);
+
+        // 網站打開後，趁大家在看首頁時，在背景把作品縮圖先下載好（省流量模式時不做）
+        function prefetchThumbs(retry) {
+            if (navigator.connection && navigator.connection.saveData) return;
+            if (!shelves.length) { if (!retry) setTimeout(() => prefetchThumbs(true), 2500); return; }
+            const urls = [];
+            shelves.forEach(s => s.list.forEach(el => {
+                const im = el.querySelector('img.portfolio-img');
+                if (im && !im.classList.contains('is-loaded')) urls.push(im.src);
+            }));
+            let i = 0;
+            const next = () => {
+                if (i >= urls.length) return;
+                const im = new Image();
+                im.decoding = 'async';
+                im.onload = im.onerror = next;
+                im.src = urls[i++];
+            };
+            for (let k = 0; k < 4; k++) next();   // 同時下載 4 張，不會卡到網站其他東西
+        }
+        window.addEventListener('load', () => {
+            setTimeout(() => (window.requestIdleCallback || setTimeout)(() => prefetchThumbs(false)), 2000);
+        });
 
         // ===== ?edit 上傳模式（網址後面加 ?edit 才會出現） =====
         if (/[?&]edit\b/.test(location.search)) {
@@ -2943,6 +3014,20 @@
                 } catch (e) {
                     return { blob: file, ext };
                 }
+            }
+            // 產生作品架用的小縮圖（GIF 動圖不產生，會直接用原圖）
+            async function makeThumb(file) {
+                if (file.type === 'image/gif') return null;
+                try {
+                    const bmp = await createImageBitmap(file);
+                    const scale = Math.min(1, 800 / Math.max(bmp.width, bmp.height));
+                    const c = document.createElement('canvas');
+                    c.width = Math.round(bmp.width * scale);
+                    c.height = Math.round(bmp.height * scale);
+                    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+                    const blob = await new Promise(res => c.toBlob(res, 'image/webp', 0.78));
+                    return blob && blob.type === 'image/webp' ? blob : null;
+                } catch (e) { return null; }
             }
             function makeFileName(original, ext, i) {
                 const base = original.replace(/\.[^.]+$/, '').replace(/[^A-Za-z0-9_-]+/g, '').slice(0, 30) || 'art';
@@ -3075,6 +3160,13 @@
                         const path = CAT_FOLDERS[p.cat] + '/' + makeFileName(p.file.name, ext, i);
                         const b64 = bytesToBase64(new Uint8Array(await blob.arrayBuffer()));
                         await ghPut(path, b64, '新增作品：' + p.title + '（?edit 上傳）');
+                        try {   // 縮圖失敗也沒關係，網站會自動改用原圖
+                            const thumb = await makeThumb(p.file);
+                            if (thumb) {
+                                const tPath = THUMB_DIR + path.replace(/\.[^./]+$/, '.webp');
+                                await ghPut(tPath, bytesToBase64(new Uint8Array(await thumb.arrayBuffer())), '縮圖：' + p.title);
+                            }
+                        } catch (e) { /* 忽略 */ }
                         added.push({ cat: p.cat, img: path, title: p.title.trim(), desc: p.desc.trim() });
                     }
                     status('更新作品清單中…');
@@ -3109,7 +3201,10 @@
                         '<img src="" alt="" loading="lazy">' +
                         '<div class="ed-fields"><input class="ed-input"><input class="ed-input"><select>' + catOptions(it.cat) + '</select></div>' +
                         '<div class="ed-btns"><button title="往前">▲</button><button title="往後">▼</button><button title="刪除" class="del">🗑</button></div>';
-                    row.querySelector('img').src = toImageUrl(it.img);
+                    const rowImg = row.querySelector('img');
+                    const rowFull = toImageUrl(it.img);
+                    rowImg.onerror = () => { rowImg.onerror = null; rowImg.src = rowFull; };
+                    rowImg.src = thumbUrlFor(rowFull);
                     const [t, d] = row.querySelectorAll('input');
                     t.value = it.title || ''; d.value = it.desc || '';
                     t.oninput = () => it.title = t.value;
