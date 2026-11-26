@@ -3204,19 +3204,19 @@
                         const { blob, ext } = await prepareImage(p.file, $('#edCompress').checked);
                         const path = CAT_FOLDERS[p.cat] + '/' + makeFileName(p.file.name, ext, i);
                         const b64 = bytesToBase64(new Uint8Array(await blob.arrayBuffer()));
-                        await ghPut(path, b64, '新增作品：' + p.title + '（?edit 上傳）');
+                        await ghPut(path, b64, 'Add files via upload');
                         try {   // 縮圖失敗也沒關係，網站會自動改用原圖
                             const thumb = await makeThumb(p.file);
                             if (thumb) {
                                 const tPath = THUMB_DIR + path.replace(/\.[^./]+$/, '.webp');
-                                await ghPut(tPath, bytesToBase64(new Uint8Array(await thumb.arrayBuffer())), '縮圖：' + p.title);
+                                await ghPut(tPath, bytesToBase64(new Uint8Array(await thumb.arrayBuffer())), 'Add files via upload');
                             }
                         } catch (e) { /* 忽略 */ }
                         added.push({ cat: p.cat, img: path, title: p.title.trim(), desc: p.desc.trim() });
                     }
                     status('更新作品清單中…');
                     const front = $('#edFront').checked;
-                    await saveList(items => front ? added.concat(items) : items.concat(added), '作品清單：新增 ' + added.length + ' 件');
+                    await saveList(items => front ? added.concat(items) : items.concat(added), 'Update gallery.json');
                     pending.forEach(p => URL.revokeObjectURL(p.url));
                     pending = [];
                     renderPending();
@@ -3272,7 +3272,7 @@
                 status('儲存中…');
                 try {
                     const snapshot = working.map(it => Object.assign({}, it));
-                    await saveList(() => snapshot, '作品清單：調整作品');
+                    await saveList(() => snapshot, 'Update gallery.json');
                     working = currentItems();
                     renderManage();
                     status('儲存完成 🎉 其他人大約 5 分鐘後會看到變更', 'ok');
