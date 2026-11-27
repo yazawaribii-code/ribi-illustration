@@ -9,8 +9,7 @@
     <link rel="icon" type="image/png" href="Favicon.png">
 
     <!-- 優先預載首頁個人頭像，加快圖片顯示速度 -->
-    <link rel="preload" as="image" href="loading.webp" fetchpriority="high">
-    <link rel="preload" as="image" href="loading-done.webp">
+    <link rel="preload" as="image" href="loading-dream.webp" fetchpriority="high">
     <link rel="preload" as="image" href="avatar.webp" fetchpriority="high">
     
     <!-- 更新為最穩定的 Font Awesome 6.6.0 向量圖示庫，確保 X-Twitter 圖示正常顯示 -->
@@ -29,24 +28,13 @@
     
     <style>
         /* 加載畫面字體：源泉圓體 H（GenSenRounded TW Heavy，SIL OFL 1.1 開源授權）
-           只裁出加載畫面用到的字：Loading. 抓到了！莉比努力抓取中～（目前用到：Loading... 畫完了！ 莉比努力繪製中～～；繪製畫完☆ 在下面的補字裡）
-           之後如果要改加載畫面的文字，新增的字需要重新裁切才會是源泉圓體 */
+           只裁出加載畫面用到的字（Loading）；之後如果要改加載畫面的文字，新增的字需要重新裁切才會是源泉圓體 */
         @font-face {
             font-family: 'GenSenRounded H';
             src: url(data:font/woff2;base64,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) format('woff2');
             font-weight: 900;
             font-style: normal;
             font-display: block;
-        }
-        /* 補字：繪、製、畫、完、☆（源泉圓體的原始字型 Source Han Sans / Noto Sans CJK TC Black，SIL OFL 1.1）
-           跟上面同一個字型名稱，瀏覽器遇到這幾個字會自動用這裡的字形 */
-        @font-face {
-            font-family: 'GenSenRounded H';
-            src: url(data:font/woff2;base64,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) format('woff2');
-            font-weight: 900;
-            font-style: normal;
-            font-display: block;
-            unicode-range: U+2606, U+5B8C, U+756B, U+7E6A, U+88FD;
         }
 
         :root {
@@ -667,7 +655,7 @@
         /* 頁尾 */
         footer { text-align: center; padding: 2.5rem; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--light-pink); margin-top: 4rem; }
 
-        /* --- 網頁加載中動畫（跳跳莉比） --- */
+        /* ===== 網頁加載畫面：睡在雲朵上的莉比（夢幻粉色系，靜態圖＋輕輕漂浮） ===== */
         #loader {
             position: fixed;
             inset: 0;
@@ -675,17 +663,21 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* 跟網站同色系：中間柔柔的白光，往外慢慢變成櫻花粉 */
-            background-color: #fff6f9;
-            background-image: radial-gradient(circle at 50% 42%, #ffffff 0%, #fff6f9 38%, #ffe3ec 100%);
             overflow: hidden;
-            /* 退場用：畫面像鏡頭收光圈一樣，縮成一個點消失 */
-            /* 收光圈的中心點：預設畫面正中間；手機版會由 JS 改成首頁頭像的位置 */
-            clip-path: circle(150vmax at var(--ix, 50%) var(--iy, 50%));
-            transition: clip-path 0.75s cubic-bezier(.75, 0, .25, 1);
+            /* 中間奶油白，往外慢慢變成櫻花粉、蜜桃色 */
+            background-color: #fff5f8;
+            background-image:
+                radial-gradient(circle at 50% 44%, #fffdfb 0%, #fff4f7 34%, #ffe6ee 68%, #ffdcd2 100%);
+            transition: opacity 0.8s ease, filter 0.8s ease, transform 0.8s ease;
         }
-        #loader.iris { clip-path: circle(0px at var(--ix, 50%) var(--iy, 50%)); }
-        /* 便條風車縫線外框（跟網站卡片同款） */
+        /* 退場：像夢醒一樣，柔柔地變亮、暈開、淡出 */
+        #loader.fade-out {
+            opacity: 0;
+            filter: blur(8px) brightness(1.08);
+            transform: scale(1.04);
+            pointer-events: none;
+        }
+        /* 粉色車縫線外框（跟網站卡片同款） */
         #loader::before {
             content: '';
             position: absolute;
@@ -693,241 +685,221 @@
             border: 2.5px dashed #ffc6d6;
             border-radius: 28px;
             pointer-events: none;
+            z-index: 1;
         }
         @media (max-width: 868px) { #loader::before { inset: 12px; border-radius: 22px; } }
 
-        .loader-stage {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* 莉比從下面「啵」一聲彈出來，接著在原地開心跳跳（動作本身在 loading.webp 動圖裡） */
-        .loader-ribi {
-            width: min(220px, 56vw);
-            transform-origin: 50% 100%;
-            animation: ribi-pop-in 0.7s cubic-bezier(.34, 1.56, .64, 1) both;
-        }
-        .loader-ribi img {
-            width: 100%; height: auto; display: block;
-            /* 圖片下緣（身體被裁切的地方）柔柔淡出，不會看到一條硬硬的切線 */
-            -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent 100%);
-            mask-image: linear-gradient(to bottom, #000 82%, transparent 100%);
-        }
-        @keyframes ribi-pop-in {
-            0%   { transform: translateY(40px) scale(0.4); opacity: 0; }
-            60%  { opacity: 1; }
-            100% { transform: translateY(0) scale(1); opacity: 1; }
-        }
-
-        /* 地上的小影子（新版開場動畫不需要，先隱藏） */
-        .loader-shadow { display: none; }
-
-        /* Loading 文字一個字一個字跳 */
-        /* 綜藝字卡風：超粗圓體＋白色粗描邊＋粉色外框＋金色立體陰影 */
-        .loader-text, .loader-sub {
-            font-family: 'GenSenRounded H', 'Arial Rounded MT Bold', 'Microsoft JhengHei', 'PingFang TC', sans-serif;
-            font-weight: 900;
-        }
-        .loader-text {
-            margin-top: 1rem;
-            height: 3.2rem;
-            display: flex;
-            align-items: center;
-            gap: 1px;
-            font-size: 2rem;
-            letter-spacing: 1px;
-            color: #ff6f98;
-            --o: #fff;      /* 內圈白色描邊 */
-            --o2: #ff8fae;  /* 外圈粉色框線 */
-            text-shadow:
-                /* 白色描邊（沿著圓周 16 個方向，邊緣圓滑） */
-                 3.0px 0.0px 0.4px var(--o), 2.77px 1.15px 0.4px var(--o), 2.12px 2.12px 0.4px var(--o), 1.15px 2.77px 0.4px var(--o),
-                 0.0px 3.0px 0.4px var(--o), -1.15px 2.77px 0.4px var(--o), -2.12px 2.12px 0.4px var(--o), -2.77px 1.15px 0.4px var(--o),
-                 -3.0px 0.0px 0.4px var(--o), -2.77px -1.15px 0.4px var(--o), -2.12px -2.12px 0.4px var(--o), -1.15px -2.77px 0.4px var(--o),
-                 -0.0px -3.0px 0.4px var(--o), 1.15px -2.77px 0.4px var(--o), 2.12px -2.12px 0.4px var(--o), 2.77px -1.15px 0.4px var(--o),
-                /* 粉色外框（24 個方向） */
-                 5.5px 0.0px 0.4px var(--o2), 5.31px 1.42px 0.4px var(--o2), 4.76px 2.75px 0.4px var(--o2), 3.89px 3.89px 0.4px var(--o2),
-                 2.75px 4.76px 0.4px var(--o2), 1.42px 5.31px 0.4px var(--o2), 0.0px 5.5px 0.4px var(--o2), -1.42px 5.31px 0.4px var(--o2),
-                 -2.75px 4.76px 0.4px var(--o2), -3.89px 3.89px 0.4px var(--o2), -4.76px 2.75px 0.4px var(--o2), -5.31px 1.42px 0.4px var(--o2),
-                 -5.5px 0.0px 0.4px var(--o2), -5.31px -1.42px 0.4px var(--o2), -4.76px -2.75px 0.4px var(--o2), -3.89px -3.89px 0.4px var(--o2),
-                 -2.75px -4.76px 0.4px var(--o2), -1.42px -5.31px 0.4px var(--o2), -0.0px -5.5px 0.4px var(--o2), 1.42px -5.31px 0.4px var(--o2),
-                 2.75px -4.76px 0.4px var(--o2), 3.89px -3.89px 0.4px var(--o2), 4.76px -2.75px 0.4px var(--o2), 5.31px -1.42px 0.4px var(--o2),
-                /* 金色立體陰影：整個外框往右下偏移，邊緣一樣圓滑 */
-                 8.5px 4.0px 0.4px #ffd76a, 8.31px 5.42px 0.4px #ffd76a, 7.76px 6.75px 0.4px #ffd76a, 6.89px 7.89px 0.4px #ffd76a,
-                 5.75px 8.76px 0.4px #ffd76a, 4.42px 9.31px 0.4px #ffd76a, 3.0px 9.5px 0.4px #ffd76a, 1.58px 9.31px 0.4px #ffd76a,
-                 0.25px 8.76px 0.4px #ffd76a, -0.89px 7.89px 0.4px #ffd76a, -1.76px 6.75px 0.4px #ffd76a, -2.31px 5.42px 0.4px #ffd76a,
-                 -2.5px 4.0px 0.4px #ffd76a, -2.31px 2.58px 0.4px #ffd76a, -1.76px 1.25px 0.4px #ffd76a, -0.89px 0.11px 0.4px #ffd76a,
-                 0.25px -0.76px 0.4px #ffd76a, 1.58px -1.31px 0.4px #ffd76a, 3.0px -1.5px 0.4px #ffd76a, 4.42px -1.31px 0.4px #ffd76a,
-                 5.75px -0.76px 0.4px #ffd76a, 6.89px 0.11px 0.4px #ffd76a, 7.76px 1.25px 0.4px #ffd76a, 8.31px 2.58px 0.4px #ffd76a;
-        }
-        .loader-text span {
-            display: inline-block;
-            animation: letter-hop 1.2s ease-in-out infinite;
-            animation-delay: calc(var(--i) * 0.08s);
-        }
-        /* 字母一個歪左、一個歪右，更有綜藝感 */
-        .loader-text span:nth-child(odd)  { rotate: -6deg; }
-        .loader-text span:nth-child(even) { rotate: 5deg; color: #ff8fae; }
-        .loader-text span:nth-child(n+8)  { color: #ffb340; }   /* 最後的 ... 用金黃色 */
-        @keyframes letter-hop {
-            0%, 60%, 100% { transform: translateY(0); }
-            30%           { transform: translateY(-10px) scale(1.12); }
-        }
-        .loader-sub {
-            margin-top: 0.4rem;
-            font-size: 1rem;
-            letter-spacing: 1px;
-            color: #fff;
-            background-color: #ff8fae;
-            padding: 0.2rem 1rem 0.25rem;
-            border-radius: 30px;
-            box-shadow: 3px 3px 0 #ffd3e0;
-            transition: opacity 0.2s ease;
-        }
-
-        /* 進度條 */
-        .loader-bar {
-            position: relative;
-            width: min(220px, 60vw);
-            height: 10px;
-            margin-top: 1.1rem;
-            border-radius: 10px;
-            background-color: #fff;
-            border: 2px solid #ffd3e0;
-            box-shadow: 3px 3px 0 #ffe3ec;
-            overflow: hidden;
-        }
-        .loader-bar::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            width: 40%;
-            border-radius: 10px;
-            background: repeating-linear-gradient(45deg, #ff8fae 0 8px, #ffb3c8 8px 16px);
-            animation: bar-slide 1.4s ease-in-out infinite;
-        }
-        @keyframes bar-slide {
-            from { transform: translateX(-100%); }
-            to   { transform: translateX(250%); }
-        }
-
+        /* 背景的柔光泡泡：粉、蜜桃、奶油黃、淡天空藍，慢慢飄 */
         .loader-sky { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+        .loader-bokeh {
+            position: absolute;
+            width: var(--z, 120px);
+            height: var(--z, 120px);
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--c, #ffc6d6) 0%, transparent 70%);
+            opacity: 0.55;
+            filter: blur(2px);
+            animation: bokeh-drift var(--t, 9s) ease-in-out infinite alternate;
+            animation-delay: var(--d, 0s);
+        }
+        @keyframes bokeh-drift {
+            from { transform: translate(0, 0) scale(1); }
+            to   { transform: translate(var(--dx, 14px), var(--dy, -18px)) scale(1.12); }
+        }
 
-        /* --- 加載畫面的卡通星星（一閃一閃） --- */
+        /* 一閃一閃的小星星、小愛心 */
         .loader-star {
             position: absolute;
-            width: var(--w, 34px);
-            animation: star-twinkle var(--t, 1.8s) ease-in-out infinite;
+            width: var(--w, 26px);
+            animation: star-twinkle var(--t, 2.4s) ease-in-out infinite;
             animation-delay: var(--d, 0s);
         }
         .loader-star svg { width: 100%; height: auto; display: block; overflow: visible; }
         @keyframes star-twinkle {
-            0%, 100% { transform: scale(0.75) rotate(-10deg); opacity: 0.7; }
-            50%      { transform: scale(1.1) rotate(10deg);   opacity: 1; }
+            0%, 100% { transform: scale(0.7) rotate(-8deg); opacity: 0.55; }
+            50%      { transform: scale(1.05) rotate(8deg); opacity: 1; }
         }
         .loader-tw {
             position: absolute;
             color: #ffb3c8;
             font-size: var(--s, 1rem);
-            animation: star-twinkle 1.4s ease-in-out infinite;
+            text-shadow: 0 0 6px #fff;
+            animation: star-twinkle 2s ease-in-out infinite;
             animation-delay: var(--d, 0s);
         }
+        .loader-tw.blue { color: #a9d8f2; }
+        .loader-tw.gold { color: #ffd98a; }
 
-        /* ===== 戲劇性退場：畫完了！ → 莉比原地開心彈一下 → 畫面收光圈 ===== */
-
-        /* 莉比到了的瞬間，整個舞台震一下 */
-        #loader.caught .loader-stage { animation: stage-shake 0.4s ease; }
-        @keyframes stage-shake {
-            0%, 100% { transform: translate(0, 0); }
-            20% { transform: translate(-6px, 3px); }
-            40% { transform: translate(6px, -3px); }
-            60% { transform: translate(-4px, 2px); }
-            80% { transform: translate(3px, -1px); }
-        }
-
-        /* 畫完了！莉比留在原地開心地彈一下，接著畫面收光圈 */
-        #loader.caught .loader-ribi {
-            animation: ribi-happy 0.75s ease-out forwards;
-        }
-        @keyframes ribi-happy {
-            0%   { transform: translateY(0) scale(1, 1); }
-            25%  { transform: translateY(6px) scale(1.08, 0.9); }
-            55%  { transform: translateY(-16px) scale(0.96, 1.06); }
-            80%  { transform: translateY(0) scale(1.03, 0.97); }
-            100% { transform: translateY(0) scale(1, 1); }
-        }
-
-        #loader.caught .loader-shadow { animation: none; transform: scaleX(0); opacity: 0; }
-        #loader.caught .loader-sub { opacity: 0; }
-        #loader.caught .loader-bar::after { animation: none; transform: none; width: 100%; }
-
-        /* 「畫完了！」大字跳出來 */
-        .loader-text.got {
-            font-size: 2.9rem;
-            letter-spacing: 4px;
-            color: #ff6f98;
-            --o2: #ff6f98;
-            animation: got-pop 0.5s cubic-bezier(.34, 1.9, .64, 1) both;
-        }
-        @keyframes got-pop {
-            from { transform: scale(0.2); opacity: 0; }
-            to   { transform: scale(1); opacity: 1; }
-        }
-
-        /* 金色衝擊波圓圈 */
-        .loader-ring {
+        /* 慢慢往上飄的小愛心 */
+        .loader-heart {
             position: absolute;
-            left: 50%;
-            top: calc(min(220px, 56vw) * 0.55);
-            width: 80px;
-            height: 80px;
-            margin: -40px 0 0 -40px;
-            border-radius: 50%;
-            border: 4px solid #f4c56a;
+            bottom: -30px;
+            width: var(--w, 16px);
             opacity: 0;
-            pointer-events: none;
+            animation: heart-rise var(--t, 9s) linear infinite;
+            animation-delay: var(--d, 0s);
         }
-        #loader.caught .loader-ring { animation: ring-blast 0.7s ease-out forwards; }
-        @keyframes ring-blast {
-            0%   { transform: scale(0.2); opacity: 1; border-width: 10px; }
-            100% { transform: scale(5);   opacity: 0; border-width: 1px; }
+        .loader-heart svg { width: 100%; height: auto; display: block; }
+        @keyframes heart-rise {
+            0%   { transform: translate(0, 0) rotate(-10deg); opacity: 0; }
+            15%  { opacity: 0.85; }
+            50%  { transform: translate(14px, -50vh) rotate(8deg); }
+            85%  { opacity: 0.7; }
+            100% { transform: translate(-8px, -105vh) rotate(-6deg); opacity: 0; }
         }
 
-        /* 金色星星爆炸（由 JS 產生） */
-        .loader-spark {
+        .loader-stage {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: stage-in 0.9s ease-out both;
+        }
+        @keyframes stage-in {
+            from { opacity: 0; transform: translateY(14px) scale(0.96); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /* 莉比：靜態圖，只在雲上輕輕漂浮 */
+        .loader-ribi {
+            position: relative;
+            width: min(340px, 70vw);
+            animation: ribi-float 3.8s ease-in-out infinite;
+        }
+        /* 莉比身後一圈柔柔的光 */
+        .loader-ribi::before {
+            content: '';
             position: absolute;
             left: 50%;
-            top: calc(min(220px, 56vw) * 0.55);
-            font-size: var(--s, 1.4rem);
-            line-height: 1;
-            color: var(--gold-color);
-            text-shadow: 0 0 6px #fff, 0 0 12px rgba(230, 169, 59, 0.6);
-            pointer-events: none;
-            animation: spark-fly 0.85s cubic-bezier(.15, .8, .3, 1) forwards;
+            top: 52%;
+            width: 125%;
+            aspect-ratio: 1;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(255, 228, 236, 0.6) 40%, transparent 68%);
+            z-index: -1;
+            animation: glow-breathe 3.8s ease-in-out infinite;
         }
-        @keyframes spark-fly {
-            0%   { transform: translate(-50%, -50%) scale(0.3) rotate(0deg); opacity: 1; }
-            70%  { opacity: 1; }
-            100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1) rotate(200deg); opacity: 0; }
+        .loader-ribi img { width: 100%; height: auto; display: block; }
+        @keyframes ribi-float {
+            0%, 100% { transform: translateY(0) rotate(-1deg); }
+            50%      { transform: translateY(-9px) rotate(1deg); }
+        }
+        @keyframes glow-breathe {
+            0%, 100% { opacity: 0.85; transform: translate(-50%, -50%) scale(0.96); }
+            50%      { opacity: 1;    transform: translate(-50%, -50%) scale(1.04); }
         }
 
-        /* 光圈打開後，網頁內容稍微「彈」進來 */
-        body.reveal .page-content.active { animation: page-pop 0.8s cubic-bezier(.34, 1.4, .64, 1); }
+        /* 睡覺的 zZz，從莉比頭上慢慢飄起來 */
+        .loader-zzz {
+            position: absolute;
+            left: 6%;
+            top: 4%;
+            pointer-events: none;
+        }
+        .loader-zzz span {
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-family: 'Arial Rounded MT Bold', 'Nunito', 'PingFang TC', sans-serif;
+            font-weight: 900;
+            color: #ff9fbb;
+            font-size: var(--s, 1.2rem);
+            text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;
+            opacity: 0;
+            animation: zzz-float 3s ease-out infinite;
+            animation-delay: var(--d, 0s);
+        }
+        .loader-zzz span:nth-child(2) { color: #8fcbee; }
+        @keyframes zzz-float {
+            0%   { transform: translate(0, 0) rotate(-10deg) scale(0.6); opacity: 0; }
+            20%  { opacity: 1; }
+            100% { transform: translate(-26px, -46px) rotate(12deg) scale(1.15); opacity: 0; }
+        }
+
+        /* Loading 文字：粉色圓圓字＋白色描邊＋柔光，一個字一個字輕輕晃 */
+        .loader-text {
+            margin-top: 0.6rem;
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            font-family: 'GenSenRounded H', 'Arial Rounded MT Bold', 'PingFang TC', sans-serif;
+            font-weight: 900;
+            font-size: 1.7rem;
+            letter-spacing: 1.5px;
+            color: #ff8fae;
+            --o: #fff;
+            text-shadow:
+                 2.5px 0 0 var(--o), -2.5px 0 0 var(--o), 0 2.5px 0 var(--o), 0 -2.5px 0 var(--o),
+                 1.8px 1.8px 0 var(--o), -1.8px 1.8px 0 var(--o), 1.8px -1.8px 0 var(--o), -1.8px -1.8px 0 var(--o),
+                 0 4px 10px rgba(255, 143, 174, 0.35);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .loader-text span {
+            display: inline-block;
+            animation: letter-wave 2.4s ease-in-out infinite;
+            animation-delay: calc(var(--i) * 0.12s);
+        }
+        .loader-text span:nth-child(even) { color: #ffa3bd; }
+        @keyframes letter-wave {
+            0%, 70%, 100% { transform: translateY(0); }
+            35%           { transform: translateY(-5px); }
+        }
+        /* Loading 後面的三顆小愛心（代替 ...） */
+        .loader-dots { display: inline-flex; gap: 5px; margin-left: 6px; margin-bottom: 0.45rem; }
+        .loader-dots svg {
+            width: 15px;
+            height: 15px;
+            animation: dot-pop 1.5s ease-in-out infinite;
+            filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 1px #fff);
+        }
+        .loader-dots svg:nth-child(2) { animation-delay: 0.2s; }
+        .loader-dots svg:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dot-pop {
+            0%, 60%, 100% { transform: scale(0.8); opacity: 0.7; }
+            30%           { transform: scale(1.15); opacity: 1; }
+        }
+
+        /* 載入完成：莉比開心晃一下、文字淡出、粉色小愛心從她身邊冒出來 */
+        #loader.done .loader-text { opacity: 0; transform: translateY(6px); }
+        #loader.done .loader-ribi { animation: ribi-wake 0.7s ease-out forwards; }
+        @keyframes ribi-wake {
+            0%   { transform: translateY(0) scale(1); }
+            40%  { transform: translateY(-12px) scale(1.04); }
+            100% { transform: translateY(-4px) scale(1.02); }
+        }
+        .loader-pop {
+            position: absolute;
+            left: 50%;
+            top: 42%;
+            width: var(--w, 18px);
+            pointer-events: none;
+            z-index: 3;
+            animation: pop-fly 1s cubic-bezier(.2, .8, .3, 1) forwards;
+        }
+        .loader-pop svg { width: 100%; height: auto; display: block; }
+        @keyframes pop-fly {
+            0%   { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+            25%  { opacity: 1; }
+            100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1); opacity: 0; }
+        }
+
+        /* 加載畫面消失後，網頁內容柔柔地浮上來 */
+        body.reveal .page-content.active { animation: page-pop 0.8s ease-out; }
         @keyframes page-pop {
-            from { transform: scale(0.94); }
-            to   { transform: scale(1); }
+            from { opacity: 0.4; transform: translateY(10px) scale(0.98); }
+            to   { opacity: 1; transform: none; }
         }
         /* 退場結束後，停住目前頁面的動畫，避免淡入動畫重播造成閃白、跳動 */
         .page-content.no-anim { animation: none !important; }
 
-        /* 喜歡「減少動態效果」的使用者：關掉晃動與爆炸 */
+        /* 喜歡「減少動態效果」的使用者：只保留靜態畫面 */
         @media (prefers-reduced-motion: reduce) {
-            .loader-ribi, .loader-shadow, .loader-text span, .loader-bar::after,
-            #loader.caught .loader-ribi, #loader.caught .loader-stage, .loader-spark,
-            body.reveal .page-content.active { animation: none; }
+            .loader-bokeh, .loader-star, .loader-tw, .loader-heart, .loader-stage,
+            .loader-ribi, .loader-ribi::before, .loader-zzz, .loader-text span, .loader-dots svg,
+            #loader.done .loader-ribi, .loader-pop, body.reveal .page-content.active { animation: none; }
+            .loader-heart, .loader-zzz, .loader-pop { display: none; }
         }
 
         /* 背景圖上的文字保持清楚：首頁文字加毛玻璃底，標題加白色光暈 */
@@ -1777,45 +1749,70 @@
     <!-- 背景漂浮的白色小星星（由下方 JS 產生） -->
     <div id="starField" aria-hidden="true"></div>
 
-    <!-- 網頁加載中動畫 -->
+    <!-- 網頁加載畫面：睡在雲朵上的莉比 -->
     <div id="loader" aria-label="網頁載入中" role="status">
-        <!-- 星星的形狀（只定義一次，下面重複使用） -->
+        <!-- 星星、愛心的形狀（只定義一次，下面重複使用） -->
         <svg width="0" height="0" style="position:absolute" aria-hidden="true">
             <defs>
                 <symbol id="starShape" viewBox="-12 -12 24 24">
                     <path d="M0 -10 L2.9 -3.6 L9.5 -3.1 L4.6 1.4 L5.9 8.1 L0 4.7 L-5.9 8.1 L-4.6 1.4 L-9.5 -3.1 L-2.9 -3.6 Z"
-                          fill="#fff3a0" stroke="#f27ca0" stroke-width="1.6" stroke-linejoin="round"/>
+                          fill="#fff6c9" stroke="#ffb3c8" stroke-width="1.6" stroke-linejoin="round"/>
                     <circle cx="-2.2" cy="-1.5" r="1.1" fill="#fff"/>
+                </symbol>
+                <symbol id="heartShape" viewBox="0 0 24 22">
+                    <path d="M12 21 C5 15.5 1 11.8 1 7.2 C1 3.7 3.7 1 7 1 C9.1 1 11 2.1 12 3.8 C13 2.1 14.9 1 17 1 C20.3 1 23 3.7 23 7.2 C23 11.8 19 15.5 12 21 Z"
+                          fill="currentColor" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/>
+                    <ellipse cx="7" cy="6.5" rx="2.2" ry="1.4" fill="#fff" opacity="0.75" transform="rotate(-30 7 6.5)"/>
                 </symbol>
             </defs>
         </svg>
 
         <div class="loader-sky" aria-hidden="true">
+            <!-- 柔光泡泡 -->
+            <div class="loader-bokeh" style="left: 8%;  top: 12%; --z: 180px; --c: #ffd0dd; --t: 10s;"></div>
+            <div class="loader-bokeh" style="right: 6%; top: 18%; --z: 140px; --c: #ffe0cc; --t: 8s; --d: -3s; --dx: -16px;"></div>
+            <div class="loader-bokeh" style="left: 18%; bottom: 10%; --z: 150px; --c: #d6ecfa; --t: 11s; --d: -5s;"></div>
+            <div class="loader-bokeh" style="right: 14%; bottom: 14%; --z: 200px; --c: #ffd6e2; --t: 9s; --d: -2s; --dy: 16px;"></div>
+            <div class="loader-bokeh" style="left: 46%; top: 4%; --z: 110px; --c: #fff0c4; --t: 12s; --d: -6s;"></div>
 
-            <div class="loader-star" style="left: 26%; top: 14%; --w: 38px; --d: 0s;"><svg><use href="#starShape"/></svg></div>
-            <div class="loader-star" style="right: 24%; top: 8%;  --w: 28px; --d: 0.6s;"><svg><use href="#starShape"/></svg></div>
-            <div class="loader-star" style="left: 14%; top: 48%; --w: 26px; --d: 1.1s;"><svg><use href="#starShape"/></svg></div>
-            <div class="loader-star" style="right: 14%; top: 50%; --w: 40px; --d: 0.3s;"><svg><use href="#starShape"/></svg></div>
-            <div class="loader-star" style="left: 30%; bottom: 10%; --w: 30px; --d: 0.9s;"><svg><use href="#starShape"/></svg></div>
-            <div class="loader-star" style="right: 30%; bottom: 22%; --w: 24px; --d: 1.4s;"><svg><use href="#starShape"/></svg></div>
+            <!-- 小星星 -->
+            <div class="loader-star" style="left: 22%; top: 16%; --w: 30px; --d: 0s;"><svg><use href="#starShape"/></svg></div>
+            <div class="loader-star" style="right: 22%; top: 12%; --w: 22px; --d: 0.8s;"><svg><use href="#starShape"/></svg></div>
+            <div class="loader-star" style="left: 12%; top: 55%; --w: 20px; --d: 1.4s;"><svg><use href="#starShape"/></svg></div>
+            <div class="loader-star" style="right: 13%; top: 52%; --w: 28px; --d: 0.4s;"><svg><use href="#starShape"/></svg></div>
 
-            <span class="loader-tw" style="left: 40%; top: 10%; --s: 1.1rem; --d: 0.2s;">✦</span>
-            <span class="loader-tw" style="right: 38%; top: 30%; --s: 0.8rem; --d: 0.7s;">✦</span>
-            <span class="loader-tw" style="left: 20%; top: 70%; --s: 0.9rem; --d: 1.2s;">✦</span>
-            <span class="loader-tw" style="right: 20%; top: 72%; --s: 1.2rem; --d: 0.5s;">✦</span>
+            <span class="loader-tw" style="left: 36%; top: 9%; --s: 1rem; --d: 0.2s;">✦</span>
+            <span class="loader-tw blue" style="right: 34%; top: 24%; --s: 0.8rem; --d: 0.9s;">✦</span>
+            <span class="loader-tw gold" style="left: 24%; top: 74%; --s: 0.9rem; --d: 1.3s;">✦</span>
+            <span class="loader-tw" style="right: 24%; top: 76%; --s: 1.1rem; --d: 0.6s;">✦</span>
+            <span class="loader-tw blue" style="left: 7%; top: 34%; --s: 0.75rem; --d: 1.7s;">✦</span>
+            <span class="loader-tw gold" style="right: 8%; top: 36%; --s: 0.85rem; --d: 0.3s;">✦</span>
+
+            <!-- 慢慢往上飄的小愛心 -->
+            <div class="loader-heart" style="left: 14%; color: #ffb3c8; --w: 16px; --t: 10s; --d: 0s;"><svg><use href="#heartShape"/></svg></div>
+            <div class="loader-heart" style="left: 32%; color: #ffd0b8; --w: 12px; --t: 12s; --d: -4s;"><svg><use href="#heartShape"/></svg></div>
+            <div class="loader-heart" style="left: 70%; color: #ffc6d6; --w: 18px; --t: 11s; --d: -7s;"><svg><use href="#heartShape"/></svg></div>
+            <div class="loader-heart" style="left: 86%; color: #ffb3c8; --w: 13px; --t: 9s; --d: -2s;"><svg><use href="#heartShape"/></svg></div>
+            <div class="loader-heart" style="left: 54%; color: #b9def4; --w: 11px; --t: 13s; --d: -9s;"><svg><use href="#heartShape"/></svg></div>
         </div>
 
         <div class="loader-stage">
-            <div class="loader-ring"></div>
             <div class="loader-ribi">
-                <img src="loading.webp" alt="莉比 載入中" id="loaderRibiImg" fetchpriority="high" decoding="async">
+                <img src="loading-dream.webp" alt="莉比" width="640" height="536" fetchpriority="high" decoding="async">
+                <div class="loader-zzz" aria-hidden="true">
+                    <span style="--s: 1.1rem; --d: 0s;">z</span>
+                    <span style="--s: 1.4rem; --d: 1s;">z</span>
+                    <span style="--s: 1.75rem; --d: 2s;">Z</span>
+                </div>
             </div>
-            <div class="loader-shadow"></div>
             <div class="loader-text" id="loaderText">
-                <span style="--i:0">L</span><span style="--i:1">o</span><span style="--i:2">a</span><span style="--i:3">d</span><span style="--i:4">i</span><span style="--i:5">n</span><span style="--i:6">g</span><span style="--i:7">.</span><span style="--i:8">.</span><span style="--i:9">.</span>
+                <span style="--i:0">L</span><span style="--i:1">o</span><span style="--i:2">a</span><span style="--i:3">d</span><span style="--i:4">i</span><span style="--i:5">n</span><span style="--i:6">g</span>
+                <span class="loader-dots" aria-hidden="true">
+                    <svg style="color:#ff8fae"><use href="#heartShape"/></svg>
+                    <svg style="color:#ffb79a"><use href="#heartShape"/></svg>
+                    <svg style="color:#ffa3bd"><use href="#heartShape"/></svg>
+                </span>
             </div>
-            <div class="loader-sub">莉比努力繪製中～～</div>
-            <div class="loader-bar"></div>
         </div>
     </div>
 
@@ -2618,35 +2615,30 @@
     </footer>
 
     <script>
-        // 0. 網頁加載完成後：畫完了！ → 莉比開心彈一下 → 畫面收光圈，顯示網頁
+        // 0. 網頁加載完成後：莉比開心晃一下、冒出小愛心 → 畫面柔柔地淡出，顯示網頁
         (function () {
             const loader = document.getElementById('loader');
             const stage = loader.querySelector('.loader-stage');
-            const text = document.getElementById('loaderText');
-            // 加載中：loading.webp（莉比努力畫畫）；畫完了：loading-done.webp（>< 開心跳跳）
-            const ribiImg = document.getElementById('loaderRibiImg');
-            const doneImg = new Image();
-            doneImg.src = 'loading-done.webp';
-            const MIN_SHOW = 1200;   // 至少顯示 1.2 秒，讓大家看到可愛的莉比
+            const MIN_SHOW = 1400;   // 至少顯示 1.4 秒，讓大家看到睡在雲上的莉比
             const MAX_WAIT = 6000;   // 網路很慢時，最多等 6 秒就先顯示網頁
             const start = Date.now();
             let done = false;
 
-            // 金色星星往四面八方噴出去
-            function sparkBurst() {
-                const chars = ['✦', '★', '✧', '✦'];
-                const count = 16;
+            // 粉色、蜜桃色、淡天空藍的小愛心往四周飄出去
+            function heartBurst() {
+                const colors = ['#ff8fae', '#ffb3c8', '#ffb79a', '#ffc6d6', '#a9d8f2'];
+                const count = 12;
                 for (let i = 0; i < count; i++) {
-                    const s = document.createElement('span');
-                    s.className = 'loader-spark';
-                    s.textContent = chars[i % chars.length];
-                    const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.4;
-                    const dist = 110 + Math.random() * 90;
-                    s.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
-                    s.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
-                    s.style.setProperty('--s', (0.9 + Math.random() * 1.1).toFixed(2) + 'rem');
-                    if (i % 3 === 0) s.style.color = '#ffd76a';
-                    stage.appendChild(s);
+                    const h = document.createElement('div');
+                    h.className = 'loader-pop';
+                    h.style.color = colors[i % colors.length];
+                    const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
+                    const dist = 100 + Math.random() * 70;
+                    h.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+                    h.style.setProperty('--dy', Math.sin(angle) * dist - 20 + 'px');
+                    h.style.setProperty('--w', (12 + Math.random() * 10).toFixed(0) + 'px');
+                    h.innerHTML = '<svg viewBox="0 0 24 22"><use href="#heartShape"/></svg>';
+                    stage.appendChild(h);
                 }
             }
 
@@ -2655,53 +2647,22 @@
                 done = true;
                 const wait = Math.max(0, MIN_SHOW - (Date.now() - start));
                 setTimeout(() => {
-                    // 等「畫完了」的圖準備好再換（最多等 0.8 秒，不會卡住）
-                    const ready = doneImg.decode ? doneImg.decode().catch(() => {}) : Promise.resolve();
-                    Promise.race([ready, new Promise(r => setTimeout(r, 800))]).then(showDone);
+                    loader.classList.add('done');
+                    heartBurst();
+
+                    setTimeout(() => {
+                        loader.classList.add('fade-out');
+                        document.body.classList.remove('loading');
+                        document.body.classList.add('reveal');
+                    }, 550);
+
+                    setTimeout(() => {
+                        const activePage = document.querySelector('.page-content.active');
+                        if (activePage) activePage.classList.add('no-anim');
+                        loader.remove();
+                        document.body.classList.remove('reveal');
+                    }, 550 + 850);
                 }, wait);
-            }
-
-            // 手機版：光圈縮成的那個點，剛好落在首頁的圓形頭像中間
-            function aimIrisAtAvatar() {
-                if (!window.matchMedia('(max-width: 868px)').matches) return;
-                const home = document.getElementById('about');
-                const av = document.querySelector('#about .hero-avatar img');
-                if (!home || !home.classList.contains('active') || !av) return;
-                const r = av.getBoundingClientRect();
-                if (!r.width || r.bottom < 0 || r.top > window.innerHeight) return;
-                // 先關掉動畫偷偷換好中心點（這時光圈還很大，看不出來），再開始收
-                loader.style.transition = 'none';
-                loader.style.setProperty('--ix', (r.left + r.width / 2) + 'px');
-                loader.style.setProperty('--iy', (r.top + r.height / 2) + 'px');
-                void loader.offsetWidth;
-                loader.style.transition = '';
-            }
-
-            function showDone() {
-                ribiImg.src = doneImg.src;
-                // 第 1 幕：畫完了！
-                text.classList.remove('got');
-                text.textContent = '畫完了！';
-                void text.offsetWidth;
-                text.classList.add('got');
-                loader.classList.add('caught');
-                sparkBurst();
-
-                // 第 2 幕：>< 莉比開心一下下，就收光圈
-                setTimeout(() => {
-                    aimIrisAtAvatar();
-                    loader.classList.add('iris');
-                    document.body.classList.remove('loading');
-                    document.body.classList.add('reveal');
-                }, 700);
-
-                // 第 3 幕：清掉加載畫面
-                setTimeout(() => {
-                    const activePage = document.querySelector('.page-content.active');
-                    if (activePage) activePage.classList.add('no-anim');
-                    loader.remove();
-                    document.body.classList.remove('reveal');
-                }, 700 + 900);
             }
 
             window.addEventListener('load', finish);
