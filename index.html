@@ -431,11 +431,20 @@
             cursor: pointer;
             transition: all 0.25s ease;
         }
-        .tab-btn:hover, .tab-btn.active {
+        /* iPad／手機點完按鈕後 :hover 會一直黏著，看起來像「複選」，所以 hover 效果只給有滑鼠的裝置 */
+        .tab-btn.active {
             background-color: var(--primary-pink);
             color: #ffffff;
             border-color: var(--primary-pink);
             box-shadow: 0 4px 12px rgba(255, 143, 174, 0.25);
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .tab-btn:hover {
+                background-color: var(--primary-pink);
+                color: #ffffff;
+                border-color: var(--primary-pink);
+                box-shadow: 0 4px 12px rgba(255, 143, 174, 0.25);
+            }
         }
 
         .portfolio-grid {
@@ -1247,7 +1256,7 @@
             .section-title { font-size: 1.55rem; margin-bottom: 2.4rem; }
 
             /* 首頁介紹卡：文字靠左（不再左右撐開字距）、按鈕不換行 */
-            .hero-content { padding: 2rem 1.4rem 1.8rem; }
+            .hero-content { padding: 2rem 1.4rem 1.8rem; width: 100%; max-width: 560px; margin: 0 auto; }
             .hero-title { font-size: 2.3rem; margin-bottom: 1rem; }
             .hero-subtitle { text-align: left; font-size: 0.98rem; }
             .btn-group { flex-wrap: wrap; gap: 0.8rem; }
@@ -2614,12 +2623,20 @@
         // 第一次看到這一排時：複製一份作品接在後面，做成無限循環
         function setupShelf(s) {
             const t = s.track;
+            if (!t.offsetParent) return;                  // 這一排看不到時先不算，等看到再算
             if (!t.querySelector('.is-clone')) appendClones(s);
             s.period = t.querySelector('.is-clone').offsetLeft - s.list[0].offsetLeft;
-            while (t.scrollWidth < s.period + t.clientWidth + 20) appendClones(s);
+            if (s.period <= 0) return;                     // 量不到寬度就下次再試，避免無限迴圈
+            fillClones(s);
             s.pos = s.dir < 0 ? s.period : 0;
             t.scrollLeft = s.pos;
             s.ready = true;
+        }
+        // 複製到夠長為止（最多 10 份，保險用，絕對不會卡死）
+        function fillClones(s) {
+            const t = s.track;
+            let guard = 0;
+            while (t.scrollWidth < s.period + t.clientWidth + 20 && guard++ < 10) appendClones(s);
         }
         function appendClones(s) {
             s.list.forEach(it => {
@@ -2711,7 +2728,7 @@
             lastFrame = time;
             shelves.forEach(s => {
                 if (!s.track.offsetParent) return;          // 作品展示頁沒打開時不動
-                if (!s.ready) setupShelf(s);
+                if (!s.ready) { setupShelf(s); if (!s.ready) return; }
                 const paused = reduceMotion || isUserHolding(s) ||
                     lightbox.classList.contains('active') ||
                     s.track.querySelector('iframe');           // 影片播放中就停下來
@@ -2725,12 +2742,23 @@
         }
 
         // 畫面大小改變（例如手機轉橫向）時，重新計算循環長度
+        // ⚠️ 以前這裡在「作品展示頁沒打開」時會算出寬度 0 → 無限複製作品 → 整個網頁當機
+        //    （手機滑動時網址列縮放、iPad 轉橫向都會觸發 resize）
+        //    現在改成：看不到的排只標記「需要重算」，等打開作品展示頁時再算
+        let resizeTimer = 0;
         window.addEventListener('resize', () => {
-            shelves.forEach(s => {
-                if (!s.ready) return;
-                s.period = s.track.querySelector('.is-clone').offsetLeft - s.list[0].offsetLeft;
-                while (s.track.scrollWidth < s.period + s.track.clientWidth + 20) appendClones(s);
-            });
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                shelves.forEach(s => {
+                    if (!s.ready) return;
+                    if (!s.track.offsetParent) { s.ready = false; return; }
+                    const p = s.track.querySelector('.is-clone').offsetLeft - s.list[0].offsetLeft;
+                    if (p <= 0) { s.ready = false; return; }
+                    s.period = p;
+                    fillClones(s);
+                    if (s.pos >= s.period) s.pos %= s.period;
+                });
+            }, 150);
         });
 
         // 分類按鈕：跳到那一排
