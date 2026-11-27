@@ -1329,6 +1329,12 @@
         .ed-row { display: flex; gap: 0.5rem; align-items: center; margin: 0.5rem 0; }
         .ed-tip { font-size: 0.8rem; color: var(--text-muted); margin: 0.4rem 0 0.8rem; line-height: 1.6; }
 
+        /* --- 防止左右多出一點點空間（紙膠帶等裝飾超出畫面時，不會出現左右捲動） --- */
+        html, body { overflow-x: hidden; }
+        @supports (overflow-x: clip) { html, body { overflow-x: clip; } }
+        /* 加載畫面還在的時候，網頁先不能捲動 */
+        body.loading { overflow: hidden; }
+
         /* --- 粉色捲軸 --- */
         ::-webkit-scrollbar { width: 12px; height: 12px; }
         ::-webkit-scrollbar-track { background: #fff0f5; }
@@ -1341,6 +1347,11 @@
         /* Firefox 用這個 */
         @supports not selector(::-webkit-scrollbar) {
             html { scrollbar-color: #ff9fb9 #fff0f5; scrollbar-width: thin; }
+        }
+        /* 手機、平板：（放在粉色捲軸後面才蓋得過）隱藏捲動時跑出來的灰黑色捲軸 */
+        @media (max-width: 868px), (pointer: coarse) {
+            html { scrollbar-width: none; }
+            ::-webkit-scrollbar { display: none; width: 0; height: 0; }
         }
 
         /* --- 背景漂浮的白色小星星 --- */
