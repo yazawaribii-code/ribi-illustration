@@ -1711,6 +1711,14 @@
             .biz-badge, .biz-spark { animation: none; }
         }
 
+        /* ===== 作品展示頁：標題位置不變，分類按鈕＋作品區整塊往上 ===== */
+        #portfolio .section-title { margin-bottom: 1.2rem; }
+        #portfolio .portfolio-tabs { margin-bottom: 1rem; }
+        @media (max-width: 868px) {
+            #portfolio .section-title { margin-bottom: 1.3rem; }
+            #portfolio .portfolio-tabs { margin-bottom: 1rem; }
+        }
+
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
