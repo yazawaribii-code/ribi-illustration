@@ -2767,6 +2767,18 @@
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const shelves = [];
 
+        // 只有「滑到畫面裡」的那一排才會自動捲動，其他排先停著
+        //   SHELF_VISIBLE：那一排要露出多少比例才開始動（0.4 = 露出 40%），數字越大要滑越進去才會動
+        const SHELF_VISIBLE = 0.4;
+        const shelfObserver = 'IntersectionObserver' in window
+            ? new IntersectionObserver(entries => {
+                entries.forEach(en => {
+                    const s = en.target._shelf;
+                    if (s) s.inView = en.isIntersecting && en.intersectionRatio >= SHELF_VISIBLE;
+                });
+            }, { rootMargin: '-85px 0px 0px 0px', threshold: [0, SHELF_VISIBLE, 1] })   // -85px：扣掉上方導覽列擋住的地方
+            : null;
+
         // 簡短寫法：data-img 只要填 GitHub 上的路徑，網址開頭會自動補上
         const IMG_BASE = 'https://raw.githubusercontent.com/yazawaribii-code/RibiPortfolio/main/';
         function toImageUrl(path) {
@@ -2855,8 +2867,11 @@
                     shelf, track, list,
                     dir: ci % 2 === 0 ? 1 : -1,   // 相鄰兩排往相反方向捲
                     ready: false, period: 0, pos: 0,
-                    hover: false, drag: false, holdUntil: 0, suppressClick: false
+                    hover: false, drag: false, holdUntil: 0, suppressClick: false,
+                    inView: !shelfObserver   // 舊瀏覽器不支援偵測時，就維持一直捲動
                 };
+                track._shelf = s;
+                if (shelfObserver) shelfObserver.observe(track);
                 shelves.push(s);
                 bindShelf(s);
             });
@@ -2972,7 +2987,7 @@
             shelves.forEach(s => {
                 if (!s.track.offsetParent) return;          // 作品展示頁沒打開時不動
                 if (!s.ready) { setupShelf(s); if (!s.ready) return; }
-                const paused = reduceMotion || isUserHolding(s) ||
+                const paused = reduceMotion || !s.inView || isUserHolding(s) ||
                     lightbox.classList.contains('active') ||
                     s.track.querySelector('iframe');           // 影片播放中就停下來
                 if (paused) { s.pos = s.track.scrollLeft; return; }
@@ -3207,6 +3222,7 @@
             items.forEach(it => grid.appendChild(elementFromItem(it)));
             const old = document.getElementById('shelves') || document.getElementById('portfolioGrid');
             old.replaceWith(grid);
+            if (shelfObserver) shelfObserver.disconnect();   // 舊的作品架不用再偵測了
             shelves.length = 0;
             buildShelves();
         }
