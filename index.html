@@ -1719,6 +1719,21 @@
             #portfolio .portfolio-tabs { margin-bottom: 1rem; }
         }
 
+        /* ===== 合作建模師：置中，每排最多 3 個（九宮格排列） ===== */
+        #modelers .modeler-grid {
+            grid-template-columns: repeat(3, 150px);
+            justify-content: center;
+            gap: 1.4rem;
+        }
+        @media (max-width: 868px) {
+            #modelers .modeler-grid {
+                grid-template-columns: repeat(3, minmax(0, 110px));
+                gap: 0.8rem;
+            }
+            #modelers .modeler-box { padding: 0.8rem 0.4rem; }
+            #modelers .modeler-avatar { width: 58px; height: 58px; }
+        }
+
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
