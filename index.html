@@ -1734,6 +1734,24 @@
             #modelers .modeler-avatar { width: 58px; height: 58px; }
         }
 
+        /* ===== 手機版首頁：頭像縮小、整體往上，一打開就看得到名字和介紹 ===== */
+        @media (max-width: 868px) {
+            #about.page-content { padding-top: 6.4rem; }
+            #about .hero { gap: 1.6rem; padding-top: 0.4rem; padding-bottom: 2rem; }
+            #about .hero-avatar img {
+                width: min(190px, 50vw);
+                height: auto;
+                aspect-ratio: 320 / 380;
+                margin: 0;
+                border: 4px solid #fff;
+                border-radius: 22px;
+                box-shadow: 6px 6px 0 #ffd3e0;
+            }
+            #about .hero-title { font-size: 2rem; margin-bottom: 0.7rem; }
+            #about .hero-subtitle { font-size: 0.93rem; line-height: 1.75; margin-bottom: 1.2rem; }
+            #about .social-links { margin-bottom: 1.4rem; }
+        }
+
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
