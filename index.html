@@ -10,6 +10,7 @@
 
     <!-- 優先預載首頁個人頭像，加快圖片顯示速度 -->
     <link rel="preload" as="image" href="loading.webp" fetchpriority="high">
+    <link rel="preload" as="image" href="loading-done.webp">
     <link rel="preload" as="image" href="avatar.webp" fetchpriority="high">
     
     <!-- 更新為最穩定的 Font Awesome 6.6.0 向量圖示庫，確保 X-Twitter 圖示正常顯示 -->
@@ -28,7 +29,7 @@
     
     <style>
         /* 加載畫面字體：源泉圓體 H（GenSenRounded TW Heavy，SIL OFL 1.1 開源授權）
-           只裁出加載畫面用到的字：Loading. 抓到了！莉比努力抓取中～
+           只裁出加載畫面用到的字：Loading. 抓到了！莉比努力抓取中～（目前用到：Loading... 畫完了！ 莉比努力繪製中～～；繪製畫完☆ 在下面的補字裡）
            之後如果要改加載畫面的文字，新增的字需要重新裁切才會是源泉圓體 */
         @font-face {
             font-family: 'GenSenRounded H';
@@ -36,6 +37,16 @@
             font-weight: 900;
             font-style: normal;
             font-display: block;
+        }
+        /* 補字：繪、製、畫、完、☆（源泉圓體的原始字型 Source Han Sans / Noto Sans CJK TC Black，SIL OFL 1.1）
+           跟上面同一個字型名稱，瀏覽器遇到這幾個字會自動用這裡的字形 */
+        @font-face {
+            font-family: 'GenSenRounded H';
+            src: url(data:font/woff2;base64,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) format('woff2');
+            font-weight: 900;
+            font-style: normal;
+            font-display: block;
+            unicode-range: U+2606, U+5B8C, U+756B, U+7E6A, U+88FD;
         }
 
         :root {
@@ -656,7 +667,7 @@
         /* 頁尾 */
         footer { text-align: center; padding: 2.5rem; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--light-pink); margin-top: 4rem; }
 
-        /* --- 網頁加載中動畫（夾娃娃機莉比） --- */
+        /* --- 網頁加載中動畫（跳跳莉比） --- */
         #loader {
             position: fixed;
             inset: 0;
@@ -692,36 +703,26 @@
             align-items: center;
         }
 
-        /* 莉比被夾子夾著，從上方輕輕晃呀晃 */
+        /* 莉比從下面「啵」一聲彈出來，接著在原地開心跳跳（動作本身在 loading.webp 動圖裡） */
         .loader-ribi {
-            width: min(260px, 62vw);
-            transform-origin: 58% 0%;
-            animation: claw-swing 2.4s ease-in-out infinite, claw-drop 0.8s cubic-bezier(.34,1.56,.64,1) both;
+            width: min(220px, 56vw);
+            transform-origin: 50% 100%;
+            animation: ribi-pop-in 0.7s cubic-bezier(.34, 1.56, .64, 1) both;
         }
-        .loader-ribi img { width: 100%; height: auto; display: block; }
-        @keyframes claw-swing {
-            0%, 100% { rotate: -5deg; }
-            50%      { rotate: 5deg; }
+        .loader-ribi img {
+            width: 100%; height: auto; display: block;
+            /* 圖片下緣（身體被裁切的地方）柔柔淡出，不會看到一條硬硬的切線 */
+            -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent 100%);
+            mask-image: linear-gradient(to bottom, #000 82%, transparent 100%);
         }
-        @keyframes claw-drop {
-            from { transform: translateY(-60vh); }
-            to   { transform: translateY(0); }
+        @keyframes ribi-pop-in {
+            0%   { transform: translateY(40px) scale(0.4); opacity: 0; }
+            60%  { opacity: 1; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
         }
 
-        /* 地上的小影子 */
-        .loader-shadow {
-            width: 120px;
-            height: 14px;
-            margin-top: -6px;
-            border-radius: 50%;
-            background: rgba(255, 143, 174, 0.22);
-            animation: shadow-pulse 2.4s ease-in-out infinite;
-            transition: transform 0.4s ease, opacity 0.4s ease;
-        }
-        @keyframes shadow-pulse {
-            0%, 100% { transform: scaleX(1);   opacity: 0.8; }
-            50%      { transform: scaleX(0.8); opacity: 0.5; }
-        }
+        /* 地上的小影子（新版開場動畫不需要，先隱藏） */
+        .loader-shadow { display: none; }
 
         /* Loading 文字一個字一個字跳 */
         /* 綜藝字卡風：超粗圓體＋白色粗描邊＋粉色外框＋金色立體陰影 */
@@ -826,7 +827,7 @@
             from { transform: translateX(-14px); }
             to   { transform: translateX(14px); }
         }
-        /* 抓到的時候，雲朵往兩邊散開 */
+        /* 莉比到了的時候，雲朵往兩邊散開 */
         #loader.caught .loader-cloud.l { animation: cloud-out-l 0.8s cubic-bezier(.6, -0.3, .7, 1) forwards; }
         #loader.caught .loader-cloud.r { animation: cloud-out-r 0.8s cubic-bezier(.6, -0.3, .7, 1) forwards; }
         @keyframes cloud-out-l { to { transform: translateX(-70vw); } }
@@ -852,9 +853,9 @@
             animation-delay: var(--d, 0s);
         }
 
-        /* ===== 戲劇性退場：抓到了！→ 夾子把莉比咻地拉走 → 畫面收光圈 ===== */
+        /* ===== 戲劇性退場：畫完了！ → 莉比原地開心彈一下 → 畫面收光圈 ===== */
 
-        /* 抓到的瞬間，整個舞台震一下 */
+        /* 莉比到了的瞬間，整個舞台震一下 */
         #loader.caught .loader-stage { animation: stage-shake 0.4s ease; }
         @keyframes stage-shake {
             0%, 100% { transform: translate(0, 0); }
@@ -864,21 +865,23 @@
             80% { transform: translate(3px, -1px); }
         }
 
-        /* 莉比先往下蹲一下蓄力，再被夾子猛力拉上去飛出畫面 */
+        /* 畫完了！莉比留在原地開心地彈一下，接著畫面收光圈 */
         #loader.caught .loader-ribi {
-            animation: claw-yank 0.8s cubic-bezier(.55, -0.4, .75, .25) forwards;
+            animation: ribi-happy 0.75s ease-out forwards;
         }
-        @keyframes claw-yank {
+        @keyframes ribi-happy {
             0%   { transform: translateY(0) scale(1, 1); }
-            30%  { transform: translateY(16px) scale(1.06, 0.9); }
-            100% { transform: translateY(-130vh) scale(0.9, 1.2); }
+            25%  { transform: translateY(6px) scale(1.08, 0.9); }
+            55%  { transform: translateY(-16px) scale(0.96, 1.06); }
+            80%  { transform: translateY(0) scale(1.03, 0.97); }
+            100% { transform: translateY(0) scale(1, 1); }
         }
 
         #loader.caught .loader-shadow { animation: none; transform: scaleX(0); opacity: 0; }
         #loader.caught .loader-sub { opacity: 0; }
         #loader.caught .loader-bar::after { animation: none; transform: none; width: 100%; }
 
-        /* 「抓到了！」大字跳出來 */
+        /* 「畫完了！」大字跳出來 */
         .loader-text.got {
             font-size: 2.9rem;
             letter-spacing: 4px;
@@ -887,15 +890,15 @@
             animation: got-pop 0.5s cubic-bezier(.34, 1.9, .64, 1) both;
         }
         @keyframes got-pop {
-            from { transform: scale(0.2) rotate(-12deg); opacity: 0; }
-            to   { transform: scale(1) rotate(-4deg); opacity: 1; }
+            from { transform: scale(0.2); opacity: 0; }
+            to   { transform: scale(1); opacity: 1; }
         }
 
         /* 金色衝擊波圓圈 */
         .loader-ring {
             position: absolute;
             left: 50%;
-            top: calc(min(260px, 62vw) / 2);
+            top: calc(min(220px, 56vw) * 0.55);
             width: 80px;
             height: 80px;
             margin: -40px 0 0 -40px;
@@ -914,7 +917,7 @@
         .loader-spark {
             position: absolute;
             left: 50%;
-            top: calc(min(260px, 62vw) / 2);
+            top: calc(min(220px, 56vw) * 0.55);
             font-size: var(--s, 1.4rem);
             line-height: 1;
             color: var(--gold-color);
@@ -1832,13 +1835,13 @@
         <div class="loader-stage">
             <div class="loader-ring"></div>
             <div class="loader-ribi">
-                <img src="loading.webp" alt="莉比 載入中" fetchpriority="high" decoding="async">
+                <img src="loading.webp" alt="莉比 載入中" id="loaderRibiImg" fetchpriority="high" decoding="async">
             </div>
             <div class="loader-shadow"></div>
             <div class="loader-text" id="loaderText">
                 <span style="--i:0">L</span><span style="--i:1">o</span><span style="--i:2">a</span><span style="--i:3">d</span><span style="--i:4">i</span><span style="--i:5">n</span><span style="--i:6">g</span><span style="--i:7">.</span><span style="--i:8">.</span><span style="--i:9">.</span>
             </div>
-            <div class="loader-sub">莉比努力抓取中～</div>
+            <div class="loader-sub">莉比努力繪製中～～</div>
             <div class="loader-bar"></div>
         </div>
     </div>
@@ -2642,11 +2645,15 @@
     </footer>
 
     <script>
-        // 0. 網頁加載完成後：抓到了！→ 莉比被夾走 → 畫面收光圈，顯示網頁
+        // 0. 網頁加載完成後：畫完了！ → 莉比開心彈一下 → 畫面收光圈，顯示網頁
         (function () {
             const loader = document.getElementById('loader');
             const stage = loader.querySelector('.loader-stage');
             const text = document.getElementById('loaderText');
+            // 加載中：loading.webp（莉比努力畫畫）；畫完了：loading-done.webp（>< 開心跳跳）
+            const ribiImg = document.getElementById('loaderRibiImg');
+            const doneImg = new Image();
+            doneImg.src = 'loading-done.webp';
             const MIN_SHOW = 1200;   // 至少顯示 1.2 秒，讓大家看到可愛的莉比
             const MAX_WAIT = 6000;   // 網路很慢時，最多等 6 秒就先顯示網頁
             const start = Date.now();
@@ -2675,29 +2682,36 @@
                 done = true;
                 const wait = Math.max(0, MIN_SHOW - (Date.now() - start));
                 setTimeout(() => {
-                    // 第 1 幕：抓到了！
-                    text.classList.remove('got');
-                    text.textContent = '抓到了！';
-                    void text.offsetWidth;
-                    text.classList.add('got');
-                    loader.classList.add('caught');
-                    sparkBurst();
-
-                    // 第 2 幕：莉比飛出畫面後，畫面收光圈
-                    setTimeout(() => {
-                        loader.classList.add('iris');
-                        document.body.classList.remove('loading');
-                        document.body.classList.add('reveal');
-                    }, 750);
-
-                    // 第 3 幕：清掉加載畫面
-                    setTimeout(() => {
-                        const activePage = document.querySelector('.page-content.active');
-                        if (activePage) activePage.classList.add('no-anim');
-                        loader.remove();
-                        document.body.classList.remove('reveal');
-                    }, 750 + 900);
+                    // 等「畫完了」的圖準備好再換（最多等 0.8 秒，不會卡住）
+                    const ready = doneImg.decode ? doneImg.decode().catch(() => {}) : Promise.resolve();
+                    Promise.race([ready, new Promise(r => setTimeout(r, 800))]).then(showDone);
                 }, wait);
+            }
+
+            function showDone() {
+                ribiImg.src = doneImg.src;
+                // 第 1 幕：畫完了！
+                text.classList.remove('got');
+                text.textContent = '畫完了！';
+                void text.offsetWidth;
+                text.classList.add('got');
+                loader.classList.add('caught');
+                sparkBurst();
+
+                // 第 2 幕：讓大家看一下 >< 開心的莉比，再收光圈
+                setTimeout(() => {
+                    loader.classList.add('iris');
+                    document.body.classList.remove('loading');
+                    document.body.classList.add('reveal');
+                }, 1100);
+
+                // 第 3 幕：清掉加載畫面
+                setTimeout(() => {
+                    const activePage = document.querySelector('.page-content.active');
+                    if (activePage) activePage.classList.add('no-anim');
+                    loader.remove();
+                    document.body.classList.remove('reveal');
+                }, 1100 + 900);
             }
 
             window.addEventListener('load', finish);
