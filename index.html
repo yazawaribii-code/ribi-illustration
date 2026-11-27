@@ -814,24 +814,7 @@
             to   { transform: translateX(250%); }
         }
 
-        /* --- 加載畫面的卡通雲朵 --- */
         .loader-sky { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
-        .loader-cloud {
-            position: absolute;
-            width: var(--w, 160px);
-            filter: drop-shadow(0 5px 0 rgba(255, 143, 174, 0.22));
-            animation: cloud-drift var(--t, 7s) ease-in-out infinite alternate;
-        }
-        .loader-cloud svg { width: 100%; height: auto; display: block; }
-        @keyframes cloud-drift {
-            from { transform: translateX(-14px); }
-            to   { transform: translateX(14px); }
-        }
-        /* 莉比到了的時候，雲朵往兩邊散開 */
-        #loader.caught .loader-cloud.l { animation: cloud-out-l 0.8s cubic-bezier(.6, -0.3, .7, 1) forwards; }
-        #loader.caught .loader-cloud.r { animation: cloud-out-r 0.8s cubic-bezier(.6, -0.3, .7, 1) forwards; }
-        @keyframes cloud-out-l { to { transform: translateX(-70vw); } }
-        @keyframes cloud-out-r { to { transform: translateX(70vw); } }
 
         /* --- 加載畫面的卡通星星（一閃一閃） --- */
         .loader-star {
@@ -1796,15 +1779,9 @@
 
     <!-- 網頁加載中動畫 -->
     <div id="loader" aria-label="網頁載入中" role="status">
-        <!-- 雲朵和星星的形狀（只定義一次，下面重複使用） -->
+        <!-- 星星的形狀（只定義一次，下面重複使用） -->
         <svg width="0" height="0" style="position:absolute" aria-hidden="true">
             <defs>
-                <symbol id="cloudShape" viewBox="0 0 160 90">
-                    <path d="M34 80 C14 80 6 64 14 52 C6 38 20 22 38 28 C42 10 66 4 80 18 C92 2 122 6 124 28 C142 24 156 40 148 56 C158 70 144 82 128 80 Z"
-                          fill="#fff" stroke="#f27ca0" stroke-width="4" stroke-linejoin="round"/>
-                    <ellipse cx="46" cy="62" rx="8" ry="5" fill="#ffd0de"/>
-                    <ellipse cx="116" cy="62" rx="8" ry="5" fill="#ffd0de"/>
-                </symbol>
                 <symbol id="starShape" viewBox="-12 -12 24 24">
                     <path d="M0 -10 L2.9 -3.6 L9.5 -3.1 L4.6 1.4 L5.9 8.1 L0 4.7 L-5.9 8.1 L-4.6 1.4 L-9.5 -3.1 L-2.9 -3.6 Z"
                           fill="#fff3a0" stroke="#f27ca0" stroke-width="1.6" stroke-linejoin="round"/>
@@ -1814,10 +1791,6 @@
         </svg>
 
         <div class="loader-sky" aria-hidden="true">
-            <div class="loader-cloud l" style="left: 4%;  top: 10%; --w: 180px; --t: 6s;"><svg><use href="#cloudShape"/></svg></div>
-            <div class="loader-cloud r" style="right: 6%; top: 18%; --w: 140px; --t: 8s;"><svg><use href="#cloudShape"/></svg></div>
-            <div class="loader-cloud l" style="left: -2%; bottom: 14%; --w: 150px; --t: 7s;"><svg><use href="#cloudShape"/></svg></div>
-            <div class="loader-cloud r" style="right: -1%; bottom: 8%; --w: 200px; --t: 9s;"><svg><use href="#cloudShape"/></svg></div>
 
             <div class="loader-star" style="left: 26%; top: 14%; --w: 38px; --d: 0s;"><svg><use href="#starShape"/></svg></div>
             <div class="loader-star" style="right: 24%; top: 8%;  --w: 28px; --d: 0.6s;"><svg><use href="#starShape"/></svg></div>
@@ -2698,12 +2671,12 @@
                 loader.classList.add('caught');
                 sparkBurst();
 
-                // 第 2 幕：讓大家看一下 >< 開心的莉比，再收光圈
+                // 第 2 幕：>< 莉比開心一下下，就收光圈
                 setTimeout(() => {
                     loader.classList.add('iris');
                     document.body.classList.remove('loading');
                     document.body.classList.add('reveal');
-                }, 1100);
+                }, 700);
 
                 // 第 3 幕：清掉加載畫面
                 setTimeout(() => {
@@ -2711,7 +2684,7 @@
                     if (activePage) activePage.classList.add('no-anim');
                     loader.remove();
                     document.body.classList.remove('reveal');
-                }, 1100 + 900);
+                }, 700 + 900);
             }
 
             window.addEventListener('load', finish);
