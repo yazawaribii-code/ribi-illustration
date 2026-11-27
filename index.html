@@ -680,10 +680,11 @@
             background-image: radial-gradient(circle at 50% 42%, #ffffff 0%, #fff6f9 38%, #ffe3ec 100%);
             overflow: hidden;
             /* 退場用：畫面像鏡頭收光圈一樣，縮成一個點消失 */
-            clip-path: circle(150vmax at 50% 50%);
+            /* 收光圈的中心點：預設畫面正中間；手機版會由 JS 改成首頁頭像的位置 */
+            clip-path: circle(150vmax at var(--ix, 50%) var(--iy, 50%));
             transition: clip-path 0.75s cubic-bezier(.75, 0, .25, 1);
         }
-        #loader.iris { clip-path: circle(0px at 50% 50%); }
+        #loader.iris { clip-path: circle(0px at var(--ix, 50%) var(--iy, 50%)); }
         /* 便條風車縫線外框（跟網站卡片同款） */
         #loader::before {
             content: '';
@@ -2660,6 +2661,22 @@
                 }, wait);
             }
 
+            // 手機版：光圈縮成的那個點，剛好落在首頁的圓形頭像中間
+            function aimIrisAtAvatar() {
+                if (!window.matchMedia('(max-width: 868px)').matches) return;
+                const home = document.getElementById('about');
+                const av = document.querySelector('#about .hero-avatar img');
+                if (!home || !home.classList.contains('active') || !av) return;
+                const r = av.getBoundingClientRect();
+                if (!r.width || r.bottom < 0 || r.top > window.innerHeight) return;
+                // 先關掉動畫偷偷換好中心點（這時光圈還很大，看不出來），再開始收
+                loader.style.transition = 'none';
+                loader.style.setProperty('--ix', (r.left + r.width / 2) + 'px');
+                loader.style.setProperty('--iy', (r.top + r.height / 2) + 'px');
+                void loader.offsetWidth;
+                loader.style.transition = '';
+            }
+
             function showDone() {
                 ribiImg.src = doneImg.src;
                 // 第 1 幕：畫完了！
@@ -2672,6 +2689,7 @@
 
                 // 第 2 幕：>< 莉比開心一下下，就收光圈
                 setTimeout(() => {
+                    aimIrisAtAvatar();
                     loader.classList.add('iris');
                     document.body.classList.remove('loading');
                     document.body.classList.add('reveal');
