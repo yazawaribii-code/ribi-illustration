@@ -1739,7 +1739,7 @@
             #about.page-content { padding-top: 6.4rem; }
             #about .hero { gap: 1.6rem; padding-top: 0.4rem; padding-bottom: 2rem; }
             #about .hero-avatar img {
-                width: min(180px, 48vw);
+                width: var(--av);
                 height: auto;
                 aspect-ratio: 1 / 1;
                 object-position: center 20%;
@@ -1752,10 +1752,10 @@
             #about .hero-subtitle { font-size: 0.93rem; line-height: 1.75; margin-bottom: 1.2rem; }
             #about .social-links { margin-bottom: 1.4rem; }
 
-            /* 頭像夾在資料卡上方：一半疊在卡片上 */
-            #about .hero { gap: 0; }
-            #about .hero-avatar { position: relative; z-index: 3; margin-bottom: -78px; }
-            #about .hero-content { padding: 5.6rem 2.2rem 2.2rem; }
+            /* 頭像整顆放進資料卡裡面（不再卡在卡片邊線上） */
+            #about .hero { gap: 0; --av: min(160px, 44vw); --av-top: 34px; padding-top: calc(var(--av-top) + 1.4rem); }
+            #about .hero-avatar { position: relative; z-index: 3; margin-bottom: calc(-1 * (var(--av) + 10px + var(--av-top))); }
+            #about .hero-content { padding: calc(var(--av) + 10px + var(--av-top) + 1.1rem) 2.2rem 2.2rem; }
 
             /* 紙膠帶改貼在斜對角：左上＋右下 */
             #about .hero-content::before {
