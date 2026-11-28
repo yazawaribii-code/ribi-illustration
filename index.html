@@ -11,6 +11,7 @@
     <!-- 優先預載首頁個人頭像，加快圖片顯示速度 -->
     <link rel="preload" as="image" href="loading-strawberry.webp" fetchpriority="high">
     <link rel="preload" as="image" href="loading-frame.webp" fetchpriority="high">
+    <link rel="preload" as="image" href="loading-strawberry-smile.webp">
     <link rel="preload" as="image" href="avatar.webp" fetchpriority="high">
     
     <!-- 更新為最穩定的 Font Awesome 6.6.0 向量圖示庫，確保 X-Twitter 圖示正常顯示 -->
@@ -863,6 +864,14 @@
         /* 載入完成：加載條衝到底、草莓開心跳一下、冒出愛心和草莓 */
         #loader.done .loader-fill { animation: none; width: 100%; }
         #loader.done .loader-berry { animation: berry-yay 0.5s ease-out forwards; }
+        /* 換成笑容版的瞬間，莉比開心地彈一下 */
+        #loader.done .loader-ribi { animation: ribi-happy 0.6s ease-out forwards; }
+        @keyframes ribi-happy {
+            0%   { transform: translateY(0) scale(1, 1); }
+            30%  { transform: translateY(4px) scale(1.05, 0.94); }
+            60%  { transform: translateY(-12px) scale(0.97, 1.04); }
+            100% { transform: translateY(0) scale(1, 1); }
+        }
         @keyframes berry-yay {
             0%   { transform: translateY(0) scale(1); }
             50%  { transform: translateY(-14px) scale(1.25) rotate(12deg); }
@@ -884,6 +893,14 @@
             100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1) rotate(var(--rot, 20deg)); opacity: 0; }
         }
 
+        /* 手機版：莉比、相框、文字、加載條整體再內縮一點 */
+        @media (max-width: 868px) {
+            .loader-stage { --rw: min(300px, 64vw); }
+            .loader-text { font-size: 1.35rem; }
+            .loader-bar { width: min(240px, 58vw); height: 20px; }
+            .loader-berry { width: 28px; right: -14px; margin-top: -18px; }
+        }
+
         /* 加載畫面消失後，網頁內容柔柔地浮上來 */
         body.reveal .page-content.active { animation: page-pop 0.8s ease-out; }
         @keyframes page-pop {
@@ -896,7 +913,7 @@
         /* 喜歡「減少動態效果」的使用者：只保留靜態畫面（加載條還是會前進） */
         @media (prefers-reduced-motion: reduce) {
             .loader-deco, .loader-tw, .loader-stage, .loader-ribi, .loader-ribi::before, .loader-text span,
-            .loader-fill-in, .loader-berry, #loader.done .loader-berry, .loader-pop,
+            .loader-fill-in, .loader-berry, #loader.done .loader-berry, #loader.done .loader-ribi, .loader-pop,
             body.reveal .page-content.active { animation: none; }
             .loader-pop { display: none; }
         }
@@ -1807,7 +1824,7 @@
 
         <div class="loader-stage">
             <div class="loader-ribi">
-                <img src="loading-strawberry.webp" alt="莉比" width="441" height="265" fetchpriority="high" decoding="async">
+                <img src="loading-strawberry.webp" alt="莉比" id="loaderRibiImg" width="441" height="265" fetchpriority="high" decoding="async">
             </div>
             <div class="loader-text">
                 <span style="--i:0">L</span><span style="--i:1">o</span><span style="--i:2">a</span><span style="--i:3">d</span><span style="--i:4">i</span><span style="--i:5">n</span><span style="--i:6">g</span>
@@ -2624,6 +2641,10 @@
         (function () {
             const loader = document.getElementById('loader');
             const stage = loader.querySelector('.loader-stage');
+            // 載入完成時換成笑容版莉比（先在背景準備好，換的時候才不會閃一下）
+            const ribiImg = document.getElementById('loaderRibiImg');
+            const smileImg = new Image();
+            smileImg.src = 'loading-strawberry-smile.webp';
             const MIN_SHOW = 1600;   // 至少顯示 1.6 秒，讓大家看到可愛的莉比
             const MAX_WAIT = 6000;   // 網路很慢時，最多等 6 秒就先顯示網頁
             const start = Date.now();
@@ -2655,7 +2676,10 @@
                 if (done) return;
                 done = true;
                 const wait = Math.max(0, MIN_SHOW - (Date.now() - start));
-                setTimeout(() => {
+                // 笑容版準備好才換（最多等 0.5 秒，不會卡住）
+                const ready = smileImg.decode ? smileImg.decode().catch(() => {}) : Promise.resolve();
+                setTimeout(() => Promise.race([ready, new Promise(r => setTimeout(r, 500))]).then(() => {
+                    if (smileImg.complete && smileImg.naturalWidth) ribiImg.src = smileImg.src;   // 笑容版莉比
                     loader.classList.add('done');          // 加載條衝到 100%
                     setTimeout(popBurst, 250);
 
@@ -2671,7 +2695,7 @@
                         loader.remove();
                         document.body.classList.remove('reveal');
                     }, 750 + 850);
-                }, wait);
+                }), wait);
             }
 
             window.addEventListener('load', finish);
