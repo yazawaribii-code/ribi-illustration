@@ -9,7 +9,8 @@
     <link rel="icon" type="image/png" href="Favicon.png">
 
     <!-- 優先預載首頁個人頭像，加快圖片顯示速度 -->
-    <link rel="preload" as="image" href="loading-dream.webp" fetchpriority="high">
+    <link rel="preload" as="image" href="loading-strawberry.webp" fetchpriority="high">
+    <link rel="preload" as="image" href="loading-frame.webp" fetchpriority="high">
     <link rel="preload" as="image" href="avatar.webp" fetchpriority="high">
     
     <!-- 更新為最穩定的 Font Awesome 6.6.0 向量圖示庫，確保 X-Twitter 圖示正常顯示 -->
@@ -655,7 +656,7 @@
         /* 頁尾 */
         footer { text-align: center; padding: 2.5rem; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--light-pink); margin-top: 4rem; }
 
-        /* ===== 網頁加載畫面：睡在雲朵上的莉比（夢幻粉色系，靜態圖＋輕輕漂浮） ===== */
+        /* ===== 網頁加載畫面：草莓牛奶風（粉色格紋桌布＋草莓＋愛心加載條） ===== */
         #loader {
             position: fixed;
             inset: 0;
@@ -664,16 +665,21 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            /* 中間奶油白，往外慢慢變成櫻花粉、蜜桃色 */
-            background-color: #fff5f8;
+            background-color: #fff4f6;
+            /* 草莓牛奶底色＋白色、粉色小圓點，中間柔柔的白光（讓白色相框更顯眼） */
             background-image:
-                radial-gradient(circle at 50% 44%, #fffdfb 0%, #fff4f7 34%, #ffe6ee 68%, #ffdcd2 100%);
+                radial-gradient(ellipse at 50% 46%, rgba(255, 253, 254, 0.95) 0%, rgba(255, 246, 248, 0.6) 34%, rgba(255, 238, 243, 0) 70%),
+                radial-gradient(circle, #ffffff 3px, transparent 3.6px),
+                radial-gradient(circle, rgba(255, 179, 200, 0.55) 2.6px, transparent 3.2px),
+                linear-gradient(160deg, #ffeef3 0%, #ffe4ec 55%, #ffdde3 100%);
+            background-size: 100% 100%, 36px 36px, 36px 36px, 100% 100%;
+            background-position: 0 0, 0 0, 18px 18px, 0 0;
             transition: opacity 0.8s ease, filter 0.8s ease, transform 0.8s ease;
         }
-        /* 退場：像夢醒一樣，柔柔地變亮、暈開、淡出 */
+        /* 退場：柔柔地變亮、暈開、淡出 */
         #loader.fade-out {
             opacity: 0;
-            filter: blur(8px) brightness(1.08);
+            filter: blur(8px) brightness(1.06);
             transform: scale(1.04);
             pointer-events: none;
         }
@@ -682,197 +688,190 @@
             content: '';
             position: absolute;
             inset: 18px;
-            border: 2.5px dashed #ffc6d6;
+            border: 2.5px dashed #ffb3c8;
             border-radius: 28px;
             pointer-events: none;
             z-index: 1;
         }
         @media (max-width: 868px) { #loader::before { inset: 12px; border-radius: 22px; } }
 
-        /* 背景的柔光泡泡：粉、蜜桃、奶油黃、淡天空藍，慢慢飄 */
+        /* 背景裝飾：飄來飄去的草莓、愛心、小星星 */
         .loader-sky { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
-        .loader-bokeh {
+        .loader-deco {
             position: absolute;
-            width: var(--z, 120px);
-            height: var(--z, 120px);
-            border-radius: 50%;
-            background: radial-gradient(circle, var(--c, #ffc6d6) 0%, transparent 70%);
-            opacity: 0.55;
-            filter: blur(2px);
-            animation: bokeh-drift var(--t, 9s) ease-in-out infinite alternate;
+            width: var(--w, 34px);
+            color: var(--c, #ffb3c8);
+            animation: deco-bob var(--t, 3.2s) ease-in-out infinite;
             animation-delay: var(--d, 0s);
         }
-        @keyframes bokeh-drift {
-            from { transform: translate(0, 0) scale(1); }
-            to   { transform: translate(var(--dx, 14px), var(--dy, -18px)) scale(1.12); }
-        }
-
-        /* 一閃一閃的小星星、小愛心 */
-        .loader-star {
-            position: absolute;
-            width: var(--w, 26px);
-            animation: star-twinkle var(--t, 2.4s) ease-in-out infinite;
-            animation-delay: var(--d, 0s);
-        }
-        .loader-star svg { width: 100%; height: auto; display: block; overflow: visible; }
-        @keyframes star-twinkle {
-            0%, 100% { transform: scale(0.7) rotate(-8deg); opacity: 0.55; }
-            50%      { transform: scale(1.05) rotate(8deg); opacity: 1; }
+        .loader-deco svg { width: 100%; height: auto; display: block; overflow: visible; }
+        @keyframes deco-bob {
+            0%, 100% { transform: translateY(0) rotate(var(--r1, -10deg)); }
+            50%      { transform: translateY(-10px) rotate(var(--r2, 8deg)); }
         }
         .loader-tw {
             position: absolute;
             color: #ffb3c8;
             font-size: var(--s, 1rem);
             text-shadow: 0 0 6px #fff;
-            animation: star-twinkle 2s ease-in-out infinite;
+            animation: tw-twinkle 2s ease-in-out infinite;
             animation-delay: var(--d, 0s);
         }
-        .loader-tw.blue { color: #a9d8f2; }
         .loader-tw.gold { color: #ffd98a; }
-
-        /* 慢慢往上飄的小愛心 */
-        .loader-heart {
-            position: absolute;
-            bottom: -30px;
-            width: var(--w, 16px);
-            opacity: 0;
-            animation: heart-rise var(--t, 9s) linear infinite;
-            animation-delay: var(--d, 0s);
-        }
-        .loader-heart svg { width: 100%; height: auto; display: block; }
-        @keyframes heart-rise {
-            0%   { transform: translate(0, 0) rotate(-10deg); opacity: 0; }
-            15%  { opacity: 0.85; }
-            50%  { transform: translate(14px, -50vh) rotate(8deg); }
-            85%  { opacity: 0.7; }
-            100% { transform: translate(-8px, -105vh) rotate(-6deg); opacity: 0; }
+        @keyframes tw-twinkle {
+            0%, 100% { transform: scale(0.6); opacity: 0.5; }
+            50%      { transform: scale(1.1); opacity: 1; }
         }
 
         .loader-stage {
             position: relative;
+            /* --rw：莉比圖片的寬度；--fw：相框的大小（想調相框大小改這裡就好） */
+            --rw: min(322px, 77vw);
+            --fw: calc(var(--rw) * 0.82);
+            padding-top: calc((var(--fw) - var(--rw) * 0.601) / 2);   /* 上面讓出相框超出的空間，整體才會置中 */
             z-index: 2;
             display: flex;
             flex-direction: column;
             align-items: center;
-            animation: stage-in 0.9s ease-out both;
+            animation: stage-in 0.8s cubic-bezier(.34, 1.4, .64, 1) both;
         }
         @keyframes stage-in {
-            from { opacity: 0; transform: translateY(14px) scale(0.96); }
+            from { opacity: 0; transform: translateY(16px) scale(0.92); }
             to   { opacity: 1; transform: none; }
         }
 
-        /* 莉比：靜態圖，只在雲上輕輕漂浮 */
+        /* 莉比：靜態圖，輕輕地上下晃，偶爾「噗通」一下 */
         .loader-ribi {
             position: relative;
-            width: min(340px, 70vw);
-            animation: ribi-float 3.8s ease-in-out infinite;
+            width: var(--rw);
+            transform-origin: 50% 90%;
+            animation: ribi-bob 2.8s ease-in-out infinite;
         }
-        /* 莉比身後一圈柔柔的光 */
+        /* 莉比身後：白色波浪邊相框＋粉色光暈（loading-frame.webp），慢慢轉圈圈 */
         .loader-ribi::before {
             content: '';
             position: absolute;
             left: 50%;
-            top: 52%;
-            width: 125%;
+            top: 50%;
+            width: var(--fw);
             aspect-ratio: 1;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(255, 228, 236, 0.6) 40%, transparent 68%);
+            margin: calc(var(--fw) / -2) 0 0 calc(var(--fw) / -2);   /* 以下方草莓那一排為中心 */
+            background: url('loading-frame.webp') center / contain no-repeat;
+            animation: frame-spin 40s linear infinite;
             z-index: -1;
-            animation: glow-breathe 3.8s ease-in-out infinite;
         }
-        .loader-ribi img { width: 100%; height: auto; display: block; }
-        @keyframes ribi-float {
-            0%, 100% { transform: translateY(0) rotate(-1deg); }
-            50%      { transform: translateY(-9px) rotate(1deg); }
-        }
-        @keyframes glow-breathe {
-            0%, 100% { opacity: 0.85; transform: translate(-50%, -50%) scale(0.96); }
-            50%      { opacity: 1;    transform: translate(-50%, -50%) scale(1.04); }
+        @keyframes frame-spin { to { transform: rotate(360deg); } }
+        .loader-ribi img { position: relative; width: 100%; height: auto; display: block; }
+        @keyframes ribi-bob {
+            0%, 100% { transform: translateY(0) scale(1, 1); }
+            45%      { transform: translateY(-8px) scale(1, 1); }
+            85%      { transform: translateY(0) scale(1.03, 0.97); }
         }
 
-        /* 睡覺的 zZz，從莉比頭上慢慢飄起來 */
-        .loader-zzz {
-            position: absolute;
-            left: 6%;
-            top: 4%;
-            pointer-events: none;
-        }
-        .loader-zzz span {
-            position: absolute;
-            left: 0;
-            top: 0;
-            font-family: 'Arial Rounded MT Bold', 'Nunito', 'PingFang TC', sans-serif;
-            font-weight: 900;
-            color: #ff9fbb;
-            font-size: var(--s, 1.2rem);
-            text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;
-            opacity: 0;
-            animation: zzz-float 3s ease-out infinite;
-            animation-delay: var(--d, 0s);
-        }
-        .loader-zzz span:nth-child(2) { color: #8fcbee; }
-        @keyframes zzz-float {
-            0%   { transform: translate(0, 0) rotate(-10deg) scale(0.6); opacity: 0; }
-            20%  { opacity: 1; }
-            100% { transform: translate(-26px, -46px) rotate(12deg) scale(1.15); opacity: 0; }
-        }
-
-        /* Loading 文字：粉色圓圓字＋白色描邊＋柔光，一個字一個字輕輕晃 */
+        /* Loading 文字：粉色圓圓字＋白色描邊 */
         .loader-text {
-            margin-top: 0.6rem;
+            /* 相框比莉比的圖高，要往下讓出相框超出的那一段，字才不會被蓋到 */
+            margin-top: calc((var(--fw) - var(--rw) * 0.601) / 2 + 0.7rem);
             display: flex;
-            align-items: flex-end;
             gap: 2px;
             font-family: 'GenSenRounded H', 'Arial Rounded MT Bold', 'PingFang TC', sans-serif;
             font-weight: 900;
-            font-size: 1.7rem;
+            font-size: 1.55rem;
             letter-spacing: 1.5px;
-            color: #ff8fae;
+            color: #ff7f9f;
             --o: #fff;
             text-shadow:
                  2.5px 0 0 var(--o), -2.5px 0 0 var(--o), 0 2.5px 0 var(--o), 0 -2.5px 0 var(--o),
                  1.8px 1.8px 0 var(--o), -1.8px 1.8px 0 var(--o), 1.8px -1.8px 0 var(--o), -1.8px -1.8px 0 var(--o),
-                 0 4px 10px rgba(255, 143, 174, 0.35);
-            transition: opacity 0.4s ease, transform 0.4s ease;
+                 0 4px 0 #ffd3e0;
         }
         .loader-text span {
             display: inline-block;
-            animation: letter-wave 2.4s ease-in-out infinite;
-            animation-delay: calc(var(--i) * 0.12s);
+            animation: letter-wave 2s ease-in-out infinite;
+            animation-delay: calc(var(--i) * 0.1s);
         }
-        .loader-text span:nth-child(even) { color: #ffa3bd; }
+        .loader-text span:nth-child(even) { color: #ff9fba; }
         @keyframes letter-wave {
             0%, 70%, 100% { transform: translateY(0); }
             35%           { transform: translateY(-5px); }
         }
-        /* Loading 後面的三顆小愛心（代替 ...） */
-        .loader-dots { display: inline-flex; gap: 5px; margin-left: 6px; margin-bottom: 0.45rem; }
-        .loader-dots svg {
-            width: 15px;
-            height: 15px;
-            animation: dot-pop 1.5s ease-in-out infinite;
-            filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 1px #fff);
+
+        /* ===== 草莓＋愛心加載條 ===== */
+        .loader-bar {
+            position: relative;
+            width: min(260px, 68vw);
+            height: 22px;
+            margin-top: 0.9rem;
+            border-radius: 20px;
+            background-color: #fff;
+            /* 軌道上淡淡的小愛心 */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='16' viewBox='0 0 24 22'%3E%3Cpath d='M12 18C7 14 4 11.5 4 8.4 4 6.2 5.7 4.5 7.8 4.5c1.6 0 2.9.9 3.6 2.1h1.2c.7-1.2 2-2.1 3.6-2.1 2.1 0 3.8 1.7 3.8 3.9 0 3.1-3 5.6-8 9.6z' fill='%23ffe3ec'/%3E%3C/svg%3E");
+            background-size: 18px 16px;
+            background-position: 4px center;
+            border: 3px solid #ffb3c8;
+            box-shadow: 3px 3px 0 #ffd3e0;
         }
-        .loader-dots svg:nth-child(2) { animation-delay: 0.2s; }
-        .loader-dots svg:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes dot-pop {
-            0%, 60%, 100% { transform: scale(0.8); opacity: 0.7; }
-            30%           { transform: scale(1.15); opacity: 1; }
+        /* 粉色的進度：慢慢長到 88%，載完時才衝到 100% */
+        .loader-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 12%;
+            min-width: 16px;
+            animation: fill-grow 3.6s cubic-bezier(.2, .7, .3, 1) forwards;
+            transition: width 0.4s ease-out;
+        }
+        .loader-fill-in {
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            background-color: #ff8fae;
+            /* 白色小愛心圖案，往右慢慢流動 */
+            background-image:
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 55%),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='16' viewBox='0 0 24 22'%3E%3Cpath d='M12 18C7 14 4 11.5 4 8.4 4 6.2 5.7 4.5 7.8 4.5c1.6 0 2.9.9 3.6 2.1h1.2c.7-1.2 2-2.1 3.6-2.1 2.1 0 3.8 1.7 3.8 3.9 0 3.1-3 5.6-8 9.6z' fill='%23ffffff' fill-opacity='.75'/%3E%3C/svg%3E");
+            background-size: 100% 100%, 20px 16px;
+            background-repeat: no-repeat, repeat-x;
+            background-position: 0 0, 0 center;
+            animation: hearts-flow 1.2s linear infinite;
+        }
+        @keyframes fill-grow {
+            from { width: 12%; }
+            to   { width: 88%; }
+        }
+        @keyframes hearts-flow {
+            from { background-position: 0 0, 0 center; }
+            to   { background-position: 0 0, 20px center; }
+        }
+        /* 進度最前面的草莓，跟著一跳一跳 */
+        .loader-berry {
+            position: absolute;
+            right: -16px;
+            top: 50%;
+            width: 32px;
+            margin-top: -20px;
+            animation: berry-hop 0.6s ease-in-out infinite alternate;
+            filter: drop-shadow(0 2px 0 rgba(232, 71, 107, 0.25));
+        }
+        .loader-berry svg { width: 100%; height: auto; display: block; }
+        @keyframes berry-hop {
+            from { transform: translateY(0) rotate(-8deg); }
+            to   { transform: translateY(-5px) rotate(8deg); }
         }
 
-        /* 載入完成：莉比開心晃一下、文字淡出、粉色小愛心從她身邊冒出來 */
-        #loader.done .loader-text { opacity: 0; transform: translateY(6px); }
-        #loader.done .loader-ribi { animation: ribi-wake 0.7s ease-out forwards; }
-        @keyframes ribi-wake {
+        /* 載入完成：加載條衝到底、草莓開心跳一下、冒出愛心和草莓 */
+        #loader.done .loader-fill { animation: none; width: 100%; }
+        #loader.done .loader-berry { animation: berry-yay 0.5s ease-out forwards; }
+        @keyframes berry-yay {
             0%   { transform: translateY(0) scale(1); }
-            40%  { transform: translateY(-12px) scale(1.04); }
-            100% { transform: translateY(-4px) scale(1.02); }
+            50%  { transform: translateY(-14px) scale(1.25) rotate(12deg); }
+            100% { transform: translateY(-4px) scale(1.1); }
         }
         .loader-pop {
             position: absolute;
             left: 50%;
-            top: 42%;
+            top: 40%;
             width: var(--w, 18px);
             pointer-events: none;
             z-index: 3;
@@ -880,9 +879,9 @@
         }
         .loader-pop svg { width: 100%; height: auto; display: block; }
         @keyframes pop-fly {
-            0%   { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+            0%   { transform: translate(-50%, -50%) scale(0.2) rotate(0deg); opacity: 0; }
             25%  { opacity: 1; }
-            100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1); opacity: 0; }
+            100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1) rotate(var(--rot, 20deg)); opacity: 0; }
         }
 
         /* 加載畫面消失後，網頁內容柔柔地浮上來 */
@@ -894,12 +893,12 @@
         /* 退場結束後，停住目前頁面的動畫，避免淡入動畫重播造成閃白、跳動 */
         .page-content.no-anim { animation: none !important; }
 
-        /* 喜歡「減少動態效果」的使用者：只保留靜態畫面 */
+        /* 喜歡「減少動態效果」的使用者：只保留靜態畫面（加載條還是會前進） */
         @media (prefers-reduced-motion: reduce) {
-            .loader-bokeh, .loader-star, .loader-tw, .loader-heart, .loader-stage,
-            .loader-ribi, .loader-ribi::before, .loader-zzz, .loader-text span, .loader-dots svg,
-            #loader.done .loader-ribi, .loader-pop, body.reveal .page-content.active { animation: none; }
-            .loader-heart, .loader-zzz, .loader-pop { display: none; }
+            .loader-deco, .loader-tw, .loader-stage, .loader-ribi, .loader-ribi::before, .loader-text span,
+            .loader-fill-in, .loader-berry, #loader.done .loader-berry, .loader-pop,
+            body.reveal .page-content.active { animation: none; }
+            .loader-pop { display: none; }
         }
 
         /* 背景圖上的文字保持清楚：首頁文字加毛玻璃底，標題加白色光暈 */
@@ -1760,15 +1759,23 @@
     <!-- 背景漂浮的白色小星星（由下方 JS 產生） -->
     <div id="starField" aria-hidden="true"></div>
 
-    <!-- 網頁加載畫面：睡在雲朵上的莉比 -->
+    <!-- 網頁加載畫面：草莓牛奶風莉比 -->
     <div id="loader" aria-label="網頁載入中" role="status">
-        <!-- 星星、愛心的形狀（只定義一次，下面重複使用） -->
+        <!-- 草莓、愛心、星星的形狀（只定義一次，下面重複使用） -->
         <svg width="0" height="0" style="position:absolute" aria-hidden="true">
             <defs>
-                <symbol id="starShape" viewBox="-12 -12 24 24">
-                    <path d="M0 -10 L2.9 -3.6 L9.5 -3.1 L4.6 1.4 L5.9 8.1 L0 4.7 L-5.9 8.1 L-4.6 1.4 L-9.5 -3.1 L-2.9 -3.6 Z"
-                          fill="#fff6c9" stroke="#ffb3c8" stroke-width="1.6" stroke-linejoin="round"/>
-                    <circle cx="-2.2" cy="-1.5" r="1.1" fill="#fff"/>
+                <symbol id="berryShape" viewBox="0 0 32 36">
+                    <path d="M16 34 C8.5 30.5 3.5 24 3.5 16.5 C3.5 11.5 8 9.5 16 10 C24 9.5 28.5 11.5 28.5 16.5 C28.5 24 23.5 30.5 16 34 Z"
+                          fill="#ff5f82" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/>
+                    <path d="M16 34 C8.5 30.5 3.5 24 3.5 16.5" fill="none" stroke="#e8476b" stroke-width="0" />
+                    <g fill="#ffe7a6">
+                        <ellipse cx="10" cy="17" rx="1" ry="1.5"/><ellipse cx="16" cy="16" rx="1" ry="1.5"/><ellipse cx="22" cy="17" rx="1" ry="1.5"/>
+                        <ellipse cx="12.5" cy="22.5" rx="1" ry="1.5"/><ellipse cx="19.5" cy="22.5" rx="1" ry="1.5"/><ellipse cx="16" cy="28" rx="1" ry="1.5"/>
+                        <ellipse cx="8" cy="22" rx="0.9" ry="1.3"/><ellipse cx="24" cy="22" rx="0.9" ry="1.3"/>
+                    </g>
+                    <ellipse cx="9.5" cy="14.5" rx="2.6" ry="1.5" fill="#fff" opacity="0.6" transform="rotate(-30 9.5 14.5)"/>
+                    <path d="M16 12.5 L10 8.5 L13.5 8.2 L9.5 4.5 L14.2 6.3 L16 2 L17.8 6.3 L22.5 4.5 L18.5 8.2 L22 8.5 Z"
+                          fill="#6cc47a" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/>
                 </symbol>
                 <symbol id="heartShape" viewBox="0 0 24 22">
                     <path d="M12 21 C5 15.5 1 11.8 1 7.2 C1 3.7 3.7 1 7 1 C9.1 1 11 2.1 12 3.8 C13 2.1 14.9 1 17 1 C20.3 1 23 3.7 23 7.2 C23 11.8 19 15.5 12 21 Z"
@@ -1779,50 +1786,37 @@
         </svg>
 
         <div class="loader-sky" aria-hidden="true">
-            <!-- 柔光泡泡 -->
-            <div class="loader-bokeh" style="left: 8%;  top: 12%; --z: 180px; --c: #ffd0dd; --t: 10s;"></div>
-            <div class="loader-bokeh" style="right: 6%; top: 18%; --z: 140px; --c: #ffe0cc; --t: 8s; --d: -3s; --dx: -16px;"></div>
-            <div class="loader-bokeh" style="left: 18%; bottom: 10%; --z: 150px; --c: #d6ecfa; --t: 11s; --d: -5s;"></div>
-            <div class="loader-bokeh" style="right: 14%; bottom: 14%; --z: 200px; --c: #ffd6e2; --t: 9s; --d: -2s; --dy: 16px;"></div>
-            <div class="loader-bokeh" style="left: 46%; top: 4%; --z: 110px; --c: #fff0c4; --t: 12s; --d: -6s;"></div>
-
+            <!-- 草莓 -->
+            <div class="loader-deco" style="left: 12%; top: 14%; --w: 46px; --t: 3.4s;"><svg viewBox="0 0 32 36"><use href="#berryShape"/></svg></div>
+            <div class="loader-deco" style="right: 13%; top: 20%; --w: 36px; --t: 3s; --d: -1.2s; --r1: 12deg; --r2: -6deg;"><svg viewBox="0 0 32 36"><use href="#berryShape"/></svg></div>
+            <div class="loader-deco" style="left: 17%; bottom: 14%; --w: 32px; --t: 3.6s; --d: -2s; --r1: 8deg; --r2: -10deg;"><svg viewBox="0 0 32 36"><use href="#berryShape"/></svg></div>
+            <div class="loader-deco" style="right: 10%; bottom: 18%; --w: 50px; --t: 3.2s; --d: -0.6s;"><svg viewBox="0 0 32 36"><use href="#berryShape"/></svg></div>
+            <!-- 愛心 -->
+            <div class="loader-deco" style="left: 30%; top: 8%;  --w: 26px; --c: #ffb3c8; --t: 2.8s; --d: -0.4s;"><svg viewBox="0 0 24 22"><use href="#heartShape"/></svg></div>
+            <div class="loader-deco" style="right: 30%; top: 10%; --w: 20px; --c: #ff9fba; --t: 3.1s; --d: -1.6s;"><svg viewBox="0 0 24 22"><use href="#heartShape"/></svg></div>
+            <div class="loader-deco" style="left: 7%;  top: 46%; --w: 24px; --c: #ffc6d6; --t: 3.3s; --d: -2.2s;"><svg viewBox="0 0 24 22"><use href="#heartShape"/></svg></div>
+            <div class="loader-deco" style="right: 6%; top: 50%; --w: 28px; --c: #ffb3c8; --t: 2.9s; --d: -0.9s;"><svg viewBox="0 0 24 22"><use href="#heartShape"/></svg></div>
+            <div class="loader-deco" style="left: 36%; bottom: 7%; --w: 22px; --c: #ff9fba; --t: 3.4s; --d: -1.4s;"><svg viewBox="0 0 24 22"><use href="#heartShape"/></svg></div>
+            <div class="loader-deco" style="right: 34%; bottom: 9%; --w: 18px; --c: #ffc6d6; --t: 3s; --d: -2.6s;"><svg viewBox="0 0 24 22"><use href="#heartShape"/></svg></div>
             <!-- 小星星 -->
-            <div class="loader-star" style="left: 22%; top: 16%; --w: 30px; --d: 0s;"><svg><use href="#starShape"/></svg></div>
-            <div class="loader-star" style="right: 22%; top: 12%; --w: 22px; --d: 0.8s;"><svg><use href="#starShape"/></svg></div>
-            <div class="loader-star" style="left: 12%; top: 55%; --w: 20px; --d: 1.4s;"><svg><use href="#starShape"/></svg></div>
-            <div class="loader-star" style="right: 13%; top: 52%; --w: 28px; --d: 0.4s;"><svg><use href="#starShape"/></svg></div>
-
-            <span class="loader-tw" style="left: 36%; top: 9%; --s: 1rem; --d: 0.2s;">✦</span>
-            <span class="loader-tw blue" style="right: 34%; top: 24%; --s: 0.8rem; --d: 0.9s;">✦</span>
-            <span class="loader-tw gold" style="left: 24%; top: 74%; --s: 0.9rem; --d: 1.3s;">✦</span>
-            <span class="loader-tw" style="right: 24%; top: 76%; --s: 1.1rem; --d: 0.6s;">✦</span>
-            <span class="loader-tw blue" style="left: 7%; top: 34%; --s: 0.75rem; --d: 1.7s;">✦</span>
-            <span class="loader-tw gold" style="right: 8%; top: 36%; --s: 0.85rem; --d: 0.3s;">✦</span>
-
-            <!-- 慢慢往上飄的小愛心 -->
-            <div class="loader-heart" style="left: 14%; color: #ffb3c8; --w: 16px; --t: 10s; --d: 0s;"><svg><use href="#heartShape"/></svg></div>
-            <div class="loader-heart" style="left: 32%; color: #ffd0b8; --w: 12px; --t: 12s; --d: -4s;"><svg><use href="#heartShape"/></svg></div>
-            <div class="loader-heart" style="left: 70%; color: #ffc6d6; --w: 18px; --t: 11s; --d: -7s;"><svg><use href="#heartShape"/></svg></div>
-            <div class="loader-heart" style="left: 86%; color: #ffb3c8; --w: 13px; --t: 9s; --d: -2s;"><svg><use href="#heartShape"/></svg></div>
-            <div class="loader-heart" style="left: 54%; color: #b9def4; --w: 11px; --t: 13s; --d: -9s;"><svg><use href="#heartShape"/></svg></div>
+            <span class="loader-tw" style="left: 22%; top: 30%; --s: 1rem; --d: 0.2s;">✦</span>
+            <span class="loader-tw gold" style="right: 22%; top: 34%; --s: 0.9rem; --d: 0.9s;">✦</span>
+            <span class="loader-tw gold" style="left: 26%; top: 70%; --s: 0.8rem; --d: 1.3s;">✦</span>
+            <span class="loader-tw" style="right: 25%; top: 72%; --s: 1.1rem; --d: 0.6s;">✦</span>
         </div>
 
         <div class="loader-stage">
             <div class="loader-ribi">
-                <img src="loading-dream.webp" alt="莉比" width="640" height="536" fetchpriority="high" decoding="async">
-                <div class="loader-zzz" aria-hidden="true">
-                    <span style="--s: 1.1rem; --d: 0s;">z</span>
-                    <span style="--s: 1.4rem; --d: 1s;">z</span>
-                    <span style="--s: 1.75rem; --d: 2s;">Z</span>
-                </div>
+                <img src="loading-strawberry.webp" alt="莉比" width="441" height="265" fetchpriority="high" decoding="async">
             </div>
-            <div class="loader-text" id="loaderText">
+            <div class="loader-text">
                 <span style="--i:0">L</span><span style="--i:1">o</span><span style="--i:2">a</span><span style="--i:3">d</span><span style="--i:4">i</span><span style="--i:5">n</span><span style="--i:6">g</span>
-                <span class="loader-dots" aria-hidden="true">
-                    <svg style="color:#ff8fae"><use href="#heartShape"/></svg>
-                    <svg style="color:#ffb79a"><use href="#heartShape"/></svg>
-                    <svg style="color:#ffa3bd"><use href="#heartShape"/></svg>
-                </span>
+            </div>
+            <div class="loader-bar" aria-hidden="true">
+                <div class="loader-fill">
+                    <div class="loader-fill-in"></div>
+                    <div class="loader-berry"><svg viewBox="0 0 32 36"><use href="#berryShape"/></svg></div>
+                </div>
             </div>
         </div>
     </div>
@@ -2626,29 +2620,33 @@
     </footer>
 
     <script>
-        // 0. 網頁加載完成後：莉比開心晃一下、冒出小愛心 → 畫面柔柔地淡出，顯示網頁
+        // 0. 網頁加載完成後：加載條衝到底、草莓跳一下、冒出愛心和草莓 → 畫面柔柔地淡出，顯示網頁
         (function () {
             const loader = document.getElementById('loader');
             const stage = loader.querySelector('.loader-stage');
-            const MIN_SHOW = 1400;   // 至少顯示 1.4 秒，讓大家看到睡在雲上的莉比
+            const MIN_SHOW = 1600;   // 至少顯示 1.6 秒，讓大家看到可愛的莉比
             const MAX_WAIT = 6000;   // 網路很慢時，最多等 6 秒就先顯示網頁
             const start = Date.now();
             let done = false;
 
-            // 粉色、蜜桃色、淡天空藍的小愛心往四周飄出去
-            function heartBurst() {
-                const colors = ['#ff8fae', '#ffb3c8', '#ffb79a', '#ffc6d6', '#a9d8f2'];
-                const count = 12;
+            // 愛心和小草莓往四周飄出去
+            function popBurst() {
+                const colors = ['#ff8fae', '#ffb3c8', '#ff9fba', '#ffc6d6'];
+                const count = 14;
                 for (let i = 0; i < count; i++) {
                     const h = document.createElement('div');
                     h.className = 'loader-pop';
+                    const berry = i % 3 === 0;
                     h.style.color = colors[i % colors.length];
                     const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
-                    const dist = 100 + Math.random() * 70;
+                    const dist = 110 + Math.random() * 80;
                     h.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
                     h.style.setProperty('--dy', Math.sin(angle) * dist - 20 + 'px');
-                    h.style.setProperty('--w', (12 + Math.random() * 10).toFixed(0) + 'px');
-                    h.innerHTML = '<svg viewBox="0 0 24 22"><use href="#heartShape"/></svg>';
+                    h.style.setProperty('--w', (berry ? 20 + Math.random() * 8 : 12 + Math.random() * 10).toFixed(0) + 'px');
+                    h.style.setProperty('--rot', ((Math.random() - 0.5) * 60).toFixed(0) + 'deg');
+                    h.innerHTML = berry
+                        ? '<svg viewBox="0 0 32 36"><use href="#berryShape"/></svg>'
+                        : '<svg viewBox="0 0 24 22"><use href="#heartShape"/></svg>';
                     stage.appendChild(h);
                 }
             }
@@ -2658,21 +2656,21 @@
                 done = true;
                 const wait = Math.max(0, MIN_SHOW - (Date.now() - start));
                 setTimeout(() => {
-                    loader.classList.add('done');
-                    heartBurst();
+                    loader.classList.add('done');          // 加載條衝到 100%
+                    setTimeout(popBurst, 250);
 
                     setTimeout(() => {
                         loader.classList.add('fade-out');
                         document.body.classList.remove('loading');
                         document.body.classList.add('reveal');
-                    }, 550);
+                    }, 750);
 
                     setTimeout(() => {
                         const activePage = document.querySelector('.page-content.active');
                         if (activePage) activePage.classList.add('no-anim');
                         loader.remove();
                         document.body.classList.remove('reveal');
-                    }, 550 + 850);
+                    }, 750 + 850);
                 }, wait);
             }
 
